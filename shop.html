@@ -141,6 +141,36 @@ details.tips code{background:var(--card);padding:2px 6px;border-radius:6px;overf
 .own{position:fixed;inset:0;background:#000b;display:grid;place-items:center;z-index:9;padding:16px}
 .ownbox{background:#fff;color:#111;border-radius:20px;padding:20px;max-width:380px;width:100%;text-align:center}
 .ownbox b{font-size:19px}.ownbox .qrbox{padding:10px}.ownbox p{font-size:15px;color:#444;margin:0 0 14px}
+.est{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:12px 0 0;font-weight:600;font-size:15px}
+.prot{margin-top:6px;font:inherit;font-size:13px;font-weight:700;border:1.5px solid var(--red);color:var(--red);background:none;border-radius:999px;padding:3px 12px;min-height:32px;cursor:pointer}
+.prot.on{background:#0a7a3d;border-color:#0a7a3d;color:#fff}
+.paybox{background:#fff;color:#111;border-radius:20px;padding:16px;margin-top:14px;text-align:center;box-shadow:0 18px 40px -18px #00000059}
+.payamt{font:800 40px/1 Archivo,system-ui,sans-serif;margin-bottom:10px}
+.payqr{width:220px;margin:0 auto 6px}.payqr img,.payqr canvas{width:100%!important;height:auto!important}
+.paybox .btn{width:100%;margin-top:8px;display:flex;align-items:center;justify-content:center;text-decoration:none}
+.paybox .btn.ghost{color:#111;border-color:#ddd}.paybox p{margin:6px 0 0;font-weight:700}
+.backlist li{grid-template-columns:44px minmax(0,1fr) auto!important}
+.chip.paid{background:#0a7a3d;color:#fff}.chip.from{background:var(--ink);color:var(--bg)}
+.jobtools{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:-4px 0 12px;flex-wrap:wrap}.jobtools .sub{margin:0}
+.fld{display:grid;gap:4px;margin:10px 0;font-size:14px;color:var(--ink)}.fld input{font:inherit;font-size:16px;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.med{position:fixed;inset:0;z-index:12;background:#000d;display:grid;place-items:center;padding:12px}
+.medbox{background:var(--card);color:var(--ink);border-radius:18px;padding:14px;width:min(100%,560px);max-height:100%;overflow:auto}
+.medhint{margin:0 0 10px;font-weight:600;font-size:15px}
+.medstage{display:grid;place-items:center}#medCv{max-width:100%;touch-action:none;cursor:crosshair;border-radius:8px}
+.chk2{display:flex;gap:8px;align-items:center;margin:10px 0 6px;font-size:15px}.chk2 input{width:20px;height:20px;accent-color:var(--red)}
+#wmText{font-size:15px;padding:8px 10px}
+.medbtns{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:8px;margin-top:10px}
+body.disp main{max-width:none;padding:0}body.disp header{display:none}
+#vDisp{min-height:100vh;display:flex;flex-direction:column;padding:2.5vw}
+.dhead{display:flex;align-items:baseline;justify-content:space-between;gap:20px;border-bottom:6px solid var(--red);padding-bottom:12px;flex-wrap:wrap}
+.dhead b{font-size:clamp(28px,4vw,56px);line-height:1.1}.dhead span{font-size:clamp(16px,2vw,28px);color:var(--mute)}
+.dgrid{display:grid;grid-template-columns:2fr 1fr;gap:3vw;flex:1;margin-top:2vw}
+.dgrid h2{font-size:clamp(20px,2.4vw,36px);margin:0 0 1vw}
+.dnums{display:flex;flex-wrap:wrap;gap:1.5vw}.dnums b{font:800 clamp(60px,10vw,180px)/1 Archivo,system-ui,sans-serif;background:var(--card);border:2px solid var(--line);border-radius:2vw;padding:1vw 2vw;min-width:1.6em;text-align:center}
+.dnums b.hot{background:var(--red);color:#fff;border-color:var(--red)}
+.dnow{font:800 clamp(40px,6vw,110px)/1.1 Archivo,system-ui,sans-serif;color:var(--mute)}
+.dfoot{display:flex;justify-content:space-between;gap:10px;color:var(--mute);font-size:clamp(14px,1.4vw,20px)}
+@media(max-width:700px){.dgrid{grid-template-columns:1fr}}
 /* printable standee (A5) */
 #standee{display:none}
 @media print{
@@ -201,17 +231,25 @@ details.tips code{background:var(--card);padding:2px 6px;border-radius:6px;overf
         <label class="opt"><span data-t="autoDel"></span><input type="checkbox" id="oDel" checked></label>
         <label class="opt"><span data-t="sound"></span><input type="checkbox" id="oSound" checked></label>
       </div>
+      <details class="tips pf" id="priceBox" style="margin-top:10px;color:var(--ink)"><summary data-t="priceT"></summary>
+        <label class="fld"><span data-t="pBw"></span><input type="number" min="0" step="0.5" id="pBwIn" inputmode="decimal"></label>
+        <label class="fld"><span data-t="pCol"></span><input type="number" min="0" step="0.5" id="pColIn" inputmode="decimal"></label>
+        <label class="fld"><span data-t="upiId"></span><input type="text" id="upiIn" maxlength="80" autocomplete="off" spellcheck="false"></label>
+      </details>
       <div style="margin-top:14px"><button class="btn" id="pushBtn" data-t="pushBtn" hidden style="width:100%;min-height:56px"></button><p class="sub" id="pushState" style="font-size:14px;margin-top:8px"></p></div>
       <div class="sidebtns">
         <button class="btn ink" id="standeeBtn" data-t="standee"></button>
         <button class="btn ghost" id="renameBtn" data-t="rename"></button>
         <button class="btn ghost" id="ownBtn" data-t="addDev"></button>
+        <button class="btn ghost pf" id="dispBtn" data-t="dispBtn"></button>
       </div>
       <p class="sub" style="font-size:14px;margin-top:10px" data-t="standeeTip"></p>
       <details class="tips pf"><summary data-t="tipsT"></summary><p data-t="tip1"></p><p><code>chrome.exe --kiosk-printing</code></p><p data-t="tip2"></p></details>
     </aside>
     <section>
       <div class="jobshead"><h2 data-t="jobs"></h2><span class="count" id="count"></span></div>
+      <div class="jobtools"><p class="sub" id="sum"></p><button class="btn ghost sm" id="zipBtn" data-t="zipAll"></button></div>
+      <input type="file" id="backFile" multiple hidden>
       <div class="empty" id="empty" data-t="empty"></div>
       <div class="jobs" id="jobs"></div>
     </section>
@@ -224,12 +262,15 @@ details.tips code{background:var(--card);padding:2px 6px;border-radius:6px;overf
       <button class="pick" id="cPick"><b data-t="cPick"></b><span data-t="cPickSub"></span></button>
       <input type="file" id="cFile" multiple hidden>
       <ul class="picked" id="picked"></ul>
+      <p class="sub" id="protTip" data-t="protTip" hidden style="font-size:14px;margin-top:8px"></p>
       <div class="form">
         <div class="frow pf"><span data-t="cCopies"></span><div class="step"><button type="button" id="cMinus" aria-label="-">−</button><output id="cCopiesV">1</output><button type="button" id="cPlus" aria-label="+">+</button></div></div>
         <div class="frow pf"><span data-t="cColor"></span><div class="seg" id="segColor"><button data-v="bw" aria-pressed="true" data-t="bw"></button><button data-v="color" aria-pressed="false" data-t="color"></button></div></div>
         <div class="frow pf"><span data-t="cSides"></span><div class="seg" id="segSides"><button data-v="1" aria-pressed="true" data-t="one"></button><button data-v="2" aria-pressed="false" data-t="two"></button></div></div>
+        <div class="frow"><input type="text" id="cName" maxlength="60" data-ph="cName" autocomplete="name"></div>
         <div class="frow"><textarea id="cNote" rows="2" maxlength="300" data-ph="cNote"></textarea></div>
       </div>
+      <p class="est" id="cEst" hidden></p>
       <button class="btn sendbtn" id="cSend" data-t="cSend" disabled></button>
     </div>
     <div id="cDone" hidden>
@@ -238,7 +279,11 @@ details.tips code{background:var(--card);padding:2px 6px;border-radius:6px;overf
         <p data-t="cTell"></p>
         <div class="steps" id="cSteps"><span data-s="sent" data-t="sSent"></span><span data-s="got" data-t="sGot"></span><span data-s="printing" data-t="sPrinting" class="pstep"></span><span data-s="ready" data-t="sReady"></span></div>
       </div>
+      <div class="paybox" id="cPay" hidden><div class="payamt" id="payAmt"></div><div class="payqr" id="payQr"></div><p id="payAt" data-t="payAt" hidden></p><a class="btn" id="payLink" data-t="payUpi" hidden></a><button class="btn ghost" id="payDone" data-t="iPaid" hidden></button></div>
+      <button class="btn ink" id="cRcptBtn" data-t="rcptBtn" hidden style="width:100%;margin-top:12px"></button>
+      <div id="cBackWrap" hidden><h3 style="margin:18px 0 6px;font-size:17px" data-t="backT"></h3><ul class="picked backlist" id="cBack"></ul></div>
       <button class="btn ghost" style="width:100%;margin-top:14px" id="cMore" data-t="cMore"></button>
+      <p class="priv" id="cOwn" style="margin-top:16px"><span data-t="ownLbl"></span> <a href="desk.html" data-t="ownDesk" style="color:inherit;font-weight:700"></a> · <a href="shop.html" data-t="ownShop" style="color:inherit;font-weight:700"></a></p>
     </div>
     <p class="priv" id="cPriv"></p>
   </section>
@@ -247,6 +292,14 @@ details.tips code{background:var(--card);padding:2px 6px;border-radius:6px;overf
 </main>
 
 <div class="own" id="own" hidden><div class="ownbox"><b data-t="ownT"></b><div class="qrbox" id="ownQr"></div><p data-t="ownP"></p><button class="btn ink" id="ownClose" data-t="close"></button></div></div>
+<section id="vDisp" hidden>
+  <div class="dhead"><b id="dShop">…</b><span data-t="dispT"></span></div>
+  <div class="dgrid"><div><h2 data-t="dispReady"></h2><div id="dReady" class="dnums"></div></div><div><h2 data-t="dispPrinting"></h2><div id="dPrint" class="dnow"></div></div></div>
+  <div class="dfoot"><span id="dState"></span><span id="dTap" data-t="dTap"></span></div>
+</section>
+<div class="own" id="dispModal" hidden><div class="ownbox"><b data-t="dispT"></b><div class="qrbox" id="dispQr"></div><p data-t="dispP"></p><p><a id="dispLink" target="_blank" rel="noopener" style="color:#e4002b;overflow-wrap:anywhere"></a></p><button class="btn ink" id="dispClose" data-t="close"></button></div></div>
+<div class="own" id="rcptModal" hidden><div class="ownbox" style="max-width:440px"><img id="rcptImg" alt="" style="width:100%;border-radius:10px;border:1px solid #ddd"><div style="display:flex;gap:8px;margin-top:12px"><a class="btn" id="rcptSave" data-t="rcptSave" style="flex:1;display:flex;align-items:center;justify-content:center;text-decoration:none"></a><button class="btn ink" id="rcptClose" data-t="close" style="flex:1"></button></div></div></div>
+<div class="med" id="med" hidden><div class="medbox"><p class="medhint" data-t="medHint"></p><div id="medStage" class="medstage"><canvas id="medCv"></canvas></div><label class="chk2"><input type="checkbox" id="wmOn" checked><span data-t="wmOn"></span></label><input type="text" id="wmText" maxlength="90"><div class="medbtns"><button class="btn ghost" id="medUndo" data-t="undo"></button><button class="btn ghost" id="medCancel" data-t="cancel2"></button><button class="btn" id="medUse" data-t="useIt"></button></div></div></div>
 <!-- printable standee -->
 <div id="standee"><div class="sd-card" id="sdCard">
   <div class="sd-top"><svg viewBox="0 0 40 40"><rect width="40" height="40" rx="11" fill="#fff"/><rect x="8" y="8" width="13" height="13" rx="3" fill="none" stroke="#e4002b" stroke-width="3"/><rect x="12.5" y="12.5" width="4" height="4" rx="1" fill="#e4002b"/><path d="M20 31 31 20M23.5 20H31v7.5" fill="none" stroke="#e4002b" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b id="sdHead">ফাইল পাঠান · फ़ाइल भेजें</b><span id="sdSub">Scan to send files for printing</span></div></div>
@@ -258,7 +311,7 @@ details.tips code{background:var(--card);padding:2px 6px;border-radius:6px;overf
     <div id="sdS2"><i>2</i>ফাইল বেছে পাঠান<br>फ़ाइल चुनकर भेजें<br>Pick &amp; send files</div>
     <div id="sdS3"><i>3</i>টোকেন নম্বর বলুন<br>टोकन नंबर बताएँ<br>Tell your token no.</div>
   </div>
-  <div class="sd-foot">নম্বর সেভ লাগবে না · नंबर सेव नहीं · No number needed<br>কোনো অ্যাপ লাগবে না · कोई ऐप नहीं · No app needed</div>
+  <div class="sd-foot">নম্বর সেভ লাগবে না · नंबर सेव नहीं · No number needed<br>কোনো অ্যাপ লাগবে না · कोई ऐप नहीं · No app needed<br><span id="sdOwn"></span></div>
 </div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -266,9 +319,9 @@ details.tips code{background:var(--card);padding:2px 6px;border-radius:6px;overf
 <script>
 {
 const T={
-bn:{pushBtn:'অফলাইনেও ফাইল নিন — নোটিফিকেশন চালু করুন',pushOn:'এই ডিভাইসে নোটিফিকেশন চালু ✓ — পেজ বন্ধ থাকলেও খবর পাবেন',pushDenied:'নোটিফিকেশনের অনুমতি দেওয়া হয়নি। ব্রাউজার সেটিংস থেকে চালু করুন।',pushFail:'নোটিফিকেশন চালু করা গেল না।',iosPush:'iPhone-এ নোটিফিকেশনের জন্য: Share → Add to Home Screen, তারপর হোম স্ক্রিন থেকে খুলুন।',viaBox:'অফলাইনে জমা ছিল',cOffline:'এখন অফলাইন — চিন্তা নেই। ফাইল আপনার ফোনেই লক হয়ে জমা থাকবে; উনি অনলাইনে এলেই পাবেন।',cSaved:'জমা হয়েছে',cSavedP:'ফাইল লক করা অবস্থায় জমা আছে। উনি নোটিফিকেশন পাবেন আর অনলাইনে এলেই নিয়ে নেবেন।',sUploading:'আপলোড হচ্ছে',privBox:'ফাইল আপনার ফোনেই লক হয় — শুধু প্রাপক খুলতে পারবেন। ২৪ ঘণ্টা পরে নিজে থেকে মুছে যায়।',tooBig:'অফলাইনে মোট ১০০ MB / ৩০টি ফাইলের বেশি পাঠানো যাবে না।',boxFull:'ওঁর জমার বাক্স এখন ভর্তি। পরে চেষ্টা করুন।',failed2:'পাঠানো যায়নি',standeeTip:'প্রিন্টের সময় Scale "Default" রাখুন, "Fit to page" নয়।',addDev:'অন্য ডিভাইসেও চালু করুন',ownT:'নিজের অন্য ডিভাইস দিয়ে স্ক্যান করুন',ownP:'কম্পিউটার চালু থাকলে ফাইল কম্পিউটারে আসবে; বন্ধ থাকলে ফোনে। একই QR, একই কোড। এই QR অন্য কাউকে দেখাবেন না।',close:'বন্ধ',devPc:'এই কম্পিউটার — ফাইল আগে এখানে আসে',devPhone:'এই ফোন — কম্পিউটার বন্ধ থাকলে এখানে আসে (পেজ খোলা রাখুন)',copy:'কপি',copied:'কপি হয়েছে ✓',title:'ঝটপট দোকান',tagline:'প্রিন্ট-দোকানের জন্য QR ফাইল-কাউন্টার',setupT:'আপনার দোকানের নাম',setupSub:'গ্রাহকের ফোনে আর QR স্ট্যান্ডিতে এই নাম দেখাবে।',setupPh:'যেমন: মা তারা জেরক্স',start:'শুরু করুন',qrT:'গ্রাহক এই QR স্ক্যান করবেন',codeLbl:'দোকানের কোড',autoPrint:'ফাইল এলেই প্রিন্ট উইন্ডো খুলুন',autoDel:'প্রিন্ট/কাজ শেষে ফাইল মুছে দিন',sound:'ফাইল এলে আওয়াজ',standee:'QR স্ট্যান্ডি প্রিন্ট',rename:'নাম বদলান',tipsT:'এক ক্লিকে প্রিন্টের টিপস',tip1:'Chrome-এর শর্টকাটে এটি যোগ করলে প্রিন্ট উইন্ডো ছাড়াই সরাসরি ডিফল্ট প্রিন্টারে প্রিন্ট হবে:',tip2:'দোকান খোলা থাকলে এই পেজ খুলে রাখুন। পেজ বন্ধ হলে সব ফাইল মুছে যায়।',online:'চালু — গ্রাহকের অপেক্ষায়',connecting:'চালু হচ্ছে…',offline:'ইন্টারনেট নেই — আবার চেষ্টা হচ্ছে…',inUse:'এই দোকান অন্য ট্যাবে খোলা আছে। সেটি বন্ধ করুন।',jobs:'আজকের কাজ',empty:'এখনও কোনো ফাইল আসেনি। গ্রাহক QR স্ক্যান করে পাঠালেই এখানে টোকেন নম্বরসহ দেখাবে।',nJobs:'টি কাজ',token:'টোকেন',copies:'কপি',bw:'সাদা-কালো',color:'রঙিন',one:'একপিঠ',two:'দুইপিঠ',printAll:'সব প্রিন্ট',print:'প্রিন্ট',save:'সেভ',done:'কাজ শেষ',del:'মুছুন',deleted:'ফাইল মুছে ফেলা হয়েছে',noPrint:'এটি ব্রাউজারে প্রিন্ট হয় না — সেভ করে খুলুন',receiving:'আসছে…',ago:'আগে',now:'এইমাত্র',min:'মিনিট',cTo:'ফাইল যাবে',cPick:'ফাইল বেছে নিন',cPickSub:'PDF, ছবি, Word — যেকোনো ফাইল',cCopies:'কত কপি',cColor:'রঙ',cSides:'পাতার কোন দিকে',cNote:'দোকানদারের জন্য কিছু লিখুন (ঐচ্ছিক)',cSend:'দোকানে পাঠান',cToken:'আপনার টোকেন',cTell:'দোকানদারকে এই নম্বরটি বলুন',sSent:'পাঠানো',sGot:'পৌঁছেছে',sPrinting:'প্রিন্ট হচ্ছে',sReady:'তৈরি ✓',cMore:'আরও ফাইল পাঠান',cConnecting:'দোকানের সঙ্গে যুক্ত হচ্ছে…',cClosed:'দোকান এখন অফলাইন। দোকানদারকে পেজটি খুলতে বলুন।',cLost:'সংযোগ কেটে গেছে। পেজটি আবার খুলুন।',privA:'আপনার ফোন নম্বর লাগে না। ফাইল কোনো সার্ভারে থাকে না।',privB:' কাজ শেষে দোকানের কম্পিউটার থেকেও মুছে যায়।'},
-hi:{pushBtn:'ऑफ़लाइन में भी फ़ाइल पाएँ — नोटिफ़िकेशन चालू करें',pushOn:'इस डिवाइस पर नोटिफ़िकेशन चालू ✓ — पेज बंद होने पर भी ख़बर मिलेगी',pushDenied:'नोटिफ़िकेशन की अनुमति नहीं मिली। ब्राउज़र सेटिंग्स से चालू करें।',pushFail:'नोटिफ़िकेशन चालू नहीं हो सका।',iosPush:'iPhone पर नोटिफ़िकेशन के लिए: Share → Add to Home Screen, फिर होम स्क्रीन से खोलें।',viaBox:'ऑफ़लाइन में जमा था',cOffline:'अभी ऑफ़लाइन — चिंता नहीं। फ़ाइल आपके फ़ोन पर ही लॉक होकर जमा रहेगी; ऑनलाइन आते ही उन्हें मिल जाएगी।',cSaved:'जमा हो गया',cSavedP:'फ़ाइल लॉक होकर जमा है। उन्हें नोटिफ़िकेशन मिलेगा और ऑनलाइन आते ही वे ले लेंगे।',sUploading:'अपलोड हो रहा है',privBox:'फ़ाइल आपके फ़ोन पर ही लॉक होती है — सिर्फ़ पाने वाला खोल सकता है। 24 घंटे बाद अपने-आप मिट जाती है।',tooBig:'ऑफ़लाइन में कुल 100 MB / 30 फ़ाइलों से ज़्यादा नहीं भेज सकते।',boxFull:'उनका जमा-बॉक्स अभी भरा है। बाद में कोशिश करें।',failed2:'भेजा नहीं जा सका',standeeTip:'प्रिंट करते समय Scale "Default" रखें, "Fit to page" नहीं।',addDev:'दूसरे डिवाइस पर भी चालू करें',ownT:'अपने दूसरे डिवाइस से स्कैन करें',ownP:'कंप्यूटर चालू हो तो फ़ाइल कंप्यूटर पर आएगी; बंद हो तो फ़ोन पर। वही QR, वही कोड। यह QR किसी और को न दिखाएँ।',close:'बंद करें',devPc:'यह कंप्यूटर — फ़ाइल पहले यहाँ आती है',devPhone:'यह फ़ोन — कंप्यूटर बंद हो तो यहाँ आती है (पेज खुला रखें)',copy:'कॉपी',copied:'कॉपी हो गया ✓',title:'झटपट दुकान',tagline:'प्रिंट-दुकान के लिए QR फ़ाइल-काउंटर',setupT:'आपकी दुकान का नाम',setupSub:'यह नाम ग्राहक के फ़ोन और QR स्टैंडी पर दिखेगा।',setupPh:'जैसे: श्री गणेश ज़ेरॉक्स',start:'शुरू करें',qrT:'ग्राहक यह QR स्कैन करेंगे',codeLbl:'दुकान का कोड',autoPrint:'फ़ाइल आते ही प्रिंट विंडो खोलें',autoDel:'प्रिंट/काम पूरा होने पर फ़ाइल मिटा दें',sound:'फ़ाइल आने पर आवाज़',standee:'QR स्टैंडी प्रिंट',rename:'नाम बदलें',tipsT:'एक क्लिक में प्रिंट के टिप्स',tip1:'Chrome शॉर्टकट में यह जोड़ने पर बिना प्रिंट विंडो के सीधे डिफ़ॉल्ट प्रिंटर पर प्रिंट होगा:',tip2:'दुकान खुली रहने तक यह पेज खुला रखें। पेज बंद होते ही सारी फ़ाइलें मिट जाती हैं।',online:'चालू — ग्राहक का इंतज़ार',connecting:'चालू हो रहा है…',offline:'इंटरनेट नहीं — दोबारा कोशिश…',inUse:'यह दुकान दूसरे टैब में खुली है। उसे बंद करें।',jobs:'आज के काम',empty:'अभी कोई फ़ाइल नहीं आई। ग्राहक QR स्कैन करके भेजेगा तो यहाँ टोकन नंबर के साथ दिखेगी।',nJobs:' काम',token:'टोकन',copies:'कॉपी',bw:'ब्लैक-व्हाइट',color:'रंगीन',one:'एक तरफ़',two:'दोनों तरफ़',printAll:'सब प्रिंट',print:'प्रिंट',save:'सेव',done:'काम पूरा',del:'मिटाएँ',deleted:'फ़ाइलें मिटा दी गईं',noPrint:'यह ब्राउज़र में प्रिंट नहीं होती — सेव करके खोलें',receiving:'आ रही है…',ago:'पहले',now:'अभी',min:'मिनट',cTo:'फ़ाइल जाएगी',cPick:'फ़ाइल चुनें',cPickSub:'PDF, फ़ोटो, Word — कोई भी फ़ाइल',cCopies:'कितनी कॉपी',cColor:'रंग',cSides:'पेज की कौन-सी तरफ़',cNote:'दुकानदार के लिए कुछ लिखें (वैकल्पिक)',cSend:'दुकान पर भेजें',cToken:'आपका टोकन',cTell:'दुकानदार को यह नंबर बताएँ',sSent:'भेजा',sGot:'पहुँचा',sPrinting:'प्रिंट हो रहा',sReady:'तैयार ✓',cMore:'और फ़ाइल भेजें',cConnecting:'दुकान से जुड़ रहा है…',cClosed:'दुकान अभी ऑफ़लाइन है। दुकानदार से पेज खोलने को कहें।',cLost:'कनेक्शन टूट गया। पेज दोबारा खोलें।',privA:'आपका फ़ोन नंबर नहीं चाहिए। फ़ाइल किसी सर्वर पर नहीं रहती।',privB:' काम पूरा होने पर दुकान के कंप्यूटर से भी मिट जाती है।'},
-en:{pushBtn:'Get files even when offline — turn on notifications',pushOn:'Notifications on for this device ✓ — you’ll be alerted even with the page closed',pushDenied:'Notification permission was blocked. Allow it in the browser settings.',pushFail:'Couldn’t turn on notifications.',iosPush:'On iPhone: Share → Add to Home Screen, then open it from the home screen to get notifications.',viaBox:'Arrived while offline',cOffline:'Offline right now — no problem. Your files are locked on your phone and kept for them; they’ll get them when they’re back online.',cSaved:'Saved',cSavedP:'Your files are locked and waiting. They’ll get a notification and pick them up when online.',sUploading:'Uploading',privBox:'Files are locked on your phone — only the receiver can open them. Auto-deleted after 24 hours.',tooBig:'While they’re offline you can send up to 100 MB / 30 files.',boxFull:'Their drop box is full right now. Try later.',failed2:'Couldn’t send',standeeTip:'When printing, keep Scale on "Default", not "Fit to page".',addDev:'Add my other device',ownT:'Scan this with your own other device',ownP:'When your PC is on, files go to the PC; when it’s off, they go to your phone. Same QR, same code. Don’t show this QR to anyone else.',close:'Close',devPc:'This PC — files arrive here first',devPhone:'This phone — files arrive here when the PC is off (keep the page open)',copy:'Copy',copied:'Copied ✓',title:'Jhatpat Shop',tagline:'QR file counter for print shops',setupT:'Your shop’s name',setupSub:'Shown on the customer’s phone and on your QR standee.',setupPh:'e.g. Maa Tara Xerox',start:'Start',qrT:'Customers scan this QR',codeLbl:'Shop code',autoPrint:'Open print window when files arrive',autoDel:'Delete files when the job is done',sound:'Sound when files arrive',standee:'Print QR standee',rename:'Rename',tipsT:'Tips for one-click printing',tip1:'Add this to your Chrome shortcut to print straight to the default printer with no dialog:',tip2:'Keep this page open while the shop is open. Closing it wipes all files.',online:'Live — waiting for customers',connecting:'Starting…',offline:'No internet — retrying…',inUse:'This shop is open in another tab. Close that one.',jobs:'Today’s jobs',empty:'No files yet. When a customer scans and sends, the job appears here with a token number.',nJobs:' jobs',token:'Token',copies:'copies',bw:'B&W',color:'Colour',one:'Single side',two:'Both sides',printAll:'Print all',print:'Print',save:'Save',done:'Done',del:'Delete',deleted:'Files deleted',noPrint:'Can’t print in the browser — save and open',receiving:'Receiving…',ago:'ago',now:'just now',min:'min',cTo:'Sending to',cPick:'Choose files',cPickSub:'PDF, photos, Word — any file',cCopies:'Copies',cColor:'Colour',cSides:'Sides',cNote:'Note for the shop (optional)',cSend:'Send to shop',cToken:'Your token',cTell:'Tell the shopkeeper this number',sSent:'Sent',sGot:'Received',sPrinting:'Printing',sReady:'Ready ✓',cMore:'Send more files',cConnecting:'Connecting to the shop…',cClosed:'The shop is offline right now. Ask them to open the page.',cLost:'Connection lost. Open the page again.',privA:'No phone number needed. Files are never stored on a server.',privB:' They’re deleted from the shop’s computer when the job is done.'}};
+bn:{ownLbl:'আপনিও নিজের ফ্রি QR বানান:',ownDesk:'অফিস ডেস্ক',ownShop:'প্রিন্ট দোকান',rcptBtn:'রসিদ দেখুন',rcptT:'প্রাপ্তি রসিদ',rcptNote:'প্রতিটি ফাইলের ডিজিটাল ছাপ দুই দিকেই মিলিয়ে দেখা হয়েছে।',rcptSave:'রসিদ সেভ করুন',priceT:'দাম ও UPI',pBw:'সাদা-কালো, প্রতি পাতা (₹)',pCol:'রঙিন, প্রতি পাতা (₹)',upiId:'আপনার UPI ID (যেমন shop@okaxis)',est:'আনুমানিক খরচ',pages:'পাতা',unknownPg:'(Word/অন্য ফাইলের পাতা গোনা যায় না — দোকানে জেনে নিন)',payUpi:'UPI অ্যাপে পে করুন',iPaid:'পে করেছি',paidSent:'দোকানকে জানানো হয়েছে ✓',payAt:'টাকা দোকানে দিন',paidChip:'পে করেছেন বলছেন — মিলিয়ে নিন',today:'আজ',jobsW:'কাজ',dispBtn:'“তৈরি” ডিসপ্লে',dispT:'ডিসপ্লে স্ক্রিন',dispP:'পুরনো ফোন বা টিভির ব্রাউজারে এই QR/লিংক খুলুন — কোন টোকেন তৈরি, বড় করে দেখাবে আর বলে দেবে।',dispReady:'তৈরি — নিয়ে যান',dispPrinting:'প্রিন্ট হচ্ছে',dispNone:'—',dTap:'শব্দ চালু করতে একবার স্ক্রিনে ছুঁয়ে দিন',sendBack:'ফেরত পাঠান',backT:'দোকান থেকে আপনার জন্য',cName:'আপনার নাম (ঐচ্ছিক)',zipAll:'সব ZIP করে নামান',zipNone:'নামানোর মতো ফাইল নেই',protect:'সুরক্ষিত করুন',protected:'সুরক্ষিত ✓',protTip:'আধার/প্যান/সার্টিফিকেটের ছবি? “সুরক্ষিত করুন” চেপে নম্বর ঢেকে জলছাপ দিন।',medHint:'আঙুল টেনে আধার নম্বরের প্রথম ৮টি সংখ্যা কালো করুন — শেষ ৪টি খোলা রাখুন।',wmOn:'জলছাপ দিন',undo:'শেষেরটা মুছুন',cancel2:'বাতিল',useIt:'এটাই পাঠান',wmFor:'শুধু',wmUse:'-এর কাজে ব্যবহারের জন্য',makeOwn:'নিজের ফ্রি QR বানান:',pushBtn:'অফলাইনেও ফাইল নিন — নোটিফিকেশন চালু করুন',pushOn:'এই ডিভাইসে নোটিফিকেশন চালু ✓ — পেজ বন্ধ থাকলেও খবর পাবেন',pushDenied:'নোটিফিকেশনের অনুমতি দেওয়া হয়নি। ব্রাউজার সেটিংস থেকে চালু করুন।',pushFail:'নোটিফিকেশন চালু করা গেল না।',iosPush:'iPhone-এ নোটিফিকেশনের জন্য: Share → Add to Home Screen, তারপর হোম স্ক্রিন থেকে খুলুন।',viaBox:'অফলাইনে জমা ছিল',cOffline:'এখন অফলাইন — চিন্তা নেই। ফাইল আপনার ফোনেই লক হয়ে জমা থাকবে; উনি অনলাইনে এলেই পাবেন।',cSaved:'জমা হয়েছে',cSavedP:'ফাইল লক করা অবস্থায় জমা আছে। উনি নোটিফিকেশন পাবেন আর অনলাইনে এলেই নিয়ে নেবেন।',sUploading:'আপলোড হচ্ছে',privBox:'ফাইল আপনার ফোনেই লক হয় — শুধু প্রাপক খুলতে পারবেন। ২৪ ঘণ্টা পরে নিজে থেকে মুছে যায়।',tooBig:'অফলাইনে মোট ১০০ MB / ৩০টি ফাইলের বেশি পাঠানো যাবে না।',boxFull:'ওঁর জমার বাক্স এখন ভর্তি। পরে চেষ্টা করুন।',failed2:'পাঠানো যায়নি',standeeTip:'প্রিন্টের সময় Scale "Default" রাখুন, "Fit to page" নয়।',addDev:'অন্য ডিভাইসেও চালু করুন',ownT:'নিজের অন্য ডিভাইস দিয়ে স্ক্যান করুন',ownP:'কম্পিউটার চালু থাকলে ফাইল কম্পিউটারে আসবে; বন্ধ থাকলে ফোনে। একই QR, একই কোড। এই QR অন্য কাউকে দেখাবেন না।',close:'বন্ধ',devPc:'এই কম্পিউটার — ফাইল আগে এখানে আসে',devPhone:'এই ফোন — কম্পিউটার বন্ধ থাকলে এখানে আসে (পেজ খোলা রাখুন)',copy:'কপি',copied:'কপি হয়েছে ✓',title:'ঝটপট দোকান',tagline:'প্রিন্ট-দোকানের জন্য QR ফাইল-কাউন্টার',setupT:'আপনার দোকানের নাম',setupSub:'গ্রাহকের ফোনে আর QR স্ট্যান্ডিতে এই নাম দেখাবে।',setupPh:'যেমন: মা তারা জেরক্স',start:'শুরু করুন',qrT:'গ্রাহক এই QR স্ক্যান করবেন',codeLbl:'দোকানের কোড',autoPrint:'ফাইল এলেই প্রিন্ট উইন্ডো খুলুন',autoDel:'প্রিন্ট/কাজ শেষে ফাইল মুছে দিন',sound:'ফাইল এলে আওয়াজ',standee:'QR স্ট্যান্ডি প্রিন্ট',rename:'নাম বদলান',tipsT:'এক ক্লিকে প্রিন্টের টিপস',tip1:'Chrome-এর শর্টকাটে এটি যোগ করলে প্রিন্ট উইন্ডো ছাড়াই সরাসরি ডিফল্ট প্রিন্টারে প্রিন্ট হবে:',tip2:'দোকান খোলা থাকলে এই পেজ খুলে রাখুন। পেজ বন্ধ হলে সব ফাইল মুছে যায়।',online:'চালু — গ্রাহকের অপেক্ষায়',connecting:'চালু হচ্ছে…',offline:'ইন্টারনেট নেই — আবার চেষ্টা হচ্ছে…',inUse:'এই দোকান অন্য ট্যাবে খোলা আছে। সেটি বন্ধ করুন।',jobs:'আজকের কাজ',empty:'এখনও কোনো ফাইল আসেনি। গ্রাহক QR স্ক্যান করে পাঠালেই এখানে টোকেন নম্বরসহ দেখাবে।',nJobs:'টি কাজ',token:'টোকেন',copies:'কপি',bw:'সাদা-কালো',color:'রঙিন',one:'একপিঠ',two:'দুইপিঠ',printAll:'সব প্রিন্ট',print:'প্রিন্ট',save:'সেভ',done:'কাজ শেষ',del:'মুছুন',deleted:'ফাইল মুছে ফেলা হয়েছে',noPrint:'এটি ব্রাউজারে প্রিন্ট হয় না — সেভ করে খুলুন',receiving:'আসছে…',ago:'আগে',now:'এইমাত্র',min:'মিনিট',cTo:'ফাইল যাবে',cPick:'ফাইল বেছে নিন',cPickSub:'PDF, ছবি, Word — যেকোনো ফাইল',cCopies:'কত কপি',cColor:'রঙ',cSides:'পাতার কোন দিকে',cNote:'দোকানদারের জন্য কিছু লিখুন (ঐচ্ছিক)',cSend:'দোকানে পাঠান',cToken:'আপনার টোকেন',cTell:'দোকানদারকে এই নম্বরটি বলুন',sSent:'পাঠানো',sGot:'পৌঁছেছে',sPrinting:'প্রিন্ট হচ্ছে',sReady:'তৈরি ✓',cMore:'আরও ফাইল পাঠান',cConnecting:'দোকানের সঙ্গে যুক্ত হচ্ছে…',cClosed:'দোকান এখন অফলাইন। দোকানদারকে পেজটি খুলতে বলুন।',cLost:'সংযোগ কেটে গেছে। পেজটি আবার খুলুন।',privA:'আপনার ফোন নম্বর লাগে না। ফাইল কোনো সার্ভারে থাকে না।',privB:' কাজ শেষে দোকানের কম্পিউটার থেকেও মুছে যায়।'},
+hi:{ownLbl:'आप भी अपना फ़्री QR बनाएँ:',ownDesk:'ऑफ़िस डेस्क',ownShop:'प्रिंट दुकान',rcptBtn:'रसीद देखें',rcptT:'प्राप्ति रसीद',rcptNote:'हर फ़ाइल की डिजिटल छाप दोनों तरफ़ मिलाई गई है।',rcptSave:'रसीद सेव करें',priceT:'दाम और UPI',pBw:'ब्लैक-व्हाइट, प्रति पेज (₹)',pCol:'रंगीन, प्रति पेज (₹)',upiId:'आपकी UPI ID (जैसे shop@okaxis)',est:'अनुमानित ख़र्च',pages:'पेज',unknownPg:'(Word/दूसरी फ़ाइलों के पेज गिने नहीं जा सकते — दुकान पर पूछें)',payUpi:'UPI ऐप से पे करें',iPaid:'पे कर दिया',paidSent:'दुकान को बता दिया ✓',payAt:'पैसे दुकान पर दें',paidChip:'पे करने की बात कही — मिला लें',today:'आज',jobsW:'काम',dispBtn:'“तैयार” डिस्प्ले',dispT:'डिस्प्ले स्क्रीन',dispP:'पुराने फ़ोन या टीवी के ब्राउज़र में यह QR/लिंक खोलें — कौन-सा टोकन तैयार है, बड़ा दिखाएगा और बोलेगा।',dispReady:'तैयार — ले जाएँ',dispPrinting:'प्रिंट हो रहा है',dispNone:'—',dTap:'आवाज़ चालू करने के लिए एक बार स्क्रीन छुएँ',sendBack:'वापस भेजें',backT:'दुकान से आपके लिए',cName:'आपका नाम (वैकल्पिक)',zipAll:'सब ZIP करके डाउनलोड करें',zipNone:'डाउनलोड के लिए कोई फ़ाइल नहीं',protect:'सुरक्षित करें',protected:'सुरक्षित ✓',protTip:'आधार/पैन/सर्टिफ़िकेट की फ़ोटो? “सुरक्षित करें” दबाकर नंबर ढकें और वॉटरमार्क लगाएँ।',medHint:'उँगली खींचकर आधार नंबर के पहले 8 अंक काले करें — आख़िरी 4 खुले रखें।',wmOn:'वॉटरमार्क लगाएँ',undo:'आख़िरी हटाएँ',cancel2:'रद्द',useIt:'यही भेजें',wmFor:'केवल',wmUse:' के काम के लिए',makeOwn:'अपना फ़्री QR बनाएँ:',pushBtn:'ऑफ़लाइन में भी फ़ाइल पाएँ — नोटिफ़िकेशन चालू करें',pushOn:'इस डिवाइस पर नोटिफ़िकेशन चालू ✓ — पेज बंद होने पर भी ख़बर मिलेगी',pushDenied:'नोटिफ़िकेशन की अनुमति नहीं मिली। ब्राउज़र सेटिंग्स से चालू करें।',pushFail:'नोटिफ़िकेशन चालू नहीं हो सका।',iosPush:'iPhone पर नोटिफ़िकेशन के लिए: Share → Add to Home Screen, फिर होम स्क्रीन से खोलें।',viaBox:'ऑफ़लाइन में जमा था',cOffline:'अभी ऑफ़लाइन — चिंता नहीं। फ़ाइल आपके फ़ोन पर ही लॉक होकर जमा रहेगी; ऑनलाइन आते ही उन्हें मिल जाएगी।',cSaved:'जमा हो गया',cSavedP:'फ़ाइल लॉक होकर जमा है। उन्हें नोटिफ़िकेशन मिलेगा और ऑनलाइन आते ही वे ले लेंगे।',sUploading:'अपलोड हो रहा है',privBox:'फ़ाइल आपके फ़ोन पर ही लॉक होती है — सिर्फ़ पाने वाला खोल सकता है। 24 घंटे बाद अपने-आप मिट जाती है।',tooBig:'ऑफ़लाइन में कुल 100 MB / 30 फ़ाइलों से ज़्यादा नहीं भेज सकते।',boxFull:'उनका जमा-बॉक्स अभी भरा है। बाद में कोशिश करें।',failed2:'भेजा नहीं जा सका',standeeTip:'प्रिंट करते समय Scale "Default" रखें, "Fit to page" नहीं।',addDev:'दूसरे डिवाइस पर भी चालू करें',ownT:'अपने दूसरे डिवाइस से स्कैन करें',ownP:'कंप्यूटर चालू हो तो फ़ाइल कंप्यूटर पर आएगी; बंद हो तो फ़ोन पर। वही QR, वही कोड। यह QR किसी और को न दिखाएँ।',close:'बंद करें',devPc:'यह कंप्यूटर — फ़ाइल पहले यहाँ आती है',devPhone:'यह फ़ोन — कंप्यूटर बंद हो तो यहाँ आती है (पेज खुला रखें)',copy:'कॉपी',copied:'कॉपी हो गया ✓',title:'झटपट दुकान',tagline:'प्रिंट-दुकान के लिए QR फ़ाइल-काउंटर',setupT:'आपकी दुकान का नाम',setupSub:'यह नाम ग्राहक के फ़ोन और QR स्टैंडी पर दिखेगा।',setupPh:'जैसे: श्री गणेश ज़ेरॉक्स',start:'शुरू करें',qrT:'ग्राहक यह QR स्कैन करेंगे',codeLbl:'दुकान का कोड',autoPrint:'फ़ाइल आते ही प्रिंट विंडो खोलें',autoDel:'प्रिंट/काम पूरा होने पर फ़ाइल मिटा दें',sound:'फ़ाइल आने पर आवाज़',standee:'QR स्टैंडी प्रिंट',rename:'नाम बदलें',tipsT:'एक क्लिक में प्रिंट के टिप्स',tip1:'Chrome शॉर्टकट में यह जोड़ने पर बिना प्रिंट विंडो के सीधे डिफ़ॉल्ट प्रिंटर पर प्रिंट होगा:',tip2:'दुकान खुली रहने तक यह पेज खुला रखें। पेज बंद होते ही सारी फ़ाइलें मिट जाती हैं।',online:'चालू — ग्राहक का इंतज़ार',connecting:'चालू हो रहा है…',offline:'इंटरनेट नहीं — दोबारा कोशिश…',inUse:'यह दुकान दूसरे टैब में खुली है। उसे बंद करें।',jobs:'आज के काम',empty:'अभी कोई फ़ाइल नहीं आई। ग्राहक QR स्कैन करके भेजेगा तो यहाँ टोकन नंबर के साथ दिखेगी।',nJobs:' काम',token:'टोकन',copies:'कॉपी',bw:'ब्लैक-व्हाइट',color:'रंगीन',one:'एक तरफ़',two:'दोनों तरफ़',printAll:'सब प्रिंट',print:'प्रिंट',save:'सेव',done:'काम पूरा',del:'मिटाएँ',deleted:'फ़ाइलें मिटा दी गईं',noPrint:'यह ब्राउज़र में प्रिंट नहीं होती — सेव करके खोलें',receiving:'आ रही है…',ago:'पहले',now:'अभी',min:'मिनट',cTo:'फ़ाइल जाएगी',cPick:'फ़ाइल चुनें',cPickSub:'PDF, फ़ोटो, Word — कोई भी फ़ाइल',cCopies:'कितनी कॉपी',cColor:'रंग',cSides:'पेज की कौन-सी तरफ़',cNote:'दुकानदार के लिए कुछ लिखें (वैकल्पिक)',cSend:'दुकान पर भेजें',cToken:'आपका टोकन',cTell:'दुकानदार को यह नंबर बताएँ',sSent:'भेजा',sGot:'पहुँचा',sPrinting:'प्रिंट हो रहा',sReady:'तैयार ✓',cMore:'और फ़ाइल भेजें',cConnecting:'दुकान से जुड़ रहा है…',cClosed:'दुकान अभी ऑफ़लाइन है। दुकानदार से पेज खोलने को कहें।',cLost:'कनेक्शन टूट गया। पेज दोबारा खोलें।',privA:'आपका फ़ोन नंबर नहीं चाहिए। फ़ाइल किसी सर्वर पर नहीं रहती।',privB:' काम पूरा होने पर दुकान के कंप्यूटर से भी मिट जाती है।'},
+en:{ownLbl:'Make your own free QR:',ownDesk:'Office desk',ownShop:'Print shop',rcptBtn:'View receipt',rcptT:'Receipt',rcptNote:'Each file’s digital fingerprint was matched on both sides.',rcptSave:'Save receipt',priceT:'Prices & UPI',pBw:'B&W, per page (₹)',pCol:'Colour, per page (₹)',upiId:'Your UPI ID (e.g. shop@okaxis)',est:'Estimated cost',pages:'pages',unknownPg:'(pages in Word/other files can’t be counted — ask the shop)',payUpi:'Pay with a UPI app',iPaid:'I’ve paid',paidSent:'Shop has been told ✓',payAt:'Pay at the counter',paidChip:'Says paid — please verify',today:'Today',jobsW:'jobs',dispBtn:'“Ready” display',dispT:'Display screen',dispP:'Open this QR/link on an old phone or a TV browser — it shows (and announces) which tokens are ready.',dispReady:'Ready — please collect',dispPrinting:'Printing',dispNone:'—',dTap:'Tap the screen once to turn on sound',sendBack:'Send back',backT:'From the shop, for you',cName:'Your name (optional)',zipAll:'Download all as ZIP',zipNone:'No files to download',protect:'Protect',protected:'Protected ✓',protTip:'Aadhaar/PAN/certificate photo? Tap “Protect” to cover the number and add a watermark.',medHint:'Drag your finger to black out the first 8 digits of the Aadhaar number — keep the last 4 visible.',wmOn:'Add watermark',undo:'Undo last',cancel2:'Cancel',useIt:'Use this',wmFor:'Only for',wmUse:' use',makeOwn:'Make your own free QR:',pushBtn:'Get files even when offline — turn on notifications',pushOn:'Notifications on for this device ✓ — you’ll be alerted even with the page closed',pushDenied:'Notification permission was blocked. Allow it in the browser settings.',pushFail:'Couldn’t turn on notifications.',iosPush:'On iPhone: Share → Add to Home Screen, then open it from the home screen to get notifications.',viaBox:'Arrived while offline',cOffline:'Offline right now — no problem. Your files are locked on your phone and kept for them; they’ll get them when they’re back online.',cSaved:'Saved',cSavedP:'Your files are locked and waiting. They’ll get a notification and pick them up when online.',sUploading:'Uploading',privBox:'Files are locked on your phone — only the receiver can open them. Auto-deleted after 24 hours.',tooBig:'While they’re offline you can send up to 100 MB / 30 files.',boxFull:'Their drop box is full right now. Try later.',failed2:'Couldn’t send',standeeTip:'When printing, keep Scale on "Default", not "Fit to page".',addDev:'Add my other device',ownT:'Scan this with your own other device',ownP:'When your PC is on, files go to the PC; when it’s off, they go to your phone. Same QR, same code. Don’t show this QR to anyone else.',close:'Close',devPc:'This PC — files arrive here first',devPhone:'This phone — files arrive here when the PC is off (keep the page open)',copy:'Copy',copied:'Copied ✓',title:'Jhatpat Shop',tagline:'QR file counter for print shops',setupT:'Your shop’s name',setupSub:'Shown on the customer’s phone and on your QR standee.',setupPh:'e.g. Maa Tara Xerox',start:'Start',qrT:'Customers scan this QR',codeLbl:'Shop code',autoPrint:'Open print window when files arrive',autoDel:'Delete files when the job is done',sound:'Sound when files arrive',standee:'Print QR standee',rename:'Rename',tipsT:'Tips for one-click printing',tip1:'Add this to your Chrome shortcut to print straight to the default printer with no dialog:',tip2:'Keep this page open while the shop is open. Closing it wipes all files.',online:'Live — waiting for customers',connecting:'Starting…',offline:'No internet — retrying…',inUse:'This shop is open in another tab. Close that one.',jobs:'Today’s jobs',empty:'No files yet. When a customer scans and sends, the job appears here with a token number.',nJobs:' jobs',token:'Token',copies:'copies',bw:'B&W',color:'Colour',one:'Single side',two:'Both sides',printAll:'Print all',print:'Print',save:'Save',done:'Done',del:'Delete',deleted:'Files deleted',noPrint:'Can’t print in the browser — save and open',receiving:'Receiving…',ago:'ago',now:'just now',min:'min',cTo:'Sending to',cPick:'Choose files',cPickSub:'PDF, photos, Word — any file',cCopies:'Copies',cColor:'Colour',cSides:'Sides',cNote:'Note for the shop (optional)',cSend:'Send to shop',cToken:'Your token',cTell:'Tell the shopkeeper this number',sSent:'Sent',sGot:'Received',sPrinting:'Printing',sReady:'Ready ✓',cMore:'Send more files',cConnecting:'Connecting to the shop…',cClosed:'The shop is offline right now. Ask them to open the page.',cLost:'Connection lost. Open the page again.',privA:'No phone number needed. Files are never stored on a server.',privB:' They’re deleted from the shop’s computer when the job is done.'}};
 const MODE=/desk/i.test(location.pathname)?'desk':'shop',DESK=MODE==='desk',KP=DESK?'jpd-':'jp-';
 const D={
 bn:{online:'চালু — অপেক্ষায়',title:'আমার ডেস্ক',tagline:'QR স্ক্যান করে আমাকে ফাইল পাঠান',setupT:'আপনার নাম ও পদ',setupSub:'যে স্ক্যান করবে তার ফোনে আর ডেস্কের QR কার্ডে এটি দেখাবে।',setupPh:'যেমন: SSE/P.Way/Planning, হাওড়া',qrT:'আমাকে ফাইল পাঠাতে স্ক্যান করুন',codeLbl:'ডেস্ক কোড',autoDel:'"দেখা হয়েছে" চাপলে ফাইল মুছে দিন',standee:'ডেস্কের QR কার্ড প্রিন্ট',jobs:'আজ যা এসেছে',empty:'এখনও কিছু আসেনি। কেউ QR স্ক্যান করে পাঠালেই এখানে দেখাবে।',token:'নং',done:'দেখা হয়েছে',nJobs:'টি',cSend:'পাঠান',cNote:'আপনার নাম / বিষয় / লিংক (ঐচ্ছিক)',cToken:'আপনার নম্বর',cTell:'পৌঁছালে নিচে সবুজ দেখাবে',sReady:'দেখা হয়েছে ✓',cMore:'আরও পাঠান',cClosed:'এই ডেস্ক এখন অফলাইন। পরে চেষ্টা করুন।',privB:' দেখা হয়ে গেলে কম্পিউটার থেকেও মুছে যায়।'},
@@ -352,7 +405,7 @@ function startShop(){
   $('#dName').textContent=shopName;$('#dCode').textContent=shopCode.slice(0,3)+' '+shopCode.slice(3);
   const url=base+'#c-'+shopCode,q=$('#qr');q.innerHTML='';
   new QRCode(q,{text:url,width:512,height:512,correctLevel:QRCode.CorrectLevel.M});q.classList.remove('wait');
-  goLive();lockScreen();renderJobsMeta();registerDesk();
+  goLive();lockScreen();renderJobsMeta();registerDesk();renderSum();
 }
 function goLive(){
   liveKey='connecting';renderLive();
@@ -379,7 +432,7 @@ $('#ownClose').onclick=()=>{$('#own').hidden=true};
 $('#renameBtn').onclick=()=>{$('#shopIn').value=shopName;$('#vDash').hidden=true;$('#vSetup').hidden=false;$('#shopIn').focus()};
 
 const custs=new Set();
-function hiMsg(){return JSON.stringify({t:'hi',shop:shopName,del:opts().del})}
+function hiMsg(){const p=priceCfg();return JSON.stringify({t:'hi',shop:shopName,del:opts().del,price:DESK?null:{bw:p.bw,col:p.col},upi:DESK?'':p.upi})}
 function broadcastHi(){for(const c of custs)if(c.open)c.send(hiMsg())}
 function onCustomer(c){
   c.rx=null;
@@ -391,9 +444,11 @@ function send(c,o){try{c&&c.open&&c.send(JSON.stringify(o))}catch(e){}}
 function shopData(c,d){
   if(typeof d!=='string'){const r=c.rx;if(!r)return;r.parts.push(d);r.got+=d.byteLength??d.size??0;if(r.parts.length%8===0)bar(r.file,r.got/r.size);return}
   let m;try{m=JSON.parse(d)}catch(e){return}
+  if(m.t==='disp'){c.disp=true;sendServe(c);return}
+  if(m.t==='paid'){const j=jobs.get(String(m.jid));if(j&&j.c===c){j.paid=true;renderJob(j);if(opts().sound)chime()}return}
   if(m.t==='job'){
     const n=nextToken();
-    const j={id:String(m.jid).slice(0,20),n,c,at:Date.now(),copies:Math.max(1,Math.min(99,+m.copies||1)),color:m.color==='color',sides:m.sides==='2'?2:1,note:String(m.note||'').slice(0,300),files:[],expect:+m.count||0,status:'got',el:null};
+    const j={id:String(m.jid).slice(0,20),n,c,at:Date.now(),copies:Math.max(1,Math.min(99,+m.copies||1)),color:m.color==='color',sides:m.sides==='2'?2:1,note:String(m.note||'').slice(0,300),files:[],expect:+m.count||0,status:'got',el:null,from:String(m.name||'').slice(0,60),pages:Math.max(0,+m.pages||0),unk:+m.unk||0,amt:Math.max(0,+m.amt||0),paid:false};sumAdd('jobs',1);
     jobs.set(j.id,j);renderJob(j,true);send(c,{t:'tok',jid:j.id,n});if(!j.expect)send(c,{t:'st',jid:j.id,s:'got'});
     if(opts().sound)chime();
   }else if(m.t==='f'){
@@ -403,7 +458,7 @@ function shopData(c,d){
   }else if(m.t==='e'){
     const r=c.rx;if(!r||r.file.id!==String(m.id))return;
     r.file.blob=new Blob(r.parts,{type:r.file.mime||'application/octet-stream'});c.rx=null;renderJob(r.job);
-    if(r.job.files.length>=r.job.expect&&r.job.files.every(f=>f.blob)){send(c,{t:'st',jid:r.job.id,s:'got'});if(opts().auto)printJob(r.job)}
+    if(r.job.files.length>=r.job.expect&&r.job.files.every(f=>f.blob)){send(c,{t:'st',jid:r.job.id,s:'got'});sendReceipt(r.job);if(opts().auto)printJob(r.job)}
   }
 }
 function bar(f,p){const i=document.querySelector(`[data-fid="${f.id}"] .bar i`);if(i)i.style.width=Math.min(100,p*100).toFixed(0)+'%'}
@@ -419,7 +474,7 @@ function renderJob(j,isNew){
   const el=j.el;el.classList.toggle('ready',j.status==='ready');
   const ready=j.files.length>=j.expect&&j.files.every(f=>f.blob);
   el.innerHTML=`<div class="tok"><small>${esc(t('token'))}</small><b>${j.n}</b><span>${esc(ago(j.at))}</span></div>
-  <div class="jb">${j.remote?`<div class="chips"><span class="chip">${esc(t('viaBox'))}</span></div>`:''}${DESK?'':`<div class="chips"><span class="chip hot">${j.copies} ${esc(t('copies'))}</span><span class="chip">${esc(t(j.color?'color':'bw'))}</span><span class="chip">${esc(t(j.sides===2?'two':'one'))}</span></div>`}
+  <div class="jb">${extraChips(j)}${j.remote?`<div class="chips"><span class="chip">${esc(t('viaBox'))}</span></div>`:''}${DESK?'':`<div class="chips"><span class="chip hot">${j.copies} ${esc(t('copies'))}</span><span class="chip">${esc(t(j.color?'color':'bw'))}</span><span class="chip">${esc(t(j.sides===2?'two':'one'))}</span></div>`}
   ${j.note?`<div class="note">${linkify(j.note)}</div>`:''}
   ${j.gone?`<div class="gone">${esc(t('deleted'))}</div>`:'<ul class="files"></ul>'}
   <div class="jacts"></div></div>`;
@@ -439,6 +494,7 @@ function renderJob(j,isNew){
     });
   }
   const acts=el.querySelector('.jacts');
+  if(j.c&&j.c.open&&!j.remote)acts.append(backBtn(j));
   if(j.note){const b=document.createElement('button');b.className='btn ghost';b.textContent=t('copy');b.onclick=async()=>{try{await navigator.clipboard.writeText(j.note);b.textContent=t('copied')}catch(e){}};acts.append(b)}
   if(!j.gone&&ready&&j.files.some(printable)){const b=document.createElement('button');b.className='btn';b.textContent=t('printAll');b.onclick=()=>printJob(j);acts.append(b)}
   if(j.status!=='ready'){const d=document.createElement('button');d.className='btn ink';d.textContent=t('done');d.onclick=()=>finishJob(j);acts.append(d)}
@@ -446,11 +502,11 @@ function renderJob(j,isNew){
   renderJobsMeta();
 }
 function wipe(j){j.files.forEach(f=>{f.blob=null});j.gone=true}
-function finishJob(j){j.status='ready';send(j.c,{t:'st',jid:j.id,s:'ready'});if(opts().del)wipe(j);renderJob(j)}
+function finishJob(j){j.status='ready';j.doneAt=Date.now();send(j.c,{t:'st',jid:j.id,s:'ready'});if(!DESK){sumAdd('pages',j.pages*j.copies);sumAdd('amt',j.amt)}if(opts().del)wipe(j);renderJob(j);bcastServe()}
 async function printJob(j){await printFiles(j,j.files.filter(f=>f.blob&&printable(f)))}
 async function printFiles(j,list){
   if(!list.length)return;
-  send(j.c,{t:'st',jid:j.id,s:'printing'});j.status='printing';
+  send(j.c,{t:'st',jid:j.id,s:'printing'});j.status='printing';bcastServe();
   for(const f of list)await printBlob(f.blob,f.mime||'',f.name);
 }
 function printBlob(blob,mime,name){
@@ -470,7 +526,7 @@ function printBlob(blob,mime,name){
   });
 }
 $('#standeeBtn').onclick=()=>{
-  const c=$('#qr canvas');if(!c)return;
+  const c=$('#qr canvas');if(!c)return;$('#sdOwn').textContent=t('makeOwn')+' '+location.host+location.pathname.replace(/[^/]*$/,'');
   $('#sdQr').src=c.toDataURL();$('#sdShop').textContent=shopName;$('#sdCode').textContent=shopCode.slice(0,3)+' '+shopCode.slice(3);
   document.querySelectorAll('#standee .sd-card:not(#sdCard)').forEach(e=>e.remove());const cl=$('#sdCard').cloneNode(true);cl.removeAttribute('id');cl.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));$('#standee').append(cl);
   document.body.classList.add('standee');setTimeout(()=>{window.print();setTimeout(()=>document.body.classList.remove('standee'),500)},150);
@@ -517,7 +573,7 @@ async function fetchDrop(d){
     if(jobs.has(jid)){const o=jobs.get(jid);o.el&&o.el.remove();jobs.delete(jid)}
     const j={id:jid,n:nextToken(),c:null,at:d.at,copies:Math.max(1,Math.min(99,+meta.copies||1)),color:meta.color==='color',sides:meta.sides==='2'?2:1,note:String(meta.note||'').slice(0,300),files:[],expect:0,status:'got',el:null,remote:true};
     j.files=(meta.files||[]).slice(0,30).map((f,n)=>({id:'r'+d.id+'-'+n,name:String(f.name||'file').slice(0,200),size:+f.size||0,mime:String(f.mime||''),blob:null,parts:Math.max(1,+f.parts||1)}));
-    j.expect=j.files.length;jobs.set(jid,j);renderJob(j,true);if(opts().sound)chime();
+    j.from=String(meta.name||'').slice(0,60);j.pages=Math.max(0,+meta.pages||0);j.amt=Math.max(0,+meta.amt||0);j.expect=j.files.length;jobs.set(jid,j);renderJob(j,true);sumAdd('jobs',1);if(opts().sound)chime();
     for(let n=0;n<j.files.length;n++){const f=j.files[n],bufs=[];
       for(let k=0;k<f.parts;k++){const r=await api(`/d/${shopCode}/drops/${d.id}/${n}/${k}`,{auth:true});bufs.push(await aesDec(key,new Uint8Array(await r.arrayBuffer())));bar(f,(k+1)/f.parts)}
       f.blob=new Blob(bufs,{type:f.mime||'application/octet-stream'});renderJob(j)}
@@ -568,7 +624,7 @@ async function boxSend(){
     const key=await crypto.subtle.deriveKey({name:'ECDH',public:await pubKey(boxPub)},eph.privateKey,{name:'AES-GCM',length:256},false,['encrypt']);
     const epk=await crypto.subtle.exportKey('jwk',eph.publicKey);
     const fm=files.map(f=>({name:f.name,size:f.size,mime:f.type,parts:Math.max(1,Math.ceil(f.size/PART))}));
-    const meta=await aesEnc(key,new TextEncoder().encode(JSON.stringify({note:$('#cNote').value.trim(),copies,color,sides,from:dev(),files:fm})));
+    const meta=await aesEnc(key,new TextEncoder().encode(JSON.stringify({note:$('#cNote').value.trim(),name:$('#cName').value.trim(),pages:est.pages,amt:est.amt,copies,color,sides,from:dev(),files:fm})));
     const r=await fetch(API+'/d/'+boxCode+'/drops',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({epk:{x:epk.x,y:epk.y},meta:b64u.enc(meta),files:fm.map(f=>f.parts)})});
     if(!r.ok)throw new Error(String(r.status));const {id}=await r.json();
     const all=fm.reduce((a,f)=>a+f.parts,0);let done=0;
@@ -603,10 +659,12 @@ function startCustomer(code){
   });
 }
 function custData(d){
-  if(typeof d!=='string')return;let m;try{m=JSON.parse(d)}catch(e){return}
-  if(m.t==='hi'){$('#cShop').textContent=String(m.shop||'').slice(0,60)||'—';delPromise=!!m.del;renderPriv()}
-  else if(m.t==='tok'&&curJob&&m.jid===curJob.id){$('#cTok').textContent=+m.n||'–';chime()}
+  if(typeof d!=='string'){custBinary(d);return}let m;try{m=JSON.parse(d)}catch(e){return}
+  if(m.t==='hi'){$('#cShop').textContent=String(m.shop||'').slice(0,60)||'—';delPromise=!!m.del;shopPrice={bw:+(m.price&&m.price.bw)||0,col:+(m.price&&m.price.col)||0};shopUpi=String(m.upi||'').slice(0,80);renderPriv();updateEst()}
+  else if(m.t==='tok'&&curJob&&m.jid===curJob.id){$('#cTok').textContent=+m.n||'–';chime();showPay()}
   else if(m.t==='st'&&curJob&&m.jid===curJob.id){stepTo(m.s);if(m.s==='ready')chime()}
+  else if(m.t==='rcpt'&&curJob&&m.jid===curJob.id){curJob.rcpt=m;$('#cRcptBtn').hidden=false}
+  else if(m.t==='bf'||m.t==='be')custBack(m);
 }
 const ORDER=['sent','got','printing','ready'];
 function stepTo(s){const k=ORDER.indexOf(s);document.querySelectorAll('#cSteps span').forEach((e,i)=>{e.className=i<k?'done':i===k?'on':''})}
@@ -615,23 +673,25 @@ function renderPicked(){
   cfiles.forEach((f,i)=>{const li=document.createElement('li');li.append(thumb(f,f.name,f.type));
     const d=document.createElement('div');d.innerHTML='<div style="font-weight:600;line-height:1.25;overflow-wrap:anywhere"></div><div style="font-size:13px;color:var(--mute)"></div>';d.firstChild.textContent=f.name;d.lastChild.textContent=fmt(f.size);
     const x=document.createElement('button');x.className='x';x.textContent='×';x.setAttribute('aria-label','remove');x.onclick=()=>{cfiles.splice(i,1);renderPicked()};
+    if(/^image\//.test(f.type)){const pb=document.createElement('button');pb.type='button';pb.className='prot'+(f._safe?' on':'');pb.textContent=t(f._safe?'protected':'protect');pb.onclick=()=>openMed(i);d.append(pb)}
     li.append(d,x);ul.append(li)});
+  $('#protTip').hidden=!cfiles.some(f=>/^image\//.test(f.type)&&!f._safe);updateEst();
   refreshSend();
 }
 function refreshSend(){$('#cSend').disabled=!((cfiles.length||(DESK&&$('#cNote').value.trim()))&&((cconn&&cconn.open)||boxMode))}
 $('#cNote').addEventListener('input',()=>refreshSend());
 $('#cPick').onclick=()=>$('#cFile').click();
 $('#cFile').onchange=e=>{cfiles.push(...e.target.files);e.target.value='';renderPicked()};
-$('#cMinus').onclick=()=>{copies=Math.max(1,copies-1);$('#cCopiesV').textContent=copies};
-$('#cPlus').onclick=()=>{copies=Math.min(99,copies+1);$('#cCopiesV').textContent=copies};
+$('#cMinus').onclick=()=>{copies=Math.max(1,copies-1);$('#cCopiesV').textContent=copies;updateEst()};
+$('#cPlus').onclick=()=>{copies=Math.min(99,copies+1);$('#cCopiesV').textContent=copies;updateEst()};
 function seg(id,set){document.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#'+id+' button').forEach(x=>x.setAttribute('aria-pressed',x===b));set(b.dataset.v)})}
-seg('segColor',v=>color=v);seg('segSides',v=>sides=v);
+seg('segColor',v=>{color=v;updateEst()});seg('segSides',v=>sides=v);
 $('#cSend').onclick=async()=>{
   if(!(cfiles.length||(DESK&&$('#cNote').value.trim())))return;if(!(cconn&&cconn.open)){if(boxMode)boxSend();return}
-  const files=cfiles.slice();curJob={id:rid(8)};
+  const files=cfiles.slice();curJob={id:rid(8)};await updateEst();const hp=hashLocal(files);
   $('#cForm').hidden=true;$('#cDone').hidden=false;$('#cTok').textContent='…';stepTo('sent');
   const c=cconn,dc=c.dataChannel;dc.bufferedAmountLowThreshold=1<<20;
-  c.send(JSON.stringify({t:'job',jid:curJob.id,copies,color,sides,note:$('#cNote').value.trim(),count:files.length}));
+  c.send(JSON.stringify({t:'job',jid:curJob.id,copies,color,sides,note:$('#cNote').value.trim(),name:$('#cName').value.trim(),pages:est.pages,unk:est.unk,amt:est.amt,count:files.length}));
   try{
     for(const f of files){
       const id=rid();c.send(JSON.stringify({t:'f',jid:curJob.id,id,name:f.name,size:f.size,mime:f.type}));
@@ -640,15 +700,177 @@ $('#cSend').onclick=async()=>{
         const b=await f.slice(off,off+CHUNK).arrayBuffer();c.send(b);off+=b.byteLength}
       c.send(JSON.stringify({t:'e',id}));
     }
+    const job=curJob;job.local=await hp;
   }catch(e){setStatus('cLost','bad')}
 };
-$('#cMore').onclick=()=>{$('#cDone .top small').dataset.t='cToken';$('#cDone p').dataset.t='cTell';$('#cSteps').hidden=false;if(boxMode)setStatus('cOffline');applyLang();cfiles=[];renderPicked();$('#cNote').value='';$('#cDone').hidden=true;$('#cForm').hidden=false;curJob=null};
+$('#cMore').onclick=()=>{$('#cPay').hidden=true;$('#cRcptBtn').hidden=true;$('#cBack').textContent='';$('#cBackWrap').hidden=true;$('#payDone').disabled=false;$('#payDone').dataset.t='iPaid';$('#cDone .top small').dataset.t='cToken';$('#cDone p').dataset.t='cTell';$('#cSteps').hidden=false;if(boxMode)setStatus('cOffline');applyLang();cfiles=[];renderPicked();$('#cNote').value='';$('#cDone').hidden=true;$('#cForm').hidden=false;curJob=null};
+
+
+/* =================================================================== EXTRAS: receipts, price/UPI, display, send-back, ZIP, Aadhaar protect */
+const sha=async buf=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',buf))].map(x=>x.toString(16).padStart(2,'0')).join('');
+let JSZipP=null;function loadZip(){return JSZipP||(JSZipP=new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';s.onload=()=>res(window.JSZip);s.onerror=rej;document.head.append(s)}))}
+const money=n=>'₹'+(Math.round(n*100)/100).toLocaleString('en-IN');
+const today=()=>new Date().toDateString();
+
+/* --- prices / UPI (owner settings) --- */
+function priceCfg(){return{bw:+store.get(KP+'pbw')||0,col:+store.get(KP+'pcol')||0,upi:(store.get(KP+'upi')||'').trim()}}
+[['pBwIn','pbw'],['pColIn','pcol'],['upiIn','upi']].forEach(([id,k])=>{const e=document.getElementById(id);if(!e)return;e.value=store.get(KP+k)||'';e.oninput=()=>{store.set(KP+k,e.value.trim());broadcastHi()}});
+
+/* --- daily summary --- */
+function sumGet(){let s=null;try{s=JSON.parse(store.get(KP+'sum')||'null')}catch(e){}if(!s||s.d!==today())s={d:today(),jobs:0,pages:0,amt:0};return s}
+function sumAdd(k,v){if(!v)return;const s=sumGet();s[k]+=v;store.set(KP+'sum',JSON.stringify(s));renderSum()}
+function renderSum(){const e=$('#sum');if(!e)return;const s=sumGet();e.textContent=t('today')+': '+s.jobs+' '+t('jobsW')+(DESK?'':' · '+s.pages+' '+t('pages')+(s.amt?' · '+money(s.amt):''))}
+
+/* --- "now serving" display --- */
+function serveState(){const L=[...jobs.values()];
+  const rd=L.filter(j=>j.status==='ready'&&Date.now()-(j.doneAt||0)<45*60000).sort((a,b)=>(b.doneAt||0)-(a.doneAt||0)).slice(0,8).map(j=>j.n);
+  return{t:'serve',ready:rd,printing:L.filter(j=>j.status==='printing').map(j=>j.n),shop:shopName}}
+function sendServe(c){send(c,serveState())}
+function bcastServe(){const s=serveState();for(const c of custs)if(c.disp)send(c,s)}
+$('#dispBtn').onclick=()=>{const u=base+'#v-'+shopCode,q=$('#dispQr');q.innerHTML='';new QRCode(q,{text:u,width:360,height:360,correctLevel:QRCode.CorrectLevel.L});$('#dispLink').href=u;$('#dispLink').textContent=u.replace(/^https?:\/\//,'');$('#dispModal').hidden=false};
+$('#dispClose').onclick=()=>{$('#dispModal').hidden=true};
+let lastReady=null;
+function startDisplay(code){
+  $('#vDisp').hidden=false;document.body.classList.add('disp');lockScreen();$('#dState').textContent=t('cConnecting');
+  document.addEventListener('pointerdown',()=>{$('#dTap').hidden=true},{once:true});
+  const p=new Peer({config:ICE});const targets=[PREFIX+code,PREFIX+code+'-m'];let i=0;
+  const go=()=>{const c=p.connect(targets[i],{serialization:'raw',reliable:true});
+    c.on('open',()=>{c.send(JSON.stringify({t:'disp'}));$('#dState').textContent=''});
+    c.on('data',d=>{if(typeof d!=='string')return;let m;try{m=JSON.parse(d)}catch(e){return}
+      if(m.shop)$('#dShop').textContent=String(m.shop).slice(0,60);
+      if(m.t!=='serve')return;
+      const nw=lastReady?m.ready.filter(n=>!lastReady.includes(n)):[];lastReady=m.ready;
+      $('#dReady').innerHTML=m.ready.length?m.ready.map(n=>`<b class="${nw.includes(n)?'hot':''}">${+n}</b>`).join(''):'<span class="dnow">'+esc(t('dispNone'))+'</span>';
+      $('#dPrint').textContent=m.printing.length?m.printing.map(n=>+n).join(' · '):t('dispNone');
+      if(nw.length){chime();try{const u=new SpeechSynthesisUtterance((lang==='en'?'Token ':lang==='hi'?'टोकन ':'টোকেন ')+nw.join(', '));u.lang=lang==='en'?'en-IN':lang==='hi'?'hi-IN':'bn-IN';speechSynthesis.speak(u)}catch(e){}}
+    });
+    c.on('close',()=>{$('#dState').textContent=t('cLost');setTimeout(()=>location.reload(),8000)})};
+  p.on('open',go);
+  p.on('error',e=>{if(e.type==='peer-unavailable'&&i<1){i++;go();return}$('#dState').textContent=t('cClosed');setTimeout(()=>location.reload(),15000)});
+}
+
+/* --- receipts (owner side) --- */
+async function sendReceipt(j){
+  if(!j.c||j.rcptSent)return;j.rcptSent=true;
+  for(const f of j.files)if(f.blob&&!f.h)f.h=await sha(await f.blob.arrayBuffer());
+  send(j.c,{t:'rcpt',jid:j.id,n:j.n,by:shopName,at:Date.now(),files:j.files.map(f=>({name:f.name,size:f.size,h:f.h||''}))});
+}
+
+/* --- send files back to the customer (owner side) --- */
+let backJob=null;
+$('#backFile').onchange=async e=>{
+  const fs=[...e.target.files];e.target.value='';const j=backJob;if(!j||!j.c||!j.c.open)return;
+  const dc=j.c.dataChannel;dc.bufferedAmountLowThreshold=1<<20;
+  for(const f of fs){const id=rid();send(j.c,{t:'bf',jid:j.id,id,name:f.name,size:f.size,mime:f.type});let off=0;
+    while(off<f.size){if(!j.c.open)return;if(dc.bufferedAmount>HIGH)await new Promise(r=>dc.addEventListener('bufferedamountlow',r,{once:true}));const b=await f.slice(off,off+CHUNK).arrayBuffer();j.c.send(b);off+=b.byteLength}
+    send(j.c,{t:'be',id});(j.back=j.back||[]).push(f.name)}
+  renderJob(j);
+};
+function backBtn(j){const b=document.createElement('button');b.className='btn ghost';b.textContent=t('sendBack')+(j.back&&j.back.length?' ('+j.back.length+' ✓)':'');b.onclick=()=>{backJob=j;$('#backFile').click()};return b}
+function extraChips(j){const c=[];
+  if(j.from)c.push(`<span class="chip from">${esc(j.from)}</span>`);
+  if(!DESK&&j.pages)c.push(`<span class="chip">${j.pages}${j.unk?'+':''} ${esc(t('pages'))}</span>`);
+  if(!DESK&&j.amt)c.push(`<span class="chip">${money(j.amt)}</span>`);
+  if(j.paid)c.push(`<span class="chip paid">${esc(t('paidChip'))}</span>`);
+  return c.length?`<div class="chips">${c.join('')}</div>`:''}
+
+/* --- download everything as one ZIP (group collection) --- */
+$('#zipBtn').onclick=async()=>{
+  const L=[...jobs.values()].filter(j=>j.files.some(f=>f.blob)||j.note);
+  if(!L.length){setStatus('zipNone');setTimeout(()=>{if(stKey==='zipNone')setStatus('')},2500);return}
+  const Z=await loadZip(),z=new Z();
+  for(const j of L){const dir=(j.n+(j.from?'_'+j.from:'')).replace(/[\\/:*?"<>|]+/g,'').trim();const used=new Set();
+    for(const f of j.files)if(f.blob){let nm=f.name;while(used.has(nm))nm='1_'+nm;used.add(nm);z.file(dir+'/'+nm,f.blob)}
+    if(j.note)z.file(dir+'/note.txt',j.note)}
+  const blob=await z.generateAsync({type:'blob'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=((shopName||'jhatpat').replace(/[\\/:*?"<>|]+/g,'').trim()||'jhatpat')+'_'+new Date().toISOString().slice(0,10)+'.zip';document.body.append(a);a.click();a.remove();
+};
+
+/* --- customer: page count, price estimate, UPI --- */
+let shopPrice={bw:0,col:0},shopUpi='',est={pages:0,unk:0,amt:0};
+async function countPages(f){if(f._pages!==undefined)return f._pages;let n=null;
+  if(/^image\//.test(f.type))n=1;
+  else if(/pdf/.test(f.type)||/\.pdf$/i.test(f.name)){try{const lib=await loadPdf();n=(await lib.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise).numPages}catch(e){n=null}}
+  f._pages=n;return n}
+async function updateEst(){
+  const e=$('#cEst');if(DESK||!cfiles.length){e.hidden=true;est={pages:0,unk:0,amt:0};return}
+  let pg=0,unk=0;for(const f of cfiles){const n=await countPages(f);if(n==null)unk++;else pg+=n}
+  const rate=color==='color'?shopPrice.col:shopPrice.bw,amt=rate?pg*copies*rate:0;est={pages:pg,unk,amt};
+  e.hidden=false;e.textContent=(rate?t('est')+': '+pg+' '+t('pages')+' × '+copies+' × '+money(rate)+' = '+money(amt):pg+' '+t('pages')+' × '+copies)+(unk?' '+t('unknownPg'):'');
+}
+function showPay(){
+  const box=$('#cPay');if(DESK||!(est.amt>0)){box.hidden=true;return}
+  box.hidden=false;$('#payAmt').textContent=money(est.amt);const q=$('#payQr');q.innerHTML='';
+  if(shopUpi){const u='upi://pay?pa='+encodeURIComponent(shopUpi)+'&pn='+encodeURIComponent($('#cShop').textContent||'')+'&am='+est.amt.toFixed(2)+'&cu=INR&tn='+encodeURIComponent('Token '+($('#cTok').textContent||''));
+    new QRCode(q,{text:u,width:300,height:300,correctLevel:QRCode.CorrectLevel.M});$('#payLink').href=u;$('#payLink').hidden=false;$('#payDone').hidden=false;$('#payAt').hidden=true;q.hidden=false}
+  else{q.hidden=true;$('#payLink').hidden=true;$('#payDone').hidden=true;$('#payAt').hidden=false}
+}
+$('#payDone').onclick=()=>{if(cconn&&cconn.open&&curJob)cconn.send(JSON.stringify({t:'paid',jid:curJob.id}));$('#payDone').dataset.t='paidSent';$('#payDone').textContent=t('paidSent');$('#payDone').disabled=true};
+
+/* --- customer: receipts --- */
+async function hashLocal(files){const tot=files.reduce((a,f)=>a+f.size,0);if(tot>300*1048576)return files.map(()=>'');return Promise.all(files.map(async f=>sha(await f.arrayBuffer())))}
+function wrapText(x,txt,maxW){const words=String(txt).split(' '),lines=[];let cur='';for(const w of words){const tst=cur?cur+' '+w:w;if(x.measureText(tst).width>maxW&&cur){lines.push(cur);cur=w}else cur=tst}if(cur)lines.push(cur);return lines}
+function openRcpt(){
+  const r=curJob&&curJob.rcpt;if(!r)return;const L=curJob.local||[];
+  const W=720,lh=32,c=document.createElement('canvas'),x=c.getContext('2d');
+  x.font='400 19px "Hind Siliguri",sans-serif';const note=wrapText(x,t('rcptNote'),W-60);
+  const H=230+r.files.length*lh*2+note.length*28+80;c.width=W;c.height=H;
+  x.fillStyle='#fff';x.fillRect(0,0,W,H);x.fillStyle='#e4002b';x.fillRect(0,0,W,86);
+  x.fillStyle='#fff';x.font='700 34px "Hind Siliguri",sans-serif';x.fillText(t('rcptT'),30,56);
+  x.fillStyle='#111';x.font='700 30px "Hind Siliguri",sans-serif';x.fillText(String(r.by||'').slice(0,40),30,136);
+  x.fillStyle='#444';x.font='400 22px "Hind Siliguri",sans-serif';x.fillText(t('token')+' '+(+r.n)+' · '+new Date(r.at).toLocaleString('en-IN'),30,172);
+  let y=222;r.files.forEach((f,k)=>{const ok=f.h&&L[k]&&f.h===L[k];
+    x.fillStyle=ok?'#0a7a3d':'#9b001d';x.font='700 24px sans-serif';x.fillText(ok?'✓':(L[k]?'✕':'•'),30,y);
+    x.fillStyle='#111';x.font='600 22px "Hind Siliguri",sans-serif';x.fillText(String(f.name).slice(0,44),62,y);
+    x.fillStyle='#666';x.font='400 16px monospace';x.fillText(fmt(+f.size||0)+'  SHA-256 '+String(f.h||'').slice(0,32),62,y+lh-6);y+=lh*2});
+  x.fillStyle='#555';x.font='400 19px "Hind Siliguri",sans-serif';note.forEach(l=>{x.fillText(l,30,y);y+=28});
+  x.fillStyle='#e4002b';x.font='700 18px "Hind Siliguri",sans-serif';x.fillText('ঝটপট · Jhatpat',30,y+22);
+  const url=c.toDataURL('image/png');$('#rcptImg').src=url;$('#rcptSave').href=url;$('#rcptSave').download='receipt-token-'+(+r.n)+'.png';$('#rcptModal').hidden=false;
+}
+$('#cRcptBtn').onclick=openRcpt;$('#rcptClose').onclick=()=>{$('#rcptModal').hidden=true};
+
+/* --- customer: files sent back by the shop --- */
+let crx=null;
+function custBinary(d){if(crx){crx.parts.push(d);crx.got+=d.byteLength??d.size??0}}
+function custBack(m){
+  if(m.t==='bf'){crx={id:m.id,name:String(m.name).slice(0,200)||'file',mime:String(m.mime||''),parts:[],got:0};return}
+  if(m.t==='be'&&crx&&crx.id===m.id){const b=new Blob(crx.parts,{type:crx.mime||'application/octet-stream'}),li=document.createElement('li');li.append(thumb(b,crx.name,crx.mime));
+    const d=document.createElement('div');d.style.cssText='font-weight:600;overflow-wrap:anywhere;line-height:1.25';d.textContent=crx.name;
+    const a=document.createElement('a');a.className='btn ink sm';a.style.cssText='display:inline-flex;align-items:center;text-decoration:none';a.href=URL.createObjectURL(b);a.download=crx.name;a.textContent=t('save');
+    li.append(d,a);$('#cBack').prepend(li);$('#cBackWrap').hidden=false;crx=null;chime()}
+}
+
+/* --- customer: protect ID photos (black out numbers + watermark), all on the phone --- */
+let medIdx=-1,medImg=null,medRects=[],medDrag=null;
+async function openMed(i){medIdx=i;medImg=await createImageBitmap(cfiles[i]);medRects=[];
+  $('#wmText').value=(t('wmFor')+' '+($('#cShop').textContent||'')+t('wmUse')).trim()+' · '+new Date().toLocaleDateString('en-IN');$('#med').hidden=false;drawMed()}
+function wm(x,w,h,txt){if(!txt)return;const fs=Math.max(12,Math.round(Math.min(w,h)/16));x.save();x.font='700 '+fs+'px "Hind Siliguri",sans-serif';x.fillStyle='rgba(228,0,43,.35)';x.translate(w/2,h/2);x.rotate(-Math.PI/7);
+  const tw=x.measureText(txt).width+fs*2;for(let yy=-h;yy<h;yy+=fs*3.2)for(let xx=-w*1.3;xx<w*1.3;xx+=tw)x.fillText(txt,xx,yy);x.restore()}
+function drawMed(){const cv=$('#medCv'),box=$('#medStage'),k=Math.min((box.clientWidth||320)/medImg.width,(innerHeight*.55)/medImg.height);
+  cv.width=Math.max(1,medImg.width*k|0);cv.height=Math.max(1,medImg.height*k|0);const x=cv.getContext('2d');x.drawImage(medImg,0,0,cv.width,cv.height);
+  x.fillStyle='#000';for(const r of medRects.concat(medDrag?[medDrag]:[]))x.fillRect(r.x*cv.width,r.y*cv.height,r.w*cv.width,r.h*cv.height);
+  if($('#wmOn').checked)wm(x,cv.width,cv.height,$('#wmText').value)}
+const mpos=e=>{const r=$('#medCv').getBoundingClientRect();return{x:Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),y:Math.max(0,Math.min(1,(e.clientY-r.top)/r.height))}};
+$('#medCv').addEventListener('pointerdown',e=>{e.preventDefault();try{$('#medCv').setPointerCapture(e.pointerId)}catch(x){}const p=mpos(e);medDrag={x:p.x,y:p.y,w:0,h:0,sx:p.x,sy:p.y}});
+$('#medCv').addEventListener('pointermove',e=>{if(!medDrag)return;const p=mpos(e);medDrag.x=Math.min(p.x,medDrag.sx);medDrag.y=Math.min(p.y,medDrag.sy);medDrag.w=Math.abs(p.x-medDrag.sx);medDrag.h=Math.abs(p.y-medDrag.sy);drawMed()});
+$('#medCv').addEventListener('pointerup',()=>{if(medDrag&&medDrag.w>.005&&medDrag.h>.005)medRects.push({x:medDrag.x,y:medDrag.y,w:medDrag.w,h:medDrag.h});medDrag=null;drawMed()});
+$('#medUndo').onclick=()=>{medRects.pop();drawMed()};
+$('#wmOn').onchange=drawMed;$('#wmText').oninput=drawMed;
+$('#medCancel').onclick=()=>{$('#med').hidden=true};
+$('#medUse').onclick=async()=>{
+  const f=cfiles[medIdx],W=medImg.width,H=medImg.height,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  x.drawImage(medImg,0,0);x.fillStyle='#000';for(const r of medRects)x.fillRect(r.x*W,r.y*H,r.w*W,r.h*H);if($('#wmOn').checked)wm(x,W,H,$('#wmText').value);
+  const b=await new Promise(r=>c.toBlob(r,'image/jpeg',.9));const nf=new File([b],f.name.replace(/\.\w+$/,'')+'_safe.jpg',{type:'image/jpeg'});nf._safe=true;
+  cfiles[medIdx]=nf;$('#med').hidden=true;renderPicked();
+};
+window.__jpTest={openMed,medRects:()=>medRects,setRects:r=>{medRects=r;drawMed()},updateEst,est:()=>est,openRcpt};
 
 /* =================================================================== start */
 applyLang();
 const h=location.hash.slice(1);
 if(typeof Peer==='undefined'||typeof QRCode==='undefined'){setStatus('offline','bad')}
 else if(/^c-[a-z0-9]{6}$/.test(h)){startCustomer(h.slice(2))}
+else if(/^v-[a-z0-9]{6}$/.test(h)){startDisplay(h.slice(2))}
 else if(/^own-[a-z0-9]{6}\./.test(h)){const pp=h.slice(4).split('.');const c=pp[0];let nm=pp.slice(1).join('.');
   if(pp.length>=6){tok=pp[1];privJwk={kty:'EC',crv:'P-256',d:pp[2],x:pp[3],y:pp[4],ext:true,key_ops:['deriveKey']};store.set(KP+'tok',tok);store.set(KP+'priv',JSON.stringify(privJwk));nm=pp.slice(5).join('.')}
   try{nm=decodeURIComponent(nm)}catch(e){}shopCode=c;shopName=(nm||shopName||'—').slice(0,60);store.set(KP+'shop-code',shopCode);store.set(KP+'shop-name',shopName);history.replaceState(null,'',base);startShop()}

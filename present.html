@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111111">
+<title>ঝটপট — মিটিং স্ক্রিন</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=Hind+Siliguri:wght@400;600;700&family=Hind:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: a site-office meeting, everyone looking at the same drawing
+   IDEA: a projector screen that lives in every pocket
+   PICTURE: the slide itself, edge to edge, with a red laser dot
+   COLOUR and TYPE: near-black stage, white slide, signal red pointer; Hind Siliguri, Archivo numerals
+   LAYOUT: presenter: slide large, QR ticket + controls beside it; viewer: slide fills the screen */
+:root{color-scheme:light dark;--bg:light-dark(#f3f1ec,#0e0e0e);--ink:light-dark(#111,#f2f2f2);--mute:light-dark(#5b5b5b,#a8a8a8);--line:light-dark(#dcd8cf,#2a2a2a);--red:#e4002b;--card:light-dark(#fff,#181818);--stage:#141414}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 "Hind Siliguri","Hind",system-ui,sans-serif;overflow-x:clip}
+main{max-width:1240px;margin:0 auto;padding:0 16px 32px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0 16px}
+.brand{display:flex;align-items:center;gap:10px}.brand svg{width:40px;height:40px;flex:none}
+h1{font-size:23px;line-height:1.05;margin:0}.tag{font-size:13px;color:var(--mute);margin-top:3px;line-height:1.2}
+.lang{display:flex;gap:4px}.lang button{font:inherit;font-size:15px;min-height:40px;padding:0 9px;border:1px solid var(--line);background:none;color:var(--ink);border-radius:8px;cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.btn{font:inherit;font-weight:700;min-height:48px;padding:0 18px;border-radius:12px;border:0;background:var(--red);color:#fff;cursor:pointer}
+.btn.ghost{background:none;color:var(--ink);border:2px solid var(--line)}.btn.ink{background:var(--ink);color:var(--bg)}
+button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.sub{color:var(--mute);margin:6px 0 10px;font-size:15px}
+.pick{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:100%;max-width:560px;margin:30px auto;min-height:220px;border:3px dashed var(--ink);border-radius:22px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer;padding:20px;text-align:center}
+.pick b{font-size:28px;line-height:1.15}.pick span{color:var(--mute);font-size:15px}
+.pick.drag{border-color:var(--red)}
+.pres{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}
+.stage{background:var(--stage);border-radius:18px;padding:14px;position:relative}
+.slide{position:relative;margin:0 auto;line-height:0;touch-action:none;cursor:crosshair}
+.slide canvas{width:100%;height:auto;display:block;background:#fff;border-radius:6px}
+#pSlide{width:fit-content;max-width:100%}#pSlide canvas{width:auto}
+.dot{position:absolute;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:var(--red);box-shadow:0 0 0 6px #e4002b55,0 0 18px 4px #e4002b88;pointer-events:none;transition:left .06s linear,top .06s linear}
+.ctrl{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:12px;flex-wrap:wrap}
+.ctrl .btn{min-width:64px;font-size:22px}
+.pg{font:800 22px/1 Archivo,system-ui,sans-serif;color:#fff;min-width:5.5em;text-align:center}
+.side .ticket{background:#fff;color:#111;border-radius:20px;overflow:hidden;box-shadow:0 18px 40px -18px #00000059}
+.ticket .qr{padding:14px;aspect-ratio:1}.ticket .qr img,.ticket .qr canvas{width:100%!important;height:auto!important;image-rendering:pixelated}
+.ticket .perf{border-top:2px dashed #d6d6d6;margin:0 18px}
+.ticket .stub{padding:10px 18px 14px}.ticket small{color:#6b6b6b;font-size:13px;display:block}.ticket b{font:800 26px/1.1 Archivo,system-ui,sans-serif;letter-spacing:.1em}
+.count{display:flex;align-items:center;gap:10px;margin:14px 0;font-weight:700}
+.count b{font:800 34px/1 Archivo,system-ui,sans-serif;color:var(--red)}
+label.chk{display:flex;gap:10px;align-items:center;margin:8px 0;font-size:15px;cursor:pointer}label.chk input{width:22px;height:22px;accent-color:var(--red)}
+.status{padding:12px 14px;border-radius:12px;background:var(--card);border:1px solid var(--line);text-align:center;font-weight:600;margin:12px 0}
+.status.bad{background:color-mix(in srgb,var(--red) 12%,var(--bg));color:light-dark(#9b001d,#ff8a9e);border-color:transparent}
+/* viewer */
+body.viewer{background:var(--stage);color:#fff}
+body.viewer header .tag,body.viewer header h1{color:#fff}
+.vtop{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#ddd;font-size:15px;margin-bottom:8px}
+.live{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:#fff}.live i{width:10px;height:10px;border-radius:50%;background:var(--red);box-shadow:0 0 0 4px #e4002b44}
+.live.off i{background:#777;box-shadow:none}
+.bar{height:10px;border-radius:5px;background:#333;overflow:hidden;margin:30px auto 8px;max-width:420px}.bar i{display:block;height:100%;width:0;background:var(--red)}
+.vmsg{text-align:center;color:#ddd}
+.vctrl{display:flex;justify-content:space-between;gap:8px;margin-top:10px}
+.vctrl .btn{flex:1}
+@media (max-width:860px){.pres{grid-template-columns:minmax(0,1fr)}.side{display:grid;grid-template-columns:140px minmax(0,1fr);gap:14px;align-items:center}.ticket .stub b{font-size:18px}}
+@media (prefers-reduced-motion:reduce){.dot{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#e4002b"/><rect x="8" y="8" width="13" height="13" rx="3" fill="none" stroke="#fff" stroke-width="3"/><rect x="12.5" y="12.5" width="4" height="4" rx="1" fill="#fff"/><path d="M20 31 31 20M23.5 20H31v7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><h1 data-t="title"></h1><div class="tag" data-t="tagline"></div></div></div>
+    <div class="lang"><button data-l="bn">বাংলা</button><button data-l="hi">हिंदी</button><button data-l="en">EN</button></div>
+  </header>
+
+  <!-- presenter: choose -->
+  <section id="vPick" hidden>
+    <button class="pick" id="pick"><b data-t="pick"></b><span data-t="pickSub"></span></button>
+    <input type="file" id="file" accept="application/pdf,image/*" multiple hidden>
+  </section>
+
+  <!-- presenter: stage -->
+  <section id="vPres" class="pres" hidden>
+    <div>
+      <div class="stage">
+        <div class="slide" id="pSlide"><canvas id="pCv"></canvas><div class="dot" id="pDot" hidden></div></div>
+        <div class="ctrl"><button class="btn ghost" id="prev" style="color:#fff;border-color:#444" aria-label="previous">‹</button><span class="pg" id="pPg"></span><button class="btn" id="next" aria-label="next">›</button></div>
+      </div>
+      <p class="sub" data-t="presTip"></p>
+    </div>
+    <aside class="side">
+      <div class="ticket"><div class="qr" id="qr"></div><div class="perf"></div><div class="stub"><small data-t="code"></small><b id="code"></b></div></div>
+      <div>
+        <div class="count"><b id="nView">0</b><span data-t="watching"></span></div>
+        <label class="chk"><input type="checkbox" id="oPtr" checked><span data-t="laser"></span></label>
+        <label class="chk"><input type="checkbox" id="oDl"><span data-t="allowDl"></span></label>
+        <button class="btn ghost" id="newDeck" data-t="newDeck" style="width:100%;margin-top:8px"></button>
+      </div>
+    </aside>
+  </section>
+
+  <!-- viewer -->
+  <section id="vView" hidden>
+    <div class="vtop"><span class="live" id="live"><i></i><span id="liveTxt"></span></span><span id="vPg"></span></div>
+    <div id="vLoad"><div class="bar"><i id="vBar"></i></div><p class="vmsg" id="vMsg"></p></div>
+    <div class="slide" id="vSlide" hidden><canvas id="vCv"></canvas><div class="dot" id="vDot" hidden></div></div>
+    <div class="vctrl" id="vCtrl" hidden><button class="btn ghost" id="vPrev" style="color:#fff;border-color:#444">‹</button><button class="btn" id="vLive" data-t="backLive" hidden></button><button class="btn ghost" id="vNext" style="color:#fff;border-color:#444">›</button></div>
+    <div id="vSave" style="margin-top:12px"></div>
+  </section>
+
+  <div class="status" id="status" hidden></div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+{
+const T={
+bn:{title:'মিটিং স্ক্রিন',tagline:'প্রজেক্টর ছাড়াই সবার ফোনে আপনার নকশা',pick:'PDF বা ছবি বেছে নিন',pickSub:'নকশা, স্লাইড, নোটিশ — সবাই নিজের ফোনে দেখবে, আপনি পাতা বদলালে সবার পাতা বদলাবে',presTip:'তীর-চিহ্ন বা ← → কী দিয়ে পাতা বদলান। নকশার উপর মাউস রাখলে বা ছুঁলে সবার ফোনে লাল বিন্দু দেখা যাবে।',code:'মিটিং কোড',watching:'জন দেখছেন',laser:'লাল পয়েন্টার দেখান',allowDl:'সবাইকে ফাইল সেভ করতে দিন',newDeck:'অন্য ফাইল দেখান',live:'লাইভ',notLive:'আপনি নিজে দেখছেন',backLive:'লাইভে ফিরুন',joining:'মিটিংয়ে যুক্ত হচ্ছে…',loading:'নকশা আসছে',ended:'মিটিং শেষ হয়ে গেছে বা কোডটি ভুল।',lost:'সংযোগ কেটে গেছে। পেজটি আবার খুলুন।',save:'ফাইল সেভ করুন',noNet:'ইন্টারনেট পাওয়া যাচ্ছে না।',bad:'এই ফাইল খোলা গেল না (শুধু PDF ও ছবি)।',page:'পাতা'},
+hi:{title:'मीटिंग स्क्रीन',tagline:'बिना प्रोजेक्टर के सबके फ़ोन पर आपका नक्शा',pick:'PDF या फ़ोटो चुनें',pickSub:'नक्शा, स्लाइड, नोटिस — सब अपने फ़ोन पर देखेंगे, आप पेज बदलें तो सबका पेज बदलेगा',presTip:'तीर या ← → कुंजी से पेज बदलें। नक्शे पर माउस रखें या छुएँ तो सबके फ़ोन पर लाल बिंदु दिखेगा।',code:'मीटिंग कोड',watching:'लोग देख रहे हैं',laser:'लाल पॉइंटर दिखाएँ',allowDl:'सबको फ़ाइल सेव करने दें',newDeck:'दूसरी फ़ाइल दिखाएँ',live:'लाइव',notLive:'आप ख़ुद देख रहे हैं',backLive:'लाइव पर लौटें',joining:'मीटिंग से जुड़ रहे हैं…',loading:'नक्शा आ रहा है',ended:'मीटिंग ख़त्म हो गई या कोड ग़लत है।',lost:'कनेक्शन टूट गया। पेज दोबारा खोलें।',save:'फ़ाइल सेव करें',noNet:'इंटरनेट नहीं मिल रहा।',bad:'यह फ़ाइल नहीं खुली (सिर्फ़ PDF और फ़ोटो)।',page:'पेज'},
+en:{title:'Meeting screen',tagline:'Your drawing on everyone’s phone — no projector',pick:'Choose a PDF or images',pickSub:'Drawings, slides, notices — everyone sees them on their own phone, and pages turn when you turn them',presTip:'Use the arrows or ← → keys to change page. Hover or touch the drawing to show a red dot on every phone.',code:'Meeting code',watching:'watching',laser:'Show red pointer',allowDl:'Let everyone save the file',newDeck:'Show another file',live:'Live',notLive:'You’re browsing on your own',backLive:'Back to live',joining:'Joining the meeting…',loading:'Loading the drawing',ended:'The meeting has ended or the code is wrong.',lost:'Connection lost. Open the page again.',save:'Save the file',noNet:'No internet connection.',bad:'Couldn’t open this file (PDF and images only).',page:'Page'}};
+const $=s=>document.querySelector(s);
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let lang=store.get('qrp-lang');if(!T[lang])lang=/^hi/.test(navigator.language)?'hi':/^en/.test(navigator.language)?'en':'bn';
+const t=k=>T[lang][k]??k;
+let stK='',stC='';
+function setStatus(k,c=''){stK=k;stC=c;const s=$('#status');s.hidden=!k;s.className='status '+c;s.textContent=k?t(k):''}
+function applyLang(){document.documentElement.lang=lang;document.querySelectorAll('[data-t]').forEach(e=>e.textContent=t(e.dataset.t));document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===lang));setStatus(stK,stC);document.title='ঝটপট — '+t('title');renderPg();renderLive()}
+document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{lang=b.dataset.l;store.set('qrp-lang',lang);applyLang()});
+const PREFIX='jppres-',ICE={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]};
+const base=location.href.split('#')[0].split('?')[0];
+const rid=n=>[...crypto.getRandomValues(new Uint8Array(n))].map(x=>'abcdefghjkmnpqrstuvwxyz23456789'[x%31]).join('');
+if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+let wake=null;async function lock(){if(wake)return;try{wake=await navigator.wakeLock.request('screen');wake.addEventListener('release',()=>wake=null)}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')lock()});
+
+/* ---------- deck model (shared) ---------- */
+let files=[],slides=[],cur=0;const docs={};
+async function buildSlides(list){
+  const out=[];
+  for(let i=0;i<list.length;i++){const f=list[i];
+    if(/pdf/.test(f.type)||/\.pdf$/i.test(f.name)){const d=await pdfjsLib.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise;docs[i]=d;for(let p=1;p<=d.numPages;p++)out.push({fi:i,p})}
+    else if(/^image\//.test(f.type)||/\.(png|jpe?g|webp|gif)$/i.test(f.name)){docs[i]=await createImageBitmap(f);out.push({fi:i,p:0})}
+  }
+  return out;
+}
+let renderSeq=0;
+async function render(cv,s){
+  if(!s)return;const my=++renderSeq,pres=cv.id==='pCv',dpr=Math.min(2.5,window.devicePixelRatio||1);
+  const src=docs[s.fi];let asp;
+  if(s.p){const pg0=await src.getPage(s.p),v=pg0.getViewport({scale:1});asp=v.height/v.width}else asp=src.height/src.width;
+  let W=Math.max(240,pres?cv.closest('.stage').clientWidth-28:cv.parentElement.clientWidth);
+  if(pres){const fitH=Math.max(220,innerHeight-210);if(W*asp>fitH)W=fitH/asp}
+  if(s.p){const pg=await src.getPage(s.p);const v0=pg.getViewport({scale:1}),sc=W*dpr/v0.width,vp=pg.getViewport({scale:sc});
+    const off=document.createElement('canvas');off.width=vp.width;off.height=vp.height;await pg.render({canvasContext:off.getContext('2d'),viewport:vp}).promise;
+    if(my!==renderSeq)return;cv.width=off.width;cv.height=off.height;cv.getContext('2d').drawImage(off,0,0);if(pres)cv.style.width=W+'px'}
+  else{const sc=W*dpr/src.width;cv.width=src.width*sc;cv.height=src.height*sc;const x=cv.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(src,0,0,cv.width,cv.height);if(pres)cv.style.width=W+'px'}
+}
+function placeDot(dot,cv,pt){if(!pt){dot.hidden=true;return}dot.hidden=false;dot.style.left=(pt.x*cv.clientWidth)+'px';dot.style.top=(pt.y*cv.clientHeight)+'px'}
+function renderPg(){if($('#pPg'))$('#pPg').textContent=slides.length?(cur+1)+' / '+slides.length:'';if(role==='view'&&slides.length)$('#vPg').textContent=t('page')+' '+(vcur+1)+' / '+slides.length}
+
+/* ================= PRESENTER ================= */
+let role='',peer=null,code='',viewers=new Set(),lastPt=null;
+function presenter(){
+  role='pres';$('#vPick').hidden=false;
+  const pk=$('#pick');pk.onclick=()=>$('#file').click();
+  $('#file').onchange=e=>{const fs=[...e.target.files];e.target.value='';if(fs.length)load(fs)};
+  ['dragenter','dragover'].forEach(ev=>document.addEventListener(ev,e=>{e.preventDefault();pk.classList.add('drag')}));
+  ['dragleave','drop'].forEach(ev=>document.addEventListener(ev,e=>{e.preventDefault();pk.classList.remove('drag')}));
+  document.addEventListener('drop',e=>{const fs=[...e.dataTransfer.files];if(fs.length&&role==='pres')load(fs)});
+}
+async function load(list){
+  setStatus('');
+  try{const s=await buildSlides(list);if(!s.length)throw 0;files=list;slides=s;cur=0}catch(e){setStatus('bad','bad');return}
+  $('#vPick').hidden=true;$('#vPres').hidden=false;await render($('#pCv'),slides[0]);renderPg();lock();
+  if(!peer)goLive();else for(const c of viewers)sendDeck(c);
+}
+function goLive(){
+  code=rid(6);peer=new Peer(PREFIX+code,{config:ICE});
+  peer.on('open',()=>{$('#qr').innerHTML='';new QRCode($('#qr'),{text:base+'#'+code,width:480,height:480,correctLevel:QRCode.CorrectLevel.L});$('#code').textContent=code.slice(0,3)+' '+code.slice(3)});
+  peer.on('connection',c=>{c.on('open',()=>{viewers.add(c);count();sendDeck(c)});c.on('close',()=>{viewers.delete(c);count()});c.on('error',()=>{viewers.delete(c);count()})});
+  peer.on('disconnected',()=>{setTimeout(()=>{try{if(peer&&peer.disconnected)peer.reconnect()}catch(e){}},2000)});
+  peer.on('error',e=>{if(e.type==='unavailable-id'){peer.destroy();peer=null;goLive()}else if(/network|server|socket/.test(e.type))setStatus('noNet','bad')});
+}
+function count(){$('#nView').textContent=viewers.size}
+function jsend(c,o){try{c.open&&c.send(JSON.stringify(o))}catch(e){}}
+async function sendDeck(c){
+  const deck=++c.deckSeq||(c.deckSeq=1);
+  jsend(c,{t:'deck',dl:$('#oDl').checked,files:files.map(f=>({name:f.name,mime:f.type,size:f.size})),cur});
+  const dc=c.dataChannel;dc.bufferedAmountLowThreshold=1<<20;
+  for(let i=0;i<files.length;i++){
+    jsend(c,{t:'f',i});let off=0;const f=files[i];
+    while(off<f.size){if(!c.open||c.deckSeq!==deck)return;if(dc.bufferedAmount>4<<20)await new Promise(r=>dc.addEventListener('bufferedamountlow',r,{once:true}));
+      const b=await f.slice(off,off+65536).arrayBuffer();c.send(b);off+=b.byteLength}
+    jsend(c,{t:'e',i});
+  }
+  jsend(c,{t:'go',i:cur});if(lastPt)jsend(c,{t:'pt',...lastPt});
+}
+function bcast(o){for(const c of viewers)jsend(c,o)}
+async function go(i){if(!slides.length)return;cur=Math.max(0,Math.min(slides.length-1,i));lastPt=null;$('#pDot').hidden=true;renderPg();bcast({t:'go',i:cur});await render($('#pCv'),slides[cur])}
+$('#prev').onclick=()=>go(cur-1);$('#next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(role==='pres'&&!$('#vPres').hidden){if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(cur+1)}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(cur-1)}}
+  if(role==='view'){if(e.key==='ArrowRight')vgo(vcur+1,false);if(e.key==='ArrowLeft')vgo(vcur-1,false)}});
+let ptT=0;
+function ptFrom(e){const r=$('#pCv').getBoundingClientRect();return{x:Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),y:Math.max(0,Math.min(1,(e.clientY-r.top)/r.height))}}
+let ptTrail=0;
+$('#pSlide').addEventListener('pointermove',e=>{if(!$('#oPtr').checked)return;lastPt=ptFrom(e);placeDot($('#pDot'),$('#pCv'),lastPt);const n=Date.now();clearTimeout(ptTrail);
+  if(n-ptT>45){ptT=n;bcast({t:'pt',...lastPt})}else ptTrail=setTimeout(()=>{if(lastPt){ptT=Date.now();bcast({t:'pt',...lastPt})}},50)});
+$('#pSlide').addEventListener('pointerleave',()=>{lastPt=null;$('#pDot').hidden=true;bcast({t:'pt',x:null})});
+$('#oPtr').onchange=()=>{if(!$('#oPtr').checked){lastPt=null;$('#pDot').hidden=true;bcast({t:'pt',x:null})}};
+$('#oDl').onchange=()=>bcast({t:'dl',on:$('#oDl').checked});
+$('#newDeck').onclick=()=>$('#file').click();
+window.addEventListener('resize',()=>{if(role==='pres'&&slides.length)render($('#pCv'),slides[cur]);if(role==='view'&&slides.length)render($('#vCv'),slides[vcur])});
+
+/* ================= VIEWER ================= */
+let vcur=0,follow=true,liveCur=0,canDl=false,vconn=null;
+function renderLive(){if(role!=='view')return;$('#live').classList.toggle('off',!follow);$('#liveTxt').textContent=t(follow?'live':'notLive');$('#vLive').hidden=follow}
+function viewer(c){
+  role='view';document.body.classList.add('viewer');$('#vView').hidden=false;$('#vMsg').textContent=t('joining');renderLive();lock();
+  const p=new Peer({config:ICE});
+  p.on('open',()=>{
+    vconn=p.connect(PREFIX+c,{serialization:'raw',reliable:true});
+    let deck=null,rx=null;
+    vconn.on('data',async d=>{
+      if(typeof d!=='string'){if(rx){rx.parts.push(d);rx.got+=d.byteLength;prog()}return}
+      const m=JSON.parse(d);
+      if(m.t==='deck'){deck={files:m.files,blobs:[],total:m.files.reduce((a,f)=>a+f.size,0),got:0};canDl=!!m.dl;liveCur=m.cur||0;$('#vLoad').hidden=false;$('#vSlide').hidden=true;$('#vCtrl').hidden=true;$('#vSave').innerHTML='';$('#vMsg').textContent=t('loading')}
+      else if(m.t==='f'&&deck){rx={i:m.i,parts:[],got:0}}
+      else if(m.t==='e'&&deck&&rx){const f=deck.files[rx.i];deck.blobs[rx.i]=new File(rx.parts,f.name,{type:f.mime});deck.got+=rx.got;rx=null;
+        if(deck.blobs.filter(Boolean).length===deck.files.length){files=deck.blobs;try{slides=await buildSlides(files)}catch(e){setStatus('bad','bad');return}
+          $('#vLoad').hidden=true;$('#vSlide').hidden=false;$('#vCtrl').hidden=false;follow=true;renderLive();vgo(liveCur,true);saveBtn()}}
+      else if(m.t==='go'){liveCur=m.i;if(follow&&slides.length)vgo(m.i,true)}
+      else if(m.t==='pt'){if(follow&&vcur===liveCur)placeDot($('#vDot'),$('#vCv'),m.x==null?null:m)}
+      else if(m.t==='dl'){canDl=m.on;saveBtn()}
+      function prog(){if(!deck)return;$('#vBar').style.width=Math.min(100,(deck.got+(rx?rx.got:0))/Math.max(1,deck.total)*100)+'%'}
+    });
+    vconn.on('close',()=>setStatus('lost','bad'));
+  });
+  p.on('error',e=>setStatus(e.type==='peer-unavailable'?'ended':/network|server|socket/.test(e.type)?'noNet':'lost','bad'));
+}
+function saveBtn(){const box=$('#vSave');box.innerHTML='';if(!canDl)return;files.forEach(f=>{const a=document.createElement('a');a.className='btn ghost';a.style.cssText='display:flex;align-items:center;justify-content:center;text-decoration:none;color:#fff;border-color:#444;margin-top:8px';a.href=URL.createObjectURL(f);a.download=f.name;a.textContent=t('save')+' — '+f.name;box.append(a)})}
+async function vgo(i,live){if(!slides.length)return;vcur=Math.max(0,Math.min(slides.length-1,i));if(!live&&vcur!==liveCur)follow=false;if(live)follow=true;renderLive();$('#vDot').hidden=true;renderPg();await render($('#vCv'),slides[vcur])}
+$('#vPrev').onclick=()=>vgo(vcur-1,false);$('#vNext').onclick=()=>vgo(vcur+1,false);$('#vLive').onclick=()=>vgo(liveCur,true);
+let sx=0;$('#vSlide').addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});
+$('#vSlide').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>60&&e.changedTouches.length===1)vgo(vcur+(dx<0?1:-1),false)},{passive:true});
+
+/* ---------- start ---------- */
+applyLang();
+if(typeof Peer==='undefined'||!window.pdfjsLib){setStatus('noNet','bad')}
+else{const h=location.hash.slice(1);if(/^[a-z0-9]{6}$/.test(h))viewer(h);else presenter()}
+window.addEventListener('hashchange',()=>location.reload());
+if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
