@@ -355,11 +355,11 @@ function goLive(){
   const old=peer;peer=null;try{old&&old.destroy()}catch(e){}
   const p=new Peer(PREFIX+shopCode+SLOT,{config:ICE});peer=p;
   const mine=()=>peer===p;
-  p.on('open',()=>{if(!mine())return;retry=0;liveKey='online';renderLive()});
+  p.on('open',()=>{if(!mine())return;p.wasOpen=true;retry=0;liveKey='online';renderLive()});
   p.on('connection',c=>{if(mine())onCustomer(c)});
-  p.on('disconnected',()=>{if(!mine()||p.destroyed)return;liveKey='offline';renderLive();setTimeout(()=>{if(!mine())return;try{p.reconnect()}catch(e){goLive()}},2000)});
+  p.on('disconnected',()=>{if(!mine()||p.destroyed||!p.wasOpen)return;liveKey='offline';renderLive();setTimeout(()=>{if(!mine())return;try{p.reconnect()}catch(e){goLive()}},2000)});
   p.on('error',e=>{
-    if(!mine())return;
+    if(!mine())return;console.warn('[jhatpat]',e.type,e.message);
     if(e.type==='unavailable-id'){liveKey=retry>4?'inUse':'connecting';renderLive();retry++;setTimeout(()=>{if(mine())goLive()},retry>4?8000:2500);return}
     if(/network|server-error|socket/.test(e.type)){liveKey='offline';renderLive();setTimeout(()=>{if(mine())goLive()},4000)}
   });
