@@ -5,7 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#e4002b">
 <title>ঝটপট দোকান</title>
-<link rel="icon" href="icon-192.png">
+<link rel="manifest" id="mf" href="manifest-shop.json">
+<script>if(/desk/i.test(location.pathname))document.getElementById('mf').href='manifest-desk.json'</script>
+<link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=Hind+Siliguri:wght@400;600;700&family=Hind:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -198,6 +201,7 @@ details.tips code{background:var(--card);padding:2px 6px;border-radius:6px;overf
         <label class="opt"><span data-t="autoDel"></span><input type="checkbox" id="oDel" checked></label>
         <label class="opt"><span data-t="sound"></span><input type="checkbox" id="oSound" checked></label>
       </div>
+      <div style="margin-top:14px"><button class="btn" id="pushBtn" data-t="pushBtn" hidden style="width:100%;min-height:56px"></button><p class="sub" id="pushState" style="font-size:14px;margin-top:8px"></p></div>
       <div class="sidebtns">
         <button class="btn ink" id="standeeBtn" data-t="standee"></button>
         <button class="btn ghost" id="renameBtn" data-t="rename"></button>
@@ -262,9 +266,9 @@ details.tips code{background:var(--card);padding:2px 6px;border-radius:6px;overf
 <script>
 {
 const T={
-bn:{standeeTip:'প্রিন্টের সময় Scale "Default" রাখুন, "Fit to page" নয়।',addDev:'অন্য ডিভাইসেও চালু করুন',ownT:'নিজের অন্য ডিভাইস দিয়ে স্ক্যান করুন',ownP:'কম্পিউটার চালু থাকলে ফাইল কম্পিউটারে আসবে; বন্ধ থাকলে ফোনে। একই QR, একই কোড। এই QR অন্য কাউকে দেখাবেন না।',close:'বন্ধ',devPc:'এই কম্পিউটার — ফাইল আগে এখানে আসে',devPhone:'এই ফোন — কম্পিউটার বন্ধ থাকলে এখানে আসে (পেজ খোলা রাখুন)',copy:'কপি',copied:'কপি হয়েছে ✓',title:'ঝটপট দোকান',tagline:'প্রিন্ট-দোকানের জন্য QR ফাইল-কাউন্টার',setupT:'আপনার দোকানের নাম',setupSub:'গ্রাহকের ফোনে আর QR স্ট্যান্ডিতে এই নাম দেখাবে।',setupPh:'যেমন: মা তারা জেরক্স',start:'শুরু করুন',qrT:'গ্রাহক এই QR স্ক্যান করবেন',codeLbl:'দোকানের কোড',autoPrint:'ফাইল এলেই প্রিন্ট উইন্ডো খুলুন',autoDel:'প্রিন্ট/কাজ শেষে ফাইল মুছে দিন',sound:'ফাইল এলে আওয়াজ',standee:'QR স্ট্যান্ডি প্রিন্ট',rename:'নাম বদলান',tipsT:'এক ক্লিকে প্রিন্টের টিপস',tip1:'Chrome-এর শর্টকাটে এটি যোগ করলে প্রিন্ট উইন্ডো ছাড়াই সরাসরি ডিফল্ট প্রিন্টারে প্রিন্ট হবে:',tip2:'দোকান খোলা থাকলে এই পেজ খুলে রাখুন। পেজ বন্ধ হলে সব ফাইল মুছে যায়।',online:'চালু — গ্রাহকের অপেক্ষায়',connecting:'চালু হচ্ছে…',offline:'ইন্টারনেট নেই — আবার চেষ্টা হচ্ছে…',inUse:'এই দোকান অন্য ট্যাবে খোলা আছে। সেটি বন্ধ করুন।',jobs:'আজকের কাজ',empty:'এখনও কোনো ফাইল আসেনি। গ্রাহক QR স্ক্যান করে পাঠালেই এখানে টোকেন নম্বরসহ দেখাবে।',nJobs:'টি কাজ',token:'টোকেন',copies:'কপি',bw:'সাদা-কালো',color:'রঙিন',one:'একপিঠ',two:'দুইপিঠ',printAll:'সব প্রিন্ট',print:'প্রিন্ট',save:'সেভ',done:'কাজ শেষ',del:'মুছুন',deleted:'ফাইল মুছে ফেলা হয়েছে',noPrint:'এটি ব্রাউজারে প্রিন্ট হয় না — সেভ করে খুলুন',receiving:'আসছে…',ago:'আগে',now:'এইমাত্র',min:'মিনিট',cTo:'ফাইল যাবে',cPick:'ফাইল বেছে নিন',cPickSub:'PDF, ছবি, Word — যেকোনো ফাইল',cCopies:'কত কপি',cColor:'রঙ',cSides:'পাতার কোন দিকে',cNote:'দোকানদারের জন্য কিছু লিখুন (ঐচ্ছিক)',cSend:'দোকানে পাঠান',cToken:'আপনার টোকেন',cTell:'দোকানদারকে এই নম্বরটি বলুন',sSent:'পাঠানো',sGot:'পৌঁছেছে',sPrinting:'প্রিন্ট হচ্ছে',sReady:'তৈরি ✓',cMore:'আরও ফাইল পাঠান',cConnecting:'দোকানের সঙ্গে যুক্ত হচ্ছে…',cClosed:'দোকান এখন অফলাইন। দোকানদারকে পেজটি খুলতে বলুন।',cLost:'সংযোগ কেটে গেছে। পেজটি আবার খুলুন।',privA:'আপনার ফোন নম্বর লাগে না। ফাইল কোনো সার্ভারে থাকে না।',privB:' কাজ শেষে দোকানের কম্পিউটার থেকেও মুছে যায়।'},
-hi:{standeeTip:'प्रिंट करते समय Scale "Default" रखें, "Fit to page" नहीं।',addDev:'दूसरे डिवाइस पर भी चालू करें',ownT:'अपने दूसरे डिवाइस से स्कैन करें',ownP:'कंप्यूटर चालू हो तो फ़ाइल कंप्यूटर पर आएगी; बंद हो तो फ़ोन पर। वही QR, वही कोड। यह QR किसी और को न दिखाएँ।',close:'बंद करें',devPc:'यह कंप्यूटर — फ़ाइल पहले यहाँ आती है',devPhone:'यह फ़ोन — कंप्यूटर बंद हो तो यहाँ आती है (पेज खुला रखें)',copy:'कॉपी',copied:'कॉपी हो गया ✓',title:'झटपट दुकान',tagline:'प्रिंट-दुकान के लिए QR फ़ाइल-काउंटर',setupT:'आपकी दुकान का नाम',setupSub:'यह नाम ग्राहक के फ़ोन और QR स्टैंडी पर दिखेगा।',setupPh:'जैसे: श्री गणेश ज़ेरॉक्स',start:'शुरू करें',qrT:'ग्राहक यह QR स्कैन करेंगे',codeLbl:'दुकान का कोड',autoPrint:'फ़ाइल आते ही प्रिंट विंडो खोलें',autoDel:'प्रिंट/काम पूरा होने पर फ़ाइल मिटा दें',sound:'फ़ाइल आने पर आवाज़',standee:'QR स्टैंडी प्रिंट',rename:'नाम बदलें',tipsT:'एक क्लिक में प्रिंट के टिप्स',tip1:'Chrome शॉर्टकट में यह जोड़ने पर बिना प्रिंट विंडो के सीधे डिफ़ॉल्ट प्रिंटर पर प्रिंट होगा:',tip2:'दुकान खुली रहने तक यह पेज खुला रखें। पेज बंद होते ही सारी फ़ाइलें मिट जाती हैं।',online:'चालू — ग्राहक का इंतज़ार',connecting:'चालू हो रहा है…',offline:'इंटरनेट नहीं — दोबारा कोशिश…',inUse:'यह दुकान दूसरे टैब में खुली है। उसे बंद करें।',jobs:'आज के काम',empty:'अभी कोई फ़ाइल नहीं आई। ग्राहक QR स्कैन करके भेजेगा तो यहाँ टोकन नंबर के साथ दिखेगी।',nJobs:' काम',token:'टोकन',copies:'कॉपी',bw:'ब्लैक-व्हाइट',color:'रंगीन',one:'एक तरफ़',two:'दोनों तरफ़',printAll:'सब प्रिंट',print:'प्रिंट',save:'सेव',done:'काम पूरा',del:'मिटाएँ',deleted:'फ़ाइलें मिटा दी गईं',noPrint:'यह ब्राउज़र में प्रिंट नहीं होती — सेव करके खोलें',receiving:'आ रही है…',ago:'पहले',now:'अभी',min:'मिनट',cTo:'फ़ाइल जाएगी',cPick:'फ़ाइल चुनें',cPickSub:'PDF, फ़ोटो, Word — कोई भी फ़ाइल',cCopies:'कितनी कॉपी',cColor:'रंग',cSides:'पेज की कौन-सी तरफ़',cNote:'दुकानदार के लिए कुछ लिखें (वैकल्पिक)',cSend:'दुकान पर भेजें',cToken:'आपका टोकन',cTell:'दुकानदार को यह नंबर बताएँ',sSent:'भेजा',sGot:'पहुँचा',sPrinting:'प्रिंट हो रहा',sReady:'तैयार ✓',cMore:'और फ़ाइल भेजें',cConnecting:'दुकान से जुड़ रहा है…',cClosed:'दुकान अभी ऑफ़लाइन है। दुकानदार से पेज खोलने को कहें।',cLost:'कनेक्शन टूट गया। पेज दोबारा खोलें।',privA:'आपका फ़ोन नंबर नहीं चाहिए। फ़ाइल किसी सर्वर पर नहीं रहती।',privB:' काम पूरा होने पर दुकान के कंप्यूटर से भी मिट जाती है।'},
-en:{standeeTip:'When printing, keep Scale on "Default", not "Fit to page".',addDev:'Add my other device',ownT:'Scan this with your own other device',ownP:'When your PC is on, files go to the PC; when it’s off, they go to your phone. Same QR, same code. Don’t show this QR to anyone else.',close:'Close',devPc:'This PC — files arrive here first',devPhone:'This phone — files arrive here when the PC is off (keep the page open)',copy:'Copy',copied:'Copied ✓',title:'Jhatpat Shop',tagline:'QR file counter for print shops',setupT:'Your shop’s name',setupSub:'Shown on the customer’s phone and on your QR standee.',setupPh:'e.g. Maa Tara Xerox',start:'Start',qrT:'Customers scan this QR',codeLbl:'Shop code',autoPrint:'Open print window when files arrive',autoDel:'Delete files when the job is done',sound:'Sound when files arrive',standee:'Print QR standee',rename:'Rename',tipsT:'Tips for one-click printing',tip1:'Add this to your Chrome shortcut to print straight to the default printer with no dialog:',tip2:'Keep this page open while the shop is open. Closing it wipes all files.',online:'Live — waiting for customers',connecting:'Starting…',offline:'No internet — retrying…',inUse:'This shop is open in another tab. Close that one.',jobs:'Today’s jobs',empty:'No files yet. When a customer scans and sends, the job appears here with a token number.',nJobs:' jobs',token:'Token',copies:'copies',bw:'B&W',color:'Colour',one:'Single side',two:'Both sides',printAll:'Print all',print:'Print',save:'Save',done:'Done',del:'Delete',deleted:'Files deleted',noPrint:'Can’t print in the browser — save and open',receiving:'Receiving…',ago:'ago',now:'just now',min:'min',cTo:'Sending to',cPick:'Choose files',cPickSub:'PDF, photos, Word — any file',cCopies:'Copies',cColor:'Colour',cSides:'Sides',cNote:'Note for the shop (optional)',cSend:'Send to shop',cToken:'Your token',cTell:'Tell the shopkeeper this number',sSent:'Sent',sGot:'Received',sPrinting:'Printing',sReady:'Ready ✓',cMore:'Send more files',cConnecting:'Connecting to the shop…',cClosed:'The shop is offline right now. Ask them to open the page.',cLost:'Connection lost. Open the page again.',privA:'No phone number needed. Files are never stored on a server.',privB:' They’re deleted from the shop’s computer when the job is done.'}};
+bn:{pushBtn:'অফলাইনেও ফাইল নিন — নোটিফিকেশন চালু করুন',pushOn:'এই ডিভাইসে নোটিফিকেশন চালু ✓ — পেজ বন্ধ থাকলেও খবর পাবেন',pushDenied:'নোটিফিকেশনের অনুমতি দেওয়া হয়নি। ব্রাউজার সেটিংস থেকে চালু করুন।',pushFail:'নোটিফিকেশন চালু করা গেল না।',iosPush:'iPhone-এ নোটিফিকেশনের জন্য: Share → Add to Home Screen, তারপর হোম স্ক্রিন থেকে খুলুন।',viaBox:'অফলাইনে জমা ছিল',cOffline:'এখন অফলাইন — চিন্তা নেই। ফাইল আপনার ফোনেই লক হয়ে জমা থাকবে; উনি অনলাইনে এলেই পাবেন।',cSaved:'জমা হয়েছে',cSavedP:'ফাইল লক করা অবস্থায় জমা আছে। উনি নোটিফিকেশন পাবেন আর অনলাইনে এলেই নিয়ে নেবেন।',sUploading:'আপলোড হচ্ছে',privBox:'ফাইল আপনার ফোনেই লক হয় — শুধু প্রাপক খুলতে পারবেন। ২৪ ঘণ্টা পরে নিজে থেকে মুছে যায়।',tooBig:'অফলাইনে মোট ১০০ MB / ৩০টি ফাইলের বেশি পাঠানো যাবে না।',boxFull:'ওঁর জমার বাক্স এখন ভর্তি। পরে চেষ্টা করুন।',failed2:'পাঠানো যায়নি',standeeTip:'প্রিন্টের সময় Scale "Default" রাখুন, "Fit to page" নয়।',addDev:'অন্য ডিভাইসেও চালু করুন',ownT:'নিজের অন্য ডিভাইস দিয়ে স্ক্যান করুন',ownP:'কম্পিউটার চালু থাকলে ফাইল কম্পিউটারে আসবে; বন্ধ থাকলে ফোনে। একই QR, একই কোড। এই QR অন্য কাউকে দেখাবেন না।',close:'বন্ধ',devPc:'এই কম্পিউটার — ফাইল আগে এখানে আসে',devPhone:'এই ফোন — কম্পিউটার বন্ধ থাকলে এখানে আসে (পেজ খোলা রাখুন)',copy:'কপি',copied:'কপি হয়েছে ✓',title:'ঝটপট দোকান',tagline:'প্রিন্ট-দোকানের জন্য QR ফাইল-কাউন্টার',setupT:'আপনার দোকানের নাম',setupSub:'গ্রাহকের ফোনে আর QR স্ট্যান্ডিতে এই নাম দেখাবে।',setupPh:'যেমন: মা তারা জেরক্স',start:'শুরু করুন',qrT:'গ্রাহক এই QR স্ক্যান করবেন',codeLbl:'দোকানের কোড',autoPrint:'ফাইল এলেই প্রিন্ট উইন্ডো খুলুন',autoDel:'প্রিন্ট/কাজ শেষে ফাইল মুছে দিন',sound:'ফাইল এলে আওয়াজ',standee:'QR স্ট্যান্ডি প্রিন্ট',rename:'নাম বদলান',tipsT:'এক ক্লিকে প্রিন্টের টিপস',tip1:'Chrome-এর শর্টকাটে এটি যোগ করলে প্রিন্ট উইন্ডো ছাড়াই সরাসরি ডিফল্ট প্রিন্টারে প্রিন্ট হবে:',tip2:'দোকান খোলা থাকলে এই পেজ খুলে রাখুন। পেজ বন্ধ হলে সব ফাইল মুছে যায়।',online:'চালু — গ্রাহকের অপেক্ষায়',connecting:'চালু হচ্ছে…',offline:'ইন্টারনেট নেই — আবার চেষ্টা হচ্ছে…',inUse:'এই দোকান অন্য ট্যাবে খোলা আছে। সেটি বন্ধ করুন।',jobs:'আজকের কাজ',empty:'এখনও কোনো ফাইল আসেনি। গ্রাহক QR স্ক্যান করে পাঠালেই এখানে টোকেন নম্বরসহ দেখাবে।',nJobs:'টি কাজ',token:'টোকেন',copies:'কপি',bw:'সাদা-কালো',color:'রঙিন',one:'একপিঠ',two:'দুইপিঠ',printAll:'সব প্রিন্ট',print:'প্রিন্ট',save:'সেভ',done:'কাজ শেষ',del:'মুছুন',deleted:'ফাইল মুছে ফেলা হয়েছে',noPrint:'এটি ব্রাউজারে প্রিন্ট হয় না — সেভ করে খুলুন',receiving:'আসছে…',ago:'আগে',now:'এইমাত্র',min:'মিনিট',cTo:'ফাইল যাবে',cPick:'ফাইল বেছে নিন',cPickSub:'PDF, ছবি, Word — যেকোনো ফাইল',cCopies:'কত কপি',cColor:'রঙ',cSides:'পাতার কোন দিকে',cNote:'দোকানদারের জন্য কিছু লিখুন (ঐচ্ছিক)',cSend:'দোকানে পাঠান',cToken:'আপনার টোকেন',cTell:'দোকানদারকে এই নম্বরটি বলুন',sSent:'পাঠানো',sGot:'পৌঁছেছে',sPrinting:'প্রিন্ট হচ্ছে',sReady:'তৈরি ✓',cMore:'আরও ফাইল পাঠান',cConnecting:'দোকানের সঙ্গে যুক্ত হচ্ছে…',cClosed:'দোকান এখন অফলাইন। দোকানদারকে পেজটি খুলতে বলুন।',cLost:'সংযোগ কেটে গেছে। পেজটি আবার খুলুন।',privA:'আপনার ফোন নম্বর লাগে না। ফাইল কোনো সার্ভারে থাকে না।',privB:' কাজ শেষে দোকানের কম্পিউটার থেকেও মুছে যায়।'},
+hi:{pushBtn:'ऑफ़लाइन में भी फ़ाइल पाएँ — नोटिफ़िकेशन चालू करें',pushOn:'इस डिवाइस पर नोटिफ़िकेशन चालू ✓ — पेज बंद होने पर भी ख़बर मिलेगी',pushDenied:'नोटिफ़िकेशन की अनुमति नहीं मिली। ब्राउज़र सेटिंग्स से चालू करें।',pushFail:'नोटिफ़िकेशन चालू नहीं हो सका।',iosPush:'iPhone पर नोटिफ़िकेशन के लिए: Share → Add to Home Screen, फिर होम स्क्रीन से खोलें।',viaBox:'ऑफ़लाइन में जमा था',cOffline:'अभी ऑफ़लाइन — चिंता नहीं। फ़ाइल आपके फ़ोन पर ही लॉक होकर जमा रहेगी; ऑनलाइन आते ही उन्हें मिल जाएगी।',cSaved:'जमा हो गया',cSavedP:'फ़ाइल लॉक होकर जमा है। उन्हें नोटिफ़िकेशन मिलेगा और ऑनलाइन आते ही वे ले लेंगे।',sUploading:'अपलोड हो रहा है',privBox:'फ़ाइल आपके फ़ोन पर ही लॉक होती है — सिर्फ़ पाने वाला खोल सकता है। 24 घंटे बाद अपने-आप मिट जाती है।',tooBig:'ऑफ़लाइन में कुल 100 MB / 30 फ़ाइलों से ज़्यादा नहीं भेज सकते।',boxFull:'उनका जमा-बॉक्स अभी भरा है। बाद में कोशिश करें।',failed2:'भेजा नहीं जा सका',standeeTip:'प्रिंट करते समय Scale "Default" रखें, "Fit to page" नहीं।',addDev:'दूसरे डिवाइस पर भी चालू करें',ownT:'अपने दूसरे डिवाइस से स्कैन करें',ownP:'कंप्यूटर चालू हो तो फ़ाइल कंप्यूटर पर आएगी; बंद हो तो फ़ोन पर। वही QR, वही कोड। यह QR किसी और को न दिखाएँ।',close:'बंद करें',devPc:'यह कंप्यूटर — फ़ाइल पहले यहाँ आती है',devPhone:'यह फ़ोन — कंप्यूटर बंद हो तो यहाँ आती है (पेज खुला रखें)',copy:'कॉपी',copied:'कॉपी हो गया ✓',title:'झटपट दुकान',tagline:'प्रिंट-दुकान के लिए QR फ़ाइल-काउंटर',setupT:'आपकी दुकान का नाम',setupSub:'यह नाम ग्राहक के फ़ोन और QR स्टैंडी पर दिखेगा।',setupPh:'जैसे: श्री गणेश ज़ेरॉक्स',start:'शुरू करें',qrT:'ग्राहक यह QR स्कैन करेंगे',codeLbl:'दुकान का कोड',autoPrint:'फ़ाइल आते ही प्रिंट विंडो खोलें',autoDel:'प्रिंट/काम पूरा होने पर फ़ाइल मिटा दें',sound:'फ़ाइल आने पर आवाज़',standee:'QR स्टैंडी प्रिंट',rename:'नाम बदलें',tipsT:'एक क्लिक में प्रिंट के टिप्स',tip1:'Chrome शॉर्टकट में यह जोड़ने पर बिना प्रिंट विंडो के सीधे डिफ़ॉल्ट प्रिंटर पर प्रिंट होगा:',tip2:'दुकान खुली रहने तक यह पेज खुला रखें। पेज बंद होते ही सारी फ़ाइलें मिट जाती हैं।',online:'चालू — ग्राहक का इंतज़ार',connecting:'चालू हो रहा है…',offline:'इंटरनेट नहीं — दोबारा कोशिश…',inUse:'यह दुकान दूसरे टैब में खुली है। उसे बंद करें।',jobs:'आज के काम',empty:'अभी कोई फ़ाइल नहीं आई। ग्राहक QR स्कैन करके भेजेगा तो यहाँ टोकन नंबर के साथ दिखेगी।',nJobs:' काम',token:'टोकन',copies:'कॉपी',bw:'ब्लैक-व्हाइट',color:'रंगीन',one:'एक तरफ़',two:'दोनों तरफ़',printAll:'सब प्रिंट',print:'प्रिंट',save:'सेव',done:'काम पूरा',del:'मिटाएँ',deleted:'फ़ाइलें मिटा दी गईं',noPrint:'यह ब्राउज़र में प्रिंट नहीं होती — सेव करके खोलें',receiving:'आ रही है…',ago:'पहले',now:'अभी',min:'मिनट',cTo:'फ़ाइल जाएगी',cPick:'फ़ाइल चुनें',cPickSub:'PDF, फ़ोटो, Word — कोई भी फ़ाइल',cCopies:'कितनी कॉपी',cColor:'रंग',cSides:'पेज की कौन-सी तरफ़',cNote:'दुकानदार के लिए कुछ लिखें (वैकल्पिक)',cSend:'दुकान पर भेजें',cToken:'आपका टोकन',cTell:'दुकानदार को यह नंबर बताएँ',sSent:'भेजा',sGot:'पहुँचा',sPrinting:'प्रिंट हो रहा',sReady:'तैयार ✓',cMore:'और फ़ाइल भेजें',cConnecting:'दुकान से जुड़ रहा है…',cClosed:'दुकान अभी ऑफ़लाइन है। दुकानदार से पेज खोलने को कहें।',cLost:'कनेक्शन टूट गया। पेज दोबारा खोलें।',privA:'आपका फ़ोन नंबर नहीं चाहिए। फ़ाइल किसी सर्वर पर नहीं रहती।',privB:' काम पूरा होने पर दुकान के कंप्यूटर से भी मिट जाती है।'},
+en:{pushBtn:'Get files even when offline — turn on notifications',pushOn:'Notifications on for this device ✓ — you’ll be alerted even with the page closed',pushDenied:'Notification permission was blocked. Allow it in the browser settings.',pushFail:'Couldn’t turn on notifications.',iosPush:'On iPhone: Share → Add to Home Screen, then open it from the home screen to get notifications.',viaBox:'Arrived while offline',cOffline:'Offline right now — no problem. Your files are locked on your phone and kept for them; they’ll get them when they’re back online.',cSaved:'Saved',cSavedP:'Your files are locked and waiting. They’ll get a notification and pick them up when online.',sUploading:'Uploading',privBox:'Files are locked on your phone — only the receiver can open them. Auto-deleted after 24 hours.',tooBig:'While they’re offline you can send up to 100 MB / 30 files.',boxFull:'Their drop box is full right now. Try later.',failed2:'Couldn’t send',standeeTip:'When printing, keep Scale on "Default", not "Fit to page".',addDev:'Add my other device',ownT:'Scan this with your own other device',ownP:'When your PC is on, files go to the PC; when it’s off, they go to your phone. Same QR, same code. Don’t show this QR to anyone else.',close:'Close',devPc:'This PC — files arrive here first',devPhone:'This phone — files arrive here when the PC is off (keep the page open)',copy:'Copy',copied:'Copied ✓',title:'Jhatpat Shop',tagline:'QR file counter for print shops',setupT:'Your shop’s name',setupSub:'Shown on the customer’s phone and on your QR standee.',setupPh:'e.g. Maa Tara Xerox',start:'Start',qrT:'Customers scan this QR',codeLbl:'Shop code',autoPrint:'Open print window when files arrive',autoDel:'Delete files when the job is done',sound:'Sound when files arrive',standee:'Print QR standee',rename:'Rename',tipsT:'Tips for one-click printing',tip1:'Add this to your Chrome shortcut to print straight to the default printer with no dialog:',tip2:'Keep this page open while the shop is open. Closing it wipes all files.',online:'Live — waiting for customers',connecting:'Starting…',offline:'No internet — retrying…',inUse:'This shop is open in another tab. Close that one.',jobs:'Today’s jobs',empty:'No files yet. When a customer scans and sends, the job appears here with a token number.',nJobs:' jobs',token:'Token',copies:'copies',bw:'B&W',color:'Colour',one:'Single side',two:'Both sides',printAll:'Print all',print:'Print',save:'Save',done:'Done',del:'Delete',deleted:'Files deleted',noPrint:'Can’t print in the browser — save and open',receiving:'Receiving…',ago:'ago',now:'just now',min:'min',cTo:'Sending to',cPick:'Choose files',cPickSub:'PDF, photos, Word — any file',cCopies:'Copies',cColor:'Colour',cSides:'Sides',cNote:'Note for the shop (optional)',cSend:'Send to shop',cToken:'Your token',cTell:'Tell the shopkeeper this number',sSent:'Sent',sGot:'Received',sPrinting:'Printing',sReady:'Ready ✓',cMore:'Send more files',cConnecting:'Connecting to the shop…',cClosed:'The shop is offline right now. Ask them to open the page.',cLost:'Connection lost. Open the page again.',privA:'No phone number needed. Files are never stored on a server.',privB:' They’re deleted from the shop’s computer when the job is done.'}};
 const MODE=/desk/i.test(location.pathname)?'desk':'shop',DESK=MODE==='desk',KP=DESK?'jpd-':'jp-';
 const D={
 bn:{online:'চালু — অপেক্ষায়',title:'আমার ডেস্ক',tagline:'QR স্ক্যান করে আমাকে ফাইল পাঠান',setupT:'আপনার নাম ও পদ',setupSub:'যে স্ক্যান করবে তার ফোনে আর ডেস্কের QR কার্ডে এটি দেখাবে।',setupPh:'যেমন: SSE/P.Way/Planning, হাওড়া',qrT:'আমাকে ফাইল পাঠাতে স্ক্যান করুন',codeLbl:'ডেস্ক কোড',autoDel:'"দেখা হয়েছে" চাপলে ফাইল মুছে দিন',standee:'ডেস্কের QR কার্ড প্রিন্ট',jobs:'আজ যা এসেছে',empty:'এখনও কিছু আসেনি। কেউ QR স্ক্যান করে পাঠালেই এখানে দেখাবে।',token:'নং',done:'দেখা হয়েছে',nJobs:'টি',cSend:'পাঠান',cNote:'আপনার নাম / বিষয় / লিংক (ঐচ্ছিক)',cToken:'আপনার নম্বর',cTell:'পৌঁছালে নিচে সবুজ দেখাবে',sReady:'দেখা হয়েছে ✓',cMore:'আরও পাঠান',cClosed:'এই ডেস্ক এখন অফলাইন। পরে চেষ্টা করুন।',privB:' দেখা হয়ে গেলে কম্পিউটার থেকেও মুছে যায়।'},
@@ -348,7 +352,7 @@ function startShop(){
   $('#dName').textContent=shopName;$('#dCode').textContent=shopCode.slice(0,3)+' '+shopCode.slice(3);
   const url=base+'#c-'+shopCode,q=$('#qr');q.innerHTML='';
   new QRCode(q,{text:url,width:512,height:512,correctLevel:QRCode.CorrectLevel.M});q.classList.remove('wait');
-  goLive();lockScreen();renderJobsMeta();
+  goLive();lockScreen();renderJobsMeta();registerDesk();
 }
 function goLive(){
   liveKey='connecting';renderLive();
@@ -368,9 +372,9 @@ $('#setupForm').onsubmit=e=>{
   e.preventDefault();const v=$('#shopIn').value.trim();if(!v)return;
   shopName=v.slice(0,60);store.set(KP+'shop-name',shopName);
   if(!shopCode){shopCode=rid(6);store.set(KP+'shop-code',shopCode)}
-  if(peer){$('#dName').textContent=shopName;$('#vSetup').hidden=true;$('#vDash').hidden=false;broadcastHi()}else startShop();
+  if(peer){$('#dName').textContent=shopName;$('#vSetup').hidden=true;$('#vDash').hidden=false;broadcastHi();registerDesk()}else startShop();
 };
-$('#ownBtn').onclick=()=>{const q=$('#ownQr');q.innerHTML='';new QRCode(q,{text:base+'#own-'+shopCode+'.'+encodeURIComponent(shopName),width:420,height:420,correctLevel:QRCode.CorrectLevel.L});$('#own').hidden=false};
+$('#ownBtn').onclick=async()=>{await ensureKeys();const q=$('#ownQr');q.innerHTML='';new QRCode(q,{text:base+'#own-'+shopCode+'.'+tok+'.'+privJwk.d+'.'+privJwk.x+'.'+privJwk.y+'.'+encodeURIComponent(shopName),width:420,height:420,correctLevel:QRCode.CorrectLevel.L});$('#own').hidden=false};
 $('#ownClose').onclick=()=>{$('#own').hidden=true};
 $('#renameBtn').onclick=()=>{$('#shopIn').value=shopName;$('#vDash').hidden=true;$('#vSetup').hidden=false;$('#shopIn').focus()};
 
@@ -415,7 +419,7 @@ function renderJob(j,isNew){
   const el=j.el;el.classList.toggle('ready',j.status==='ready');
   const ready=j.files.length>=j.expect&&j.files.every(f=>f.blob);
   el.innerHTML=`<div class="tok"><small>${esc(t('token'))}</small><b>${j.n}</b><span>${esc(ago(j.at))}</span></div>
-  <div class="jb">${DESK?'':`<div class="chips"><span class="chip hot">${j.copies} ${esc(t('copies'))}</span><span class="chip">${esc(t(j.color?'color':'bw'))}</span><span class="chip">${esc(t(j.sides===2?'two':'one'))}</span></div>`}
+  <div class="jb">${j.remote?`<div class="chips"><span class="chip">${esc(t('viaBox'))}</span></div>`:''}${DESK?'':`<div class="chips"><span class="chip hot">${j.copies} ${esc(t('copies'))}</span><span class="chip">${esc(t(j.color?'color':'bw'))}</span><span class="chip">${esc(t(j.sides===2?'two':'one'))}</span></div>`}
   ${j.note?`<div class="note">${linkify(j.note)}</div>`:''}
   ${j.gone?`<div class="gone">${esc(t('deleted'))}</div>`:'<ul class="files"></ul>'}
   <div class="jacts"></div></div>`;
@@ -473,9 +477,113 @@ $('#standeeBtn').onclick=()=>{
 };
 window.addEventListener('beforeunload',e=>{if([...jobs.values()].some(j=>!j.gone)){e.preventDefault();e.returnValue=''}});
 
+
+/* =================================================================== DROP BOX (offline, end-to-end encrypted) */
+const API='https://jhatpat-drop.jhatpat-drop.workers.dev',PART=1<<20,EC={name:'ECDH',namedCurve:'P-256'};
+const b64u={enc:b=>{let s='';const a=new Uint8Array(b);for(let i=0;i<a.length;i+=0x8000)s+=String.fromCharCode.apply(null,a.subarray(i,i+0x8000));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')},
+  dec:s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';const b=atob(s),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a}};
+async function aesEnc(key,buf){const iv=crypto.getRandomValues(new Uint8Array(12));const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,buf));const o=new Uint8Array(12+ct.length);o.set(iv);o.set(ct,12);return o}
+const aesDec=(key,u8)=>crypto.subtle.decrypt({name:'AES-GCM',iv:u8.subarray(0,12)},key,u8.subarray(12));
+const pubKey=j=>crypto.subtle.importKey('jwk',{kty:'EC',crv:'P-256',x:j.x,y:j.y,ext:true},EC,true,[]);
+let tok=store.get(KP+'tok'),privJwk=null;try{privJwk=JSON.parse(store.get(KP+'priv')||'null')}catch(e){}
+let dropOK=false,pushOn=store.get(KP+'push')==='1',ownerKeyP=null,polling=false;const seenDrops=new Set();
+async function ensureKeys(){
+  if(!tok){tok=rid(32);store.set(KP+'tok',tok)}
+  if(!privJwk){const kp=await crypto.subtle.generateKey(EC,true,['deriveKey']);privJwk=await crypto.subtle.exportKey('jwk',kp.privateKey);store.set(KP+'priv',JSON.stringify(privJwk))}
+}
+async function api(path,o={}){const h=Object.assign({},o.headers||{});if(o.auth)h.Authorization='Bearer '+tok;const r=await fetch(API+path,{method:o.method||'GET',headers:h,body:o.body,cache:'no-store'});if(!r.ok)throw new Error(String(r.status));return r}
+async function registerDesk(){
+  try{await ensureKeys();
+    await api('/d/'+shopCode+'/register',{method:'POST',auth:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({pub:{x:privJwk.x,y:privJwk.y},name:shopName,mode:MODE})});
+    dropOK=true;saveAuth();pollInbox();
+    if(pushOn&&'Notification' in window&&Notification.permission==='granted')enablePush(true);
+  }catch(e){dropOK=false;console.warn('[jhatpat] register',e)}
+  renderPush();
+}
+async function saveAuth(){try{const c=await caches.open('jp-auth');await c.put(new Request(new URL('__auth-'+MODE,location.href).href),new Response(JSON.stringify({api:API,code:shopCode,tok,page:MODE+'.html',lang,name:shopName})))}catch(e){}}
+function ownerPriv(){return ownerKeyP||(ownerKeyP=crypto.subtle.importKey('jwk',privJwk,EC,false,['deriveKey']))}
+async function dropKey(epk){return crypto.subtle.deriveKey({name:'ECDH',public:await pubKey(epk)},await ownerPriv(),{name:'AES-GCM',length:256},false,['decrypt'])}
+async function pollInbox(){
+  if(!dropOK||polling||$('#vDash').hidden)return;polling=true;
+  try{const list=await (await api('/d/'+shopCode+'/inbox',{auth:true})).json();for(const d of list)if(!seenDrops.has(d.id)){seenDrops.add(d.id);await fetchDrop(d)}}catch(e){console.warn('[jhatpat] inbox',e)}
+  polling=false;
+}
+async function fetchDrop(d){
+  const jid='r-'+d.id;
+  try{
+    const key=await dropKey(d.epk);
+    const meta=JSON.parse(new TextDecoder().decode(await aesDec(key,b64u.dec(d.meta))));
+    if(jobs.has(jid)){const o=jobs.get(jid);o.el&&o.el.remove();jobs.delete(jid)}
+    const j={id:jid,n:nextToken(),c:null,at:d.at,copies:Math.max(1,Math.min(99,+meta.copies||1)),color:meta.color==='color',sides:meta.sides==='2'?2:1,note:String(meta.note||'').slice(0,300),files:[],expect:0,status:'got',el:null,remote:true};
+    j.files=(meta.files||[]).slice(0,30).map((f,n)=>({id:'r'+d.id+'-'+n,name:String(f.name||'file').slice(0,200),size:+f.size||0,mime:String(f.mime||''),blob:null,parts:Math.max(1,+f.parts||1)}));
+    j.expect=j.files.length;jobs.set(jid,j);renderJob(j,true);if(opts().sound)chime();
+    for(let n=0;n<j.files.length;n++){const f=j.files[n],bufs=[];
+      for(let k=0;k<f.parts;k++){const r=await api(`/d/${shopCode}/drops/${d.id}/${n}/${k}`,{auth:true});bufs.push(await aesDec(key,new Uint8Array(await r.arrayBuffer())));bar(f,(k+1)/f.parts)}
+      f.blob=new Blob(bufs,{type:f.mime||'application/octet-stream'});renderJob(j)}
+    await api(`/d/${shopCode}/drops/${d.id}`,{method:'DELETE',auth:true});
+    if(opts().auto)printJob(j);
+  }catch(e){console.warn('[jhatpat] drop',e);seenDrops.delete(d.id)}
+}
+async function enablePush(silent){
+  try{
+    if(!silent){const p=await Notification.requestPermission();if(p!=='granted'){setStatus('pushDenied','bad');renderPush();return}}
+    const reg=await navigator.serviceWorker.register('sw.js');await navigator.serviceWorker.ready;
+    let sub=await reg.pushManager.getSubscription();
+    if(!sub){const v=await (await api('/vapid')).json();sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u.dec(v.key)})}
+    await api('/d/'+shopCode+'/sub',{method:'POST',auth:true,headers:{'Content-Type':'application/json'},body:JSON.stringify(sub)});
+    pushOn=true;store.set(KP+'push','1');saveAuth();if(!silent&&stKey==='pushDenied')setStatus('');
+  }catch(e){console.warn('[jhatpat] push',e);if(!silent)setStatus('pushFail','bad')}
+  renderPush();
+}
+function renderPush(){
+  const b=$('#pushBtn'),s=$('#pushState');if(!b)return;
+  const can='serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window;
+  const ios=/iPhone|iPad/.test(navigator.userAgent)&&!navigator.standalone;
+  const on=can&&pushOn&&Notification.permission==='granted';
+  b.hidden=!dropOK||!can||on;
+  s.dataset.k=!dropOK?'':on?'pushOn':(!can&&ios)?'iosPush':'';s.textContent=s.dataset.k?t(s.dataset.k):'';
+}
+$('#pushBtn').onclick=()=>enablePush(false);
+setInterval(()=>pollInbox(),60000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')pollInbox()});
+if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('sw.js').catch(()=>{});navigator.serviceWorker.addEventListener('message',e=>{if(e.data==='inbox')pollInbox()})}
+
+/* visitor side */
+let boxMode=false,boxPub=null,boxCode='';
+async function tryBox(code){
+  if(boxMode)return;
+  try{const r=await fetch(API+'/d/'+code+'/key',{cache:'no-store'});if(!r.ok)throw 0;const j=await r.json();
+    boxPub=j.pub;boxCode=code;boxMode=true;if(j.name)$('#cShop').textContent=String(j.name).slice(0,60);
+    setStatus('cOffline');renderPriv();refreshSend();
+  }catch(e){setStatus('cClosed','bad')}
+}
+async function boxSend(){
+  const files=cfiles.slice(),total=files.reduce((a,f)=>a+f.size,0);
+  if(total>100*1048576||files.length>30){setStatus('tooBig','bad');return}
+  $('#cForm').hidden=true;$('#cDone').hidden=false;$('#cSteps').hidden=true;
+  const top=$('#cDone .top small');top.dataset.t='sUploading';$('#cDone p').dataset.t='cSavedP';setStatus('');applyLang();$('#cTok').textContent='0%';
+  try{
+    const eph=await crypto.subtle.generateKey(EC,true,['deriveKey']);
+    const key=await crypto.subtle.deriveKey({name:'ECDH',public:await pubKey(boxPub)},eph.privateKey,{name:'AES-GCM',length:256},false,['encrypt']);
+    const epk=await crypto.subtle.exportKey('jwk',eph.publicKey);
+    const fm=files.map(f=>({name:f.name,size:f.size,mime:f.type,parts:Math.max(1,Math.ceil(f.size/PART))}));
+    const meta=await aesEnc(key,new TextEncoder().encode(JSON.stringify({note:$('#cNote').value.trim(),copies,color,sides,from:dev(),files:fm})));
+    const r=await fetch(API+'/d/'+boxCode+'/drops',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({epk:{x:epk.x,y:epk.y},meta:b64u.enc(meta),files:fm.map(f=>f.parts)})});
+    if(!r.ok)throw new Error(String(r.status));const {id}=await r.json();
+    const all=fm.reduce((a,f)=>a+f.parts,0);let done=0;
+    for(let n=0;n<files.length;n++)for(let k=0;k<fm[n].parts;k++){
+      const ct=await aesEnc(key,await files[n].slice(k*PART,(k+1)*PART).arrayBuffer());
+      let ok=false;for(let a=0;a<3&&!ok;a++){try{ok=(await fetch(`${API}/d/${boxCode}/drops/${id}/${n}/${k}`,{method:'PUT',body:ct})).ok}catch(e){}}
+      if(!ok)throw new Error('upload');done++;$('#cTok').textContent=Math.round(done/all*100)+'%';
+    }
+    if(!(await fetch(`${API}/d/${boxCode}/drops/${id}/done`,{method:'POST'})).ok)throw new Error('done');
+    top.dataset.t='cSaved';applyLang();$('#cTok').textContent='✓';chime();
+  }catch(e){console.warn('[jhatpat] box',e);setStatus(String(e.message)==='429'?'boxFull':'cLost','bad');top.dataset.t='failed2';applyLang();$('#cTok').textContent='✕'}
+}
+
 /* =================================================================== CUSTOMER */
 let cconn=null,cfiles=[],copies=1,color='bw',sides='1',delPromise=false,curJob=null;
-function renderPriv(){const p=$('#cPriv');if(p)p.textContent=t('privA')+(delPromise?t('privB'):'')}
+function renderPriv(){const p=$('#cPriv');if(p)p.textContent=boxMode?t('privBox'):t('privA')+(delPromise?t('privB'):'')}
 function startCustomer(code){
   $('#vCust').hidden=false;setStatus('cConnecting');
   const targets=[PREFIX+code,PREFIX+code+'-m'];let i=0;
@@ -486,11 +594,11 @@ function startCustomer(code){
     c.on('data',custData);
     c.on('close',()=>{if(cconn===c){setStatus('cLost','bad');$('#cSend').disabled=true}});
   };
-  const tm=setTimeout(()=>{if(!(cconn&&cconn.open))setStatus('cClosed','bad')},25000);
+  const tm=setTimeout(()=>{if(!(cconn&&cconn.open))tryBox(code)},25000);
   p.on('open',tryNext);
   p.on('error',e=>{
     if(e.type==='peer-unavailable'&&i<targets.length-1){i++;tryNext();return}
-    if(!(cconn&&cconn.open))setStatus(e.type==='peer-unavailable'?'cClosed':'cLost','bad');
+    if(!(cconn&&cconn.open)){if(e.type==='peer-unavailable')tryBox(code);else setStatus('cLost','bad')}
   });
 }
 function custData(d){
@@ -509,7 +617,7 @@ function renderPicked(){
     li.append(d,x);ul.append(li)});
   refreshSend();
 }
-function refreshSend(){$('#cSend').disabled=!((cfiles.length||(DESK&&$('#cNote').value.trim()))&&cconn&&cconn.open)}
+function refreshSend(){$('#cSend').disabled=!((cfiles.length||(DESK&&$('#cNote').value.trim()))&&((cconn&&cconn.open)||boxMode))}
 $('#cNote').addEventListener('input',()=>refreshSend());
 $('#cPick').onclick=()=>$('#cFile').click();
 $('#cFile').onchange=e=>{cfiles.push(...e.target.files);e.target.value='';renderPicked()};
@@ -518,7 +626,7 @@ $('#cPlus').onclick=()=>{copies=Math.min(99,copies+1);$('#cCopiesV').textContent
 function seg(id,set){document.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#'+id+' button').forEach(x=>x.setAttribute('aria-pressed',x===b));set(b.dataset.v)})}
 seg('segColor',v=>color=v);seg('segSides',v=>sides=v);
 $('#cSend').onclick=async()=>{
-  if(!(cfiles.length||(DESK&&$('#cNote').value.trim()))||!cconn||!cconn.open)return;
+  if(!(cfiles.length||(DESK&&$('#cNote').value.trim())))return;if(!(cconn&&cconn.open)){if(boxMode)boxSend();return}
   const files=cfiles.slice();curJob={id:rid(8)};
   $('#cForm').hidden=true;$('#cDone').hidden=false;$('#cTok').textContent='…';stepTo('sent');
   const c=cconn,dc=c.dataChannel;dc.bufferedAmountLowThreshold=1<<20;
@@ -533,14 +641,16 @@ $('#cSend').onclick=async()=>{
     }
   }catch(e){setStatus('cLost','bad')}
 };
-$('#cMore').onclick=()=>{cfiles=[];renderPicked();$('#cNote').value='';$('#cDone').hidden=true;$('#cForm').hidden=false;curJob=null};
+$('#cMore').onclick=()=>{$('#cDone .top small').dataset.t='cToken';$('#cDone p').dataset.t='cTell';$('#cSteps').hidden=false;if(boxMode)setStatus('cOffline');applyLang();cfiles=[];renderPicked();$('#cNote').value='';$('#cDone').hidden=true;$('#cForm').hidden=false;curJob=null};
 
 /* =================================================================== start */
 applyLang();
 const h=location.hash.slice(1);
 if(typeof Peer==='undefined'||typeof QRCode==='undefined'){setStatus('offline','bad')}
 else if(/^c-[a-z0-9]{6}$/.test(h)){startCustomer(h.slice(2))}
-else if(/^own-[a-z0-9]{6}\./.test(h)){const c=h.slice(4,10);let nm='';try{nm=decodeURIComponent(h.slice(11))}catch(e){}shopCode=c;shopName=(nm||shopName||'—').slice(0,60);store.set(KP+'shop-code',shopCode);store.set(KP+'shop-name',shopName);history.replaceState(null,'',base);startShop()}
+else if(/^own-[a-z0-9]{6}\./.test(h)){const pp=h.slice(4).split('.');const c=pp[0];let nm=pp.slice(1).join('.');
+  if(pp.length>=6){tok=pp[1];privJwk={kty:'EC',crv:'P-256',d:pp[2],x:pp[3],y:pp[4],ext:true,key_ops:['deriveKey']};store.set(KP+'tok',tok);store.set(KP+'priv',JSON.stringify(privJwk));nm=pp.slice(5).join('.')}
+  try{nm=decodeURIComponent(nm)}catch(e){}shopCode=c;shopName=(nm||shopName||'—').slice(0,60);store.set(KP+'shop-code',shopCode);store.set(KP+'shop-name',shopName);history.replaceState(null,'',base);startShop()}
 else if(shopName&&shopCode){startShop()}
 else{$('#vSetup').hidden=false}
 window.addEventListener('hashchange',()=>location.reload());
