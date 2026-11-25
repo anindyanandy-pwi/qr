@@ -1,0 +1,16 @@
+name = "jhatpat-drop"
+main = "index.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "jhatpat"
+database_id = "6fc8334d-98f2-4887-a741-302818c845f8"
+
+[triggers]
+crons = ["17 * * * *"]
+
+[vars]
+VAPID_PUBLIC = "BKF9WJq-A-tjKqVqzo0FKnB9aHsN2JRGPuk3Bj0f-cmKS9HW9qzvlCh0R5gT5IsYjJBl3-4eVVzaKeRYZ7aF_c4"
+VAPID_SUB = "https://anindyanandy-pwi.github.io/qr/"
