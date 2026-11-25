@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#e4002b">
+<title>QR পাঠাও</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Hind:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: plain, calm, for anyone - a ticket-counter notice board
+   IDEA: a railway platform sign: one big thing to look at
+   PICTURE: the QR itself, huge, framed like a departure-board tile
+   COLOUR and TYPE: white, black ink, signal red accent; Hind Siliguri / Hind
+   LAYOUT: one column, QR first, one big action under it */
+:root{color-scheme:light dark;--bg:light-dark(#fff,#0e0e0e);--ink:light-dark(#111,#f2f2f2);--mute:light-dark(#5b5b5b,#a8a8a8);--line:light-dark(#e2e2e2,#2a2a2a);--red:#e4002b;--card:light-dark(#f6f6f6,#181818);--ok:light-dark(#0a7a3d,#4cd38a)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Hind Siliguri","Hind","Noto Sans Bengali","Noto Sans Devanagari",system-ui,sans-serif;overflow-x:clip}
+main{max-width:560px;margin:0 auto;padding:12px 16px 48px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:6px solid var(--red);padding-top:10px;margin-bottom:14px}
+h1{font-size:24px;line-height:1.1;margin:0;font-weight:700}
+.lang{display:flex;gap:4px}
+.lang button{font:inherit;font-size:15px;min-height:40px;padding:0 10px;border:1px solid var(--line);background:none;color:var(--ink);border-radius:8px;cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.view{display:none}.view.on{display:block}
+.qrbox{background:#fff;border:3px solid #111;border-radius:16px;padding:10px;width:min(100%,440px);aspect-ratio:1;margin:0 auto;display:grid;place-items:center}
+.qrbox img,.qrbox canvas{width:100%!important;height:auto!important;image-rendering:pixelated}
+.big{font-size:clamp(22px,5.5vw,30px);line-height:1.2;font-weight:700;text-align:center;margin:16px 0 4px;text-wrap:balance}
+.sub{color:var(--mute);text-align:center;margin:0 0 8px}
+.link{font-size:14px;color:var(--mute);text-align:center;overflow-wrap:anywhere;margin-top:10px}
+.link b{color:var(--ink);font-size:16px;letter-spacing:.02em}
+.staged{border:2px solid var(--ink);border-radius:14px;padding:10px 14px;margin:0 auto 14px;max-width:440px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.staged span{overflow-wrap:anywhere}
+.status{margin:14px 0;padding:12px 14px;border-radius:12px;background:var(--card);text-align:center;font-weight:600;min-height:48px}
+.status.bad{background:color-mix(in srgb,var(--red) 14%,var(--bg));color:light-dark(#9b001d,#ff8a9e)}
+.status.good{color:var(--ok)}
+.pick{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;min-height:150px;border:3px dashed var(--ink);border-radius:18px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer;padding:16px}
+.pick b{font-size:28px;line-height:1.15;text-align:center}
+.pick span{color:var(--mute);font-size:15px;text-align:center}
+.pick.solid{border-style:solid;min-height:96px;margin-top:18px}
+.pick.solid b{font-size:22px}
+.pick.drag{border-color:var(--red);background:color-mix(in srgb,var(--red) 8%,var(--bg))}
+.row{display:flex;gap:8px;margin-top:14px}
+textarea{flex:1;font:inherit;font-size:16px;padding:10px 12px;border:2px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);resize:vertical;min-height:52px}
+.btn{font:inherit;font-weight:700;min-height:48px;padding:0 18px;border-radius:12px;border:0;background:var(--red);color:#fff;cursor:pointer}
+.btn.ghost{background:none;color:var(--ink);border:2px solid var(--line)}
+button:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.center{text-align:center;margin-top:14px}
+h2{font-size:17px;margin:26px 0 8px;color:var(--mute);font-weight:600}
+.list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.item{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:8px}
+.item .top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.item .name{font-weight:600;overflow-wrap:anywhere}
+.item .meta{color:var(--mute);font-size:14px;white-space:nowrap}
+.bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--red);transition:width .2s}
+.item.done .bar{display:none}
+.item .acts{display:flex;gap:8px;flex-wrap:wrap}
+.item a.save{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:10px;background:var(--ink);color:var(--bg);text-decoration:none;font-weight:700}
+.item .txt{overflow-wrap:anywhere;white-space:pre-wrap}
+.item .txt a{color:var(--red)}
+.item img.thumb{max-width:100%;max-height:220px;border-radius:8px;justify-self:start}
+.tag{font-size:13px;font-weight:700;color:var(--mute)}
+.spin{width:44px;height:44px;border:5px solid var(--line);border-top-color:var(--red);border-radius:50%;margin:30px auto;animation:r 1s linear infinite}
+@keyframes r{to{transform:rotate(1turn)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}.bar i{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1 data-t="title">QR পাঠাও</h1>
+    <div class="lang" role="group" aria-label="Language">
+      <button data-l="bn">বাংলা</button><button data-l="hi">हिंदी</button><button data-l="en">EN</button>
+    </div>
+  </header>
+
+  <!-- Shows a QR: either "receive" (waiting) or "share" (files picked first) -->
+  <section id="vQr" class="view">
+    <div class="staged" id="staged" hidden><span id="stagedTxt"></span><button class="btn ghost" id="cancel" data-t="cancel"></button></div>
+    <div class="qrbox" id="qr"><div class="spin"></div></div>
+    <p class="big" id="qrMsg"></p>
+    <p class="sub" id="qrSub"></p>
+    <p class="link"><span data-t="orOpen"></span><br><b id="qrLink"></b></p>
+    <button class="pick solid" id="pickFirst"><b data-t="pickFirst"></b><span data-t="pickFirstSub"></span></button>
+    <input type="file" id="file2" multiple hidden>
+  </section>
+
+  <!-- Scanner side, before connection -->
+  <section id="vJoin" class="view"><div class="spin"></div></section>
+
+  <!-- Connected: both sides can send -->
+  <section id="vConn" class="view">
+    <button class="pick" id="pick"><b data-t="pick"></b><span data-t="pickSub"></span></button>
+    <input type="file" id="file" multiple hidden>
+    <div class="row">
+      <textarea id="text" rows="1" data-ph="textPh"></textarea>
+      <button class="btn" id="sendText" data-t="sendText"></button>
+    </div>
+    <p class="sub" style="margin-top:10px" data-t="keepOpen"></p>
+  </section>
+
+  <div class="status" id="status" role="status" aria-live="polite"></div>
+  <div class="center" id="againWrap" hidden><button class="btn ghost" id="again" data-t="again"></button></div>
+  <div class="center" id="endWrap" hidden><button class="btn ghost" id="end" data-t="end"></button></div>
+  <div class="center" id="installWrap" hidden><button class="btn ghost" id="install" data-t="install"></button><p class="sub" style="margin-top:6px" data-t="installSub"></p></div>
+
+  <section id="histWrap" hidden>
+    <h2 data-t="history"></h2>
+    <ul class="list" id="hist"></ul>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+{
+const T={
+bn:{title:'QR পাঠাও',scan:'অন্য ফোনের ক্যামেরা দিয়ে এই QR স্ক্যান করুন',scanSub:'কোনো অ্যাপ লাগবে না। নম্বর সেভ করতে হবে না।',shareScan:'যাকে পাঠাবেন, সে এই QR স্ক্যান করুক',shareSub:'স্ক্যান করলেই ফাইল চলে যাবে',orOpen:'স্ক্যান না হলে এই লিংকটি খুলুন:',making:'QR তৈরি হচ্ছে…',ready:'স্ক্যানের অপেক্ষায়…',ready2:'আরেকজন স্ক্যান করলে তাকেও পাঠানো হবে',joining:'যুক্ত হচ্ছে…',connected:'যুক্ত হয়েছে',pick:'ফাইল পাঠান',pickSub:'ছবি, PDF, যেকোনো ফাইল · একসাথে অনেকগুলো বাছতে পারেন',pickFirst:'ফাইল বেছে QR দেখান',pickFirstSub:'যাকে পাঠাবেন সে শুধু স্ক্যান করবে',textPh:'লিংক বা লেখা এখানে দিন',sendText:'পাঠান',save:'সেভ করুন',copy:'কপি',copied:'কপি হয়েছে',sent:'পৌঁছেছে ✓',sending:'পাঠানো হচ্ছে',receiving:'আসছে',got:'এসেছে',you:'আপনি',them:'ওদিক থেকে',closed:'সংযোগ বন্ধ হয়ে গেছে',again:'নতুন QR',end:'বন্ধ করুন',cancel:'বাতিল',nFiles:'টি ফাইল',text1:'লেখা/লিংক',expired:'এই QR আর চালু নেই। নতুন QR স্ক্যান করুন।',failConn:'সংযোগ হচ্ছে না। দুটো ডিভাইসেই ইন্টারনেট আছে কিনা দেখুন, অথবা একই Wi‑Fi বা হটস্পটে যুক্ত করুন।',noNet:'ইন্টারনেট পাওয়া যাচ্ছে না।',busy:'এই QR এখন অন্য কেউ ব্যবহার করছে।',keepOpen:'পাঠানো শেষ না হওয়া পর্যন্ত এই পেজ খোলা রাখুন',host:'পেজটি কোনো https ওয়েবসাইটে রাখলে তবেই QR কাজ করবে।',big:'ফাইলটি খুব বড় — ফোনে সমস্যা হতে পারে',history:'আদান-প্রদান',failed:'পাঠানো যায়নি',leave:'পাঠানো চলছে। বন্ধ করবেন?',install:'হোম স্ক্রিনে যোগ করুন',installSub:'তাহলে যেকোনো অ্যাপের Share মেনুতে "QR পাঠাও" আসবে'},
+hi:{title:'QR भेजो',scan:'दूसरे फ़ोन के कैमरे से यह QR स्कैन करें',scanSub:'कोई ऐप नहीं चाहिए। नंबर सेव करने की ज़रूरत नहीं।',shareScan:'जिसे भेजना है, वह यह QR स्कैन करे',shareSub:'स्कैन करते ही फ़ाइल चली जाएगी',orOpen:'स्कैन न हो तो यह लिंक खोलें:',making:'QR बन रहा है…',ready:'स्कैन का इंतज़ार…',ready2:'कोई और स्कैन करे तो उसे भी भेजा जाएगा',joining:'जुड़ रहा है…',connected:'जुड़ गया',pick:'फ़ाइल भेजें',pickSub:'फ़ोटो, PDF, कोई भी फ़ाइल · एक साथ कई चुन सकते हैं',pickFirst:'फ़ाइल चुनकर QR दिखाएँ',pickFirstSub:'जिसे भेजना है, वह बस स्कैन करे',textPh:'लिंक या संदेश यहाँ लिखें',sendText:'भेजें',save:'सेव करें',copy:'कॉपी',copied:'कॉपी हो गया',sent:'पहुँच गया ✓',sending:'भेजा जा रहा है',receiving:'आ रहा है',got:'आ गया',you:'आप',them:'उधर से',closed:'कनेक्शन बंद हो गया',again:'नया QR',end:'बंद करें',cancel:'रद्द करें',nFiles:' फ़ाइलें',text1:'संदेश/लिंक',expired:'यह QR अब चालू नहीं है। नया QR स्कैन करें।',failConn:'कनेक्शन नहीं हो रहा। दोनों डिवाइस में इंटरनेट देखें, या एक ही Wi‑Fi या हॉटस्पॉट से जोड़ें।',noNet:'इंटरनेट नहीं मिल रहा।',busy:'यह QR अभी कोई और इस्तेमाल कर रहा है।',keepOpen:'भेजना पूरा होने तक यह पेज खुला रखें',host:'यह पेज किसी https वेबसाइट पर रखने पर ही QR काम करेगा।',big:'फ़ाइल बहुत बड़ी है — फ़ोन पर दिक्कत हो सकती है',history:'लेन-देन',failed:'भेजा नहीं जा सका',leave:'भेजना चल रहा है। बंद करें?',install:'होम स्क्रीन पर जोड़ें',installSub:'फिर किसी भी ऐप के Share मेनू में "QR भेजो" आएगा'},
+en:{title:'QR Send',scan:'Scan this QR with the other phone’s camera',scanSub:'No app needed. No need to save the number.',shareScan:'Ask the other person to scan this QR',shareSub:'The files go as soon as they scan',orOpen:'If scanning fails, open this link:',making:'Making QR…',ready:'Waiting for scan…',ready2:'Anyone else who scans will get them too',joining:'Connecting…',connected:'Connected',pick:'Send files',pickSub:'Photos, PDFs, any file · pick several at once',pickFirst:'Pick files, then show QR',pickFirstSub:'The other person just scans',textPh:'Paste a link or type a message',sendText:'Send',save:'Save',copy:'Copy',copied:'Copied',sent:'Delivered ✓',sending:'Sending',receiving:'Receiving',got:'Received',you:'You',them:'From other side',closed:'Connection closed',again:'New QR',end:'Disconnect',cancel:'Cancel',nFiles:' files',text1:'message/link',expired:'This QR is no longer active. Scan a new one.',failConn:'Can’t connect. Check both devices have internet, or join the same Wi‑Fi or hotspot.',noNet:'No internet connection.',busy:'Someone else is using this QR right now.',keepOpen:'Keep this page open until sending finishes',host:'Put this page on an https website for the QR to work.',big:'Very large file — may struggle on a phone',history:'Transfers',failed:'Failed',leave:'Transfer in progress. Leave?',install:'Add to home screen',installSub:'Then “QR Send” appears in every app’s Share menu'}};
+const $=s=>document.querySelector(s);
+let lang;try{lang=localStorage.getItem('qrp-lang')}catch(e){}
+if(!T[lang])lang=/^hi/.test(navigator.language)?'hi':/^en/.test(navigator.language)?'en':'bn';
+const t=k=>T[lang][k]||k;
+let statusKey='',statusExtra='',statusCls='';
+function applyLang(){
+  document.documentElement.lang=lang;
+  document.querySelectorAll('[data-t]').forEach(e=>e.textContent=t(e.dataset.t));
+  document.querySelectorAll('[data-ph]').forEach(e=>e.placeholder=t(e.dataset.ph));
+  document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===lang));
+  document.querySelectorAll('[data-k]').forEach(e=>e.textContent=t(e.dataset.k));
+  $('#qrMsg').textContent=t(role==='share'?'shareScan':'scan');
+  $('#qrSub').textContent=t(role==='share'?'shareSub':'scanSub');
+  renderStaged();document.title=t('title');renderStatus();
+}
+function setStatus(k,cls='',extra=''){statusKey=k;statusCls=cls;statusExtra=extra;renderStatus()}
+function renderStatus(){const s=$('#status');s.textContent=statusKey?t(statusKey)+(statusExtra?' — '+statusExtra:''):'';s.className='status '+statusCls;s.hidden=!statusKey}
+document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{lang=b.dataset.l;try{localStorage.setItem('qrp-lang',lang)}catch(e){}applyLang()});
+function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id===id))}
+
+const PREFIX='qrpathao-',CHUNK=64*1024,HIGH=4<<20;
+const ICE={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}
+  /* For strict office firewalls add your own TURN relay here, e.g.
+     {urls:'turn:your-server:3478',username:'u',credential:'p'} */]};
+const base=location.href.split('#')[0].split('?')[0];
+const ABC='abcdefghjkmnpqrstuvwxyz23456789';
+const rid=(n=10)=>[...crypto.getRandomValues(new Uint8Array(n))].map(x=>ABC[x%ABC.length]).join('');
+const fmt=b=>b<1024?b+' B':b<1<<20?(b/1024).toFixed(0)+' KB':b<1<<30?(b/1048576).toFixed(1)+' MB':(b/1073741824).toFixed(2)+' GB';
+const dev=()=>{const u=navigator.userAgent;return/iPhone|iPad/.test(u)?'iPhone':/Android/.test(u)?'Android':/Windows/.test(u)?'Windows PC':/Mac/.test(u)?'Mac':'PC'};
+const isIOS=/iPhone|iPad/.test(navigator.userAgent);
+
+let peer=null,conn=null,role='',busyOut=0,cur=null,wake=null,joinTimer=null;
+let staged={files:[],texts:[]};
+const items={};
+
+/* ---------- history list ---------- */
+function addItem(id,name,size,dir){
+  $('#histWrap').hidden=false;
+  const li=document.createElement('li');li.className='item';
+  li.innerHTML='<div class="top"><span class="name"></span><span class="meta"></span></div><div class="bar"><i></i></div><div class="tag"></div><div class="acts"></div>';
+  li.querySelector('.name').textContent=name;
+  li.querySelector('.meta').textContent=fmt(size);
+  setTag(li,dir==='out'?'sending':'receiving');
+  $('#hist').prepend(li);items[id]=li;return li;
+}
+function setTag(li,k){const g=li.querySelector('.tag');g.dataset.k=k;g.textContent=t(k)}
+function prog(li,p){li.querySelector('.bar i').style.width=Math.min(100,p*100).toFixed(1)+'%'}
+function copyBtn(text){const b=document.createElement('button');b.className='btn ghost';b.dataset.k='copy';b.textContent=t('copy');
+  b.onclick=async()=>{try{await navigator.clipboard.writeText(text);b.dataset.k='copied';b.textContent=t('copied')}catch(e){}};return b}
+function addText(v,dir){
+  $('#histWrap').hidden=false;
+  const li=document.createElement('li');li.className='item done';
+  const tag=document.createElement('div');tag.className='tag';tag.dataset.k=dir==='out'?'you':'them';tag.textContent=t(tag.dataset.k);
+  const p=document.createElement('div');p.className='txt';
+  v.split(/(https?:\/\/[^\s]+)/g).forEach((part,i)=>{
+    if(i%2){const a=document.createElement('a');a.href=part;a.target='_blank';a.rel='noopener';a.textContent=part;p.append(a)}
+    else p.append(document.createTextNode(part))});
+  const acts=document.createElement('div');acts.className='acts';acts.append(copyBtn(v));
+  li.append(tag,p,acts);$('#hist').prepend(li);
+}
+function renderStaged(){
+  const n=staged.files.length,m=staged.texts.length;
+  $('#staged').hidden=role!=='share';
+  if(role!=='share')return;
+  const parts=[];
+  if(n)parts.push((n===1?staged.files[0].name:n+t('nFiles'))+' · '+fmt(staged.files.reduce((s,f)=>s+f.size,0)));
+  if(m)parts.push(t('text1'));
+  $('#stagedTxt').textContent=parts.join(' + ');
+}
+
+/* ---------- hosting a QR (receive mode or share mode) ---------- */
+function hostQR(mode){
+  role=mode;show('vQr');setStatus('making');applyLang();
+  $('#pickFirst').hidden=mode==='share';
+  $('#qr').innerHTML='<div class="spin"></div>';$('#qrLink').textContent='';
+  $('#againWrap').hidden=true;$('#endWrap').hidden=true;
+  if(!/^https:|^http:\/\/(localhost|127\.)/.test(location.href))setStatus('host','bad');
+  const code=rid(6);
+  peer=new Peer(PREFIX+code,{config:ICE});
+  peer.on('open',()=>{
+    const url=base+'#'+code;
+    $('#qr').innerHTML='';
+    new QRCode($('#qr'),{text:url,width:512,height:512,correctLevel:QRCode.CorrectLevel.L});
+    $('#qrLink').textContent=url.replace(/^https:\/\//,'');
+    if(statusKey!=='host')setStatus('ready');
+  });
+  peer.on('connection',c=>{
+    if(conn&&conn.open){c.on('open',()=>{c.send(JSON.stringify({t:'busy'}));setTimeout(()=>c.close(),800)});return}
+    setup(c);
+  });
+  peer.on('error',peerErr);
+  peer.on('disconnected',()=>{if(peer&&!peer.destroyed)setTimeout(()=>{try{if(peer.disconnected)peer.reconnect()}catch(e){}},1500)});
+}
+function joiner(code){
+  role='join';show('vJoin');setStatus('joining');
+  peer=new Peer({config:ICE});
+  peer.on('open',()=>{
+    setup(peer.connect(PREFIX+code,{serialization:'raw',reliable:true}));
+    joinTimer=setTimeout(()=>{if(!(conn&&conn.open))fail('failConn')},25000);
+  });
+  peer.on('error',peerErr);
+}
+function peerErr(e){
+  if(e.type==='unavailable-id'){peer.destroy();hostQR(role);return}
+  if(conn&&conn.open&&/network|server-error|socket/.test(e.type))return; // signalling lost, direct link still alive
+  fail(e.type==='peer-unavailable'?'expired':/network|server-error|socket|browser-incompatible/.test(e.type)?'noNet':'failConn');
+}
+function fail(k){setStatus(k,'bad');if(role==='join'){show('vJoin');$('#vJoin').innerHTML=''}
+  $('#againWrap').hidden=false;$('#endWrap').hidden=true}
+function setup(c){
+  conn=c;
+  c.on('open',()=>{
+    clearTimeout(joinTimer);
+    show('vConn');setStatus('connected','good','…');$('#endWrap').hidden=false;$('#againWrap').hidden=true;
+    c.send(JSON.stringify({t:'hi',dev:dev()}));lockScreen();
+    if(role==='share'){staged.texts.forEach(v=>{c.send(JSON.stringify({t:'x',v}));addText(v,'out')});sendFiles(staged.files)}
+  });
+  c.on('data',onData);
+  c.on('close',()=>closed('closed'));
+  c.on('error',()=>closed('failConn'));
+  setTimeout(()=>{const pc=c.peerConnection;if(pc)pc.addEventListener('iceconnectionstatechange',()=>{if(pc.iceConnectionState==='failed'){if(c.open)closed('failConn');else fail('failConn')}})},0);
+}
+function closed(k){
+  if(!conn)return;conn=null;unlock();queue.length=0;
+  if(cur){setTag(cur.li,'failed');cur=null}
+  for(const id in items){const li=items[id];if(li.querySelector('.tag').dataset.k==='sending'&&!li.classList.contains('done'))setTag(li,'failed')}
+  $('#endWrap').hidden=true;
+  if(role==='share'){show('vQr');setStatus('ready2','good');return} // same QR keeps working for the next person
+  setStatus(k,'bad');$('#againWrap').hidden=false;
+  if(role==='join'){show('vJoin');$('#vJoin').innerHTML=''}else{show('vQr');$('#qr').innerHTML=''}
+}
+function reset(){
+  try{conn&&conn.close()}catch(e){}conn=null;
+  try{peer&&peer.destroy()}catch(e){}peer=null;
+  history.replaceState(null,'',base);$('#vJoin').innerHTML='<div class="spin"></div>';
+}
+function startShare(files,texts){reset();staged={files,texts};hostQR('share')}
+$('#again').onclick=()=>{reset();staged={files:[],texts:[]};hostQR('recv')};
+$('#end').onclick=()=>{if(busyOut&&!window.confirm(t('leave')))return;reset();staged={files:[],texts:[]};hostQR('recv')};
+$('#cancel').onclick=$('#again').onclick;
+$('#pickFirst').onclick=()=>$('#file2').click();
+$('#file2').onchange=e=>{const fs=[...e.target.files];e.target.value='';if(fs.length)startShare(fs,[])};
+
+/* ---------- receiving ---------- */
+function onData(d){
+  if(typeof d==='string'){
+    let m;try{m=JSON.parse(d)}catch(e){return}
+    if(m.t==='hi')setStatus('connected','good',String(m.dev||'').slice(0,30));
+    else if(m.t==='busy'){conn.close();fail('busy')}
+    else if(m.t==='f'){cur={id:m.id,name:String(m.name).slice(0,200)||'file',size:+m.size||0,mime:String(m.mime||''),parts:[],got:0};cur.li=addItem(m.id,cur.name,cur.size,'in')}
+    else if(m.t==='e'&&cur&&cur.id===m.id)finish();
+    else if(m.t==='x')addText(String(m.v).slice(0,20000),'in');
+    else if(m.t==='ok'&&items[m.id])setTag(items[m.id],'sent');
+    return;
+  }
+  if(!cur)return;
+  cur.parts.push(d);cur.got+=d.byteLength??d.size??0;
+  if(cur.parts.length%8===0||cur.got>=cur.size)prog(cur.li,cur.size?cur.got/cur.size:1);
+}
+function finish(){
+  const f=cur;cur=null;
+  const blob=new Blob(f.parts,{type:f.mime||'application/octet-stream'});f.parts=null;
+  const url=URL.createObjectURL(blob),li=f.li;
+  li.classList.add('done');setTag(li,'got');
+  if(/^image\//.test(f.mime)){const im=document.createElement('img');im.className='thumb';im.src=url;im.alt='';li.insertBefore(im,li.querySelector('.acts'))}
+  const a=document.createElement('a');a.className='save';a.href=url;a.download=f.name;a.dataset.k='save';a.textContent=t('save');
+  li.querySelector('.acts').append(a);
+  if(!isIOS)try{a.click()}catch(e){}
+  conn&&conn.open&&conn.send(JSON.stringify({t:'ok',id:f.id}));
+}
+
+/* ---------- sending ---------- */
+const queue=[];let running=false;
+function sendFiles(list){for(const f of list)queue.push(f);if(!running)pump()}
+async function pump(){
+  running=true;
+  while(queue.length&&conn&&conn.open){try{await sendOne(queue.shift())}catch(e){}}
+  running=false;
+}
+async function sendOne(f){
+  const id=rid(),li=addItem(id,f.name,f.size,'out');
+  if(f.size>1.5*(1<<30))setStatus('big','bad');
+  busyOut++;
+  try{
+    const dc=conn.dataChannel;
+    const max=Math.min(CHUNK,(conn.peerConnection&&conn.peerConnection.sctp&&conn.peerConnection.sctp.maxMessageSize)||CHUNK);
+    dc.bufferedAmountLowThreshold=1<<20;
+    conn.send(JSON.stringify({t:'f',id,name:f.name,size:f.size,mime:f.type}));
+    let off=0,n=0;
+    while(off<f.size){
+      if(!conn||!conn.open)throw 0;
+      if(dc.bufferedAmount>HIGH)await new Promise(r=>dc.addEventListener('bufferedamountlow',r,{once:true}));
+      const buf=await f.slice(off,off+max).arrayBuffer();
+      conn.send(buf);off+=buf.byteLength;
+      if(++n%8===0||off>=f.size)prog(li,off/f.size);
+    }
+    conn.send(JSON.stringify({t:'e',id}));
+    li.classList.add('done');
+  }catch(e){setTag(li,'failed');throw e}
+  finally{busyOut--}
+}
+$('#pick').onclick=()=>$('#file').click();
+$('#file').onchange=e=>{sendFiles([...e.target.files]);e.target.value=''};
+function sendText(){const v=$('#text').value.trim();if(!v||!conn||!conn.open)return;conn.send(JSON.stringify({t:'x',v}));addText(v,'out');$('#text').value=''}
+$('#sendText').onclick=sendText;
+$('#text').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendText()}});
+const pk=$('#pick');
+['dragenter','dragover'].forEach(ev=>document.addEventListener(ev,e=>{e.preventDefault();pk.classList.add('drag')}));
+['dragleave','drop'].forEach(ev=>document.addEventListener(ev,e=>{e.preventDefault();pk.classList.remove('drag')}));
+document.addEventListener('drop',e=>{
+  const fs=[...e.dataTransfer.files];if(!fs.length)return;
+  if(conn&&conn.open)sendFiles(fs);else if(role!=='join')startShare(fs,[]);
+});
+document.addEventListener('paste',e=>{
+  if(document.activeElement===$('#text'))return;
+  const fs=[...(e.clipboardData.files||[])],v=e.clipboardData.getData('text');
+  if(conn&&conn.open){
+    if(fs.length){e.preventDefault();sendFiles(fs)}else if(v){e.preventDefault();$('#text').value=v;sendText()}
+  }else if(role!=='join'&&(fs.length||v.trim())){e.preventDefault();startShare(fs,fs.length?[]:[v.trim()])}
+});
+
+/* ---------- keep screen awake, warn before leaving ---------- */
+async function lockScreen(){try{wake=await navigator.wakeLock.request('screen')}catch(e){}}
+function unlock(){try{wake&&wake.release()}catch(e){}wake=null}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&conn&&conn.open)lockScreen()});
+window.addEventListener('beforeunload',e=>{if(busyOut||cur){e.preventDefault();e.returnValue=t('leave')}});
+
+/* ---------- install (Android) + share menu ---------- */
+let installEvt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;$('#installWrap').hidden=false});
+$('#install').onclick=async()=>{if(!installEvt)return;installEvt.prompt();try{await installEvt.userChoice}catch(e){}installEvt=null;$('#installWrap').hidden=true};
+window.addEventListener('appinstalled',()=>{$('#installWrap').hidden=true});
+if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+async function takeShared(){
+  const files=[],texts=[];
+  try{
+    const c=await caches.open('qrp-share');
+    for(const req of await c.keys()){
+      const res=await c.match(req);
+      if(req.url.endsWith('/text'))texts.push(await res.text());
+      else{const b=await res.blob();files.push(new File([b],decodeURIComponent(res.headers.get('x-name')||'file'),{type:b.type}))}
+      await c.delete(req);
+    }
+  }catch(e){}
+  return{files,texts};
+}
+
+/* ---------- start ---------- */
+applyLang();
+if(typeof Peer==='undefined'||typeof QRCode==='undefined'){show('vQr');$('#qr').innerHTML='';$('#pickFirst').hidden=true;setStatus('noNet','bad')}
+else{
+  const h=location.hash.slice(1);
+  if(/^[a-z0-9]{6,20}$/.test(h)&&h!=='share')joiner(h);
+  else if(h==='share')takeShared().then(s=>{if(s.files.length||s.texts.length)startShare(s.files,s.texts);else{reset();hostQR('recv')}});
+  else hostQR('recv');
+}
+window.addEventListener('hashchange',()=>location.reload());
+}
+</script>
+</body>
+</html>
