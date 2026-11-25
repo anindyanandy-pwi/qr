@@ -141,11 +141,11 @@ details.tips code{background:var(--card);padding:2px 6px;border-radius:6px;overf
 /* printable standee (A5) */
 #standee{display:none}
 @media print{
-  @page{size:A4 portrait;margin:10mm}
+  @page{size:A4 portrait;margin:0}
   body.standee{background:#fff!important}
   body.standee main,body.standee .own{display:none!important}
   body.standee #standee{display:flex}
-  #standee{gap:6mm;align-items:flex-start;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #standee{padding:12mm;gap:6mm;align-items:flex-start;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .sd-card{width:92mm;height:130mm;display:flex;flex-direction:column;background:#fff;color:#111;border:.3mm dashed #999;font-family:"Hind Siliguri","Hind",sans-serif;overflow:hidden;break-inside:avoid}
   .sd-top{background:#e4002b;color:#fff;padding:3.5mm 4.5mm;display:flex;align-items:center;gap:3mm}
   .sd-top svg{width:9mm;height:9mm;flex:none}
