@@ -480,6 +480,7 @@ window.addEventListener('beforeunload',e=>{if([...jobs.values()].some(j=>!j.gone
 
 /* =================================================================== DROP BOX (offline, end-to-end encrypted) */
 const API='https://jhatpat-drop.jhatpat-drop.workers.dev',PART=1<<20,EC={name:'ECDH',namedCurve:'P-256'};
+const dev=()=>{const u=navigator.userAgent;return/iPhone|iPad/.test(u)?'iPhone':/Android/.test(u)?'Android':/Windows/.test(u)?'Windows PC':/Mac/.test(u)?'Mac':'PC'};
 const b64u={enc:b=>{let s='';const a=new Uint8Array(b);for(let i=0;i<a.length;i+=0x8000)s+=String.fromCharCode.apply(null,a.subarray(i,i+0x8000));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')},
   dec:s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';const b=atob(s),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a}};
 async function aesEnc(key,buf){const iv=crypto.getRandomValues(new Uint8Array(12));const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,buf));const o=new Uint8Array(12+ct.length);o.set(iv);o.set(ct,12);return o}
