@@ -4,91 +4,147 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#e4002b">
-<title>QR পাঠাও</title>
+<meta name="description" content="QR দেখান, ফাইল পাঠান। কোনো অ্যাপ নয়, নম্বর সেভ নয়।">
+<title>ঝটপট — QR দিয়ে ফাইল পাঠান</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Hind:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=Hind+Siliguri:wght@400;600;700&family=Hind:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-/* VOICE: plain, calm, for anyone - a ticket-counter notice board
-   IDEA: a railway platform sign: one big thing to look at
-   PICTURE: the QR itself, huge, framed like a departure-board tile
-   COLOUR and TYPE: white, black ink, signal red accent; Hind Siliguri / Hind
-   LAYOUT: one column, QR first, one big action under it */
-:root{color-scheme:light dark;--bg:light-dark(#fff,#0e0e0e);--ink:light-dark(#111,#f2f2f2);--mute:light-dark(#5b5b5b,#a8a8a8);--line:light-dark(#e2e2e2,#2a2a2a);--red:#e4002b;--card:light-dark(#f6f6f6,#181818);--ok:light-dark(#0a7a3d,#4cd38a)}
+/* VOICE: plain, warm, for anyone - a railway ticket counter, not a tech product
+   IDEA: the QR is a ticket: perforated stub, a short code like a PNR, tear-off feel
+   PICTURE: the white ticket with the QR, large, floating on the page
+   COLOUR and TYPE: white / ink / signal red; Hind Siliguri + Hind, Archivo for the code
+   LAYOUT: one column: ticket, one instruction, one big action */
+:root{color-scheme:light dark;--bg:light-dark(#f3f1ec,#0e0e0e);--ink:light-dark(#111,#f2f2f2);--mute:light-dark(#5b5b5b,#a8a8a8);--line:light-dark(#dcd8cf,#2a2a2a);--red:#e4002b;--card:light-dark(#fff,#181818);--ok:light-dark(#0a7a3d,#4cd38a)}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
 [hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Hind Siliguri","Hind","Noto Sans Bengali","Noto Sans Devanagari",system-ui,sans-serif;overflow-x:clip}
-main{max-width:560px;margin:0 auto;padding:12px 16px 48px}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:6px solid var(--red);padding-top:10px;margin-bottom:14px}
-h1{font-size:24px;line-height:1.1;margin:0;font-weight:700}
+main{max-width:560px;margin:0 auto;padding:0 16px 48px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0 18px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand svg{width:40px;height:40px;flex:none}
+h1{font-size:24px;line-height:1;margin:0;font-weight:700}
+.tag{font-size:13px;color:var(--mute);line-height:1.2;margin-top:3px}
 .lang{display:flex;gap:4px}
-.lang button{font:inherit;font-size:15px;min-height:40px;padding:0 10px;border:1px solid var(--line);background:none;color:var(--ink);border-radius:8px;cursor:pointer}
+.lang button{font:inherit;font-size:15px;min-height:40px;padding:0 9px;border:1px solid var(--line);background:none;color:var(--ink);border-radius:8px;cursor:pointer}
 .lang button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .view{display:none}.view.on{display:block}
-.qrbox{background:#fff;border:3px solid #111;border-radius:16px;padding:10px;width:min(100%,440px);aspect-ratio:1;margin:0 auto;display:grid;place-items:center}
+
+/* the ticket */
+.ticket{background:#fff;color:#111;border-radius:22px;width:min(100%,420px);margin:0 auto;overflow:hidden;box-shadow:0 1px 0 #0000000d,0 18px 40px -18px #00000059}
+.tk-head{display:flex;align-items:center;gap:10px;padding:14px 16px 2px}
+.tk-head .thumbs{display:flex;gap:6px;flex:none}
+.tk-head .thumbs .th{width:44px;height:44px}
+.tk-head .sum{flex:1;font-size:15px;line-height:1.3;overflow-wrap:anywhere}
+.tk-head .x{flex:none;font:inherit;font-size:14px;font-weight:600;min-height:40px;padding:0 12px;border-radius:10px;border:1px solid #ddd;background:#fff;color:#111;cursor:pointer}
+.qrbox{display:grid;place-items:center;width:100%;aspect-ratio:1;padding:20px;background:#fff;border:0;cursor:zoom-in;position:relative}
 .qrbox img,.qrbox canvas{width:100%!important;height:auto!important;image-rendering:pixelated}
-.big{font-size:clamp(22px,5.5vw,30px);line-height:1.2;font-weight:700;text-align:center;margin:16px 0 4px;text-wrap:balance}
+.qrbox.wait::after{content:"";width:44px;height:44px;border:5px solid #eee;border-top-color:var(--red);border-radius:50%;animation:r 1s linear infinite;position:absolute}
+.perf{position:relative;border-top:2px dashed #d6d6d6;margin:0 22px}
+.perf::before,.perf::after{content:"";position:absolute;top:-14px;width:26px;height:26px;border-radius:50%;background:var(--bg)}
+.perf::before{left:-36px}.perf::after{right:-36px}
+.stub{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 22px 18px}
+.stub small{display:block;color:#6b6b6b;font-size:13px;line-height:1.2}
+.stub b{display:block;font:800 clamp(26px,7vw,34px)/1.1 Archivo,system-ui,sans-serif;letter-spacing:.1em;color:#111}
+.stub .url{font-size:12px;color:#8a8a8a;overflow-wrap:anywhere}
+.iconbtn{flex:none;width:48px;height:48px;border-radius:14px;border:1px solid #ddd;background:#fff;color:#111;display:grid;place-items:center;cursor:pointer}
+.iconbtn svg{width:22px;height:22px}
+
+.big{font-size:clamp(22px,5.5vw,28px);line-height:1.2;font-weight:700;text-align:center;margin:20px 0 4px;text-wrap:balance}
 .sub{color:var(--mute);text-align:center;margin:0 0 8px}
-.link{font-size:14px;color:var(--mute);text-align:center;overflow-wrap:anywhere;margin-top:10px}
-.link b{color:var(--ink);font-size:16px;letter-spacing:.02em}
-.staged{border:2px solid var(--ink);border-radius:14px;padding:10px 14px;margin:0 auto 14px;max-width:440px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-.staged span{overflow-wrap:anywhere}
-.status{margin:14px 0;padding:12px 14px;border-radius:12px;background:var(--card);text-align:center;font-weight:600;min-height:48px}
-.status.bad{background:color-mix(in srgb,var(--red) 14%,var(--bg));color:light-dark(#9b001d,#ff8a9e)}
+.coach{display:flex;gap:14px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:14px auto 0;max-width:420px}
+.coach svg{width:62px;height:80px;flex:none}
+.coach b{display:block;font-size:17px}
+.coach p{margin:2px 0 8px;color:var(--mute);font-size:15px;line-height:1.4}
+.status{margin:14px 0;padding:12px 14px;border-radius:12px;background:var(--card);border:1px solid var(--line);text-align:center;font-weight:600;min-height:48px}
+.status.bad{background:color-mix(in srgb,var(--red) 12%,var(--bg));border-color:transparent;color:light-dark(#9b001d,#ff8a9e)}
 .status.good{color:var(--ok)}
-.pick{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;min-height:150px;border:3px dashed var(--ink);border-radius:18px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer;padding:16px}
+.pick{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;min-height:150px;border:3px dashed var(--ink);border-radius:20px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer;padding:16px}
 .pick b{font-size:28px;line-height:1.15;text-align:center}
 .pick span{color:var(--mute);font-size:15px;text-align:center}
-.pick.solid{border-style:solid;min-height:96px;margin-top:18px}
-.pick.solid b{font-size:22px}
+.pick.solid{border:0;background:var(--red);color:#fff;min-height:88px;margin:18px auto 0;max-width:420px}
+.pick.solid b{font-size:22px}.pick.solid span{color:#ffe1e6}
 .pick.drag{border-color:var(--red);background:color-mix(in srgb,var(--red) 8%,var(--bg))}
+.textlink{display:block;margin:14px auto 0;font:inherit;font-size:15px;color:var(--ink);background:none;border:0;text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:44px}
+.codeform{display:flex;gap:8px;max-width:420px;margin:6px auto 0}
+.codeform input{flex:1;font:800 22px/1 Archivo,system-ui,sans-serif;letter-spacing:.15em;text-transform:lowercase;padding:10px 14px;border:2px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink)}
 .row{display:flex;gap:8px;margin-top:14px}
-textarea{flex:1;font:inherit;font-size:16px;padding:10px 12px;border:2px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);resize:vertical;min-height:52px}
+textarea{flex:1;font:inherit;font-size:16px;padding:10px 12px;border:2px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);resize:vertical;min-height:52px}
 .btn{font:inherit;font-weight:700;min-height:48px;padding:0 18px;border-radius:12px;border:0;background:var(--red);color:#fff;cursor:pointer}
 .btn.ghost{background:none;color:var(--ink);border:2px solid var(--line)}
-button:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+button:focus-visible,textarea:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset:2px}
 .center{text-align:center;margin-top:14px}
+.match{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 16px;margin-bottom:14px}
+.match b{font:800 40px/1 Archivo,system-ui,sans-serif;color:var(--red);flex:none}
+.match span{font-size:15px;line-height:1.35}
 h2{font-size:17px;margin:26px 0 8px;color:var(--mute);font-weight:600}
 .list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
-.item{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:8px}
+.item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;grid-template-columns:56px minmax(0,1fr);gap:4px 12px;align-items:start}
+.item.pop{animation:pop .5s ease}
+@keyframes pop{0%{transform:scale(.97);background:color-mix(in srgb,var(--ok) 18%,var(--card))}100%{transform:none}}
+.item>.th{grid-row:span 4;width:56px;height:56px}
+.item.txt-item{grid-template-columns:minmax(0,1fr)}
 .item .top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
-.item .name{font-weight:600;overflow-wrap:anywhere}
+.item .name{font-weight:600;overflow-wrap:anywhere;line-height:1.3}
 .item .meta{color:var(--mute);font-size:14px;white-space:nowrap}
-.bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:4px}
 .bar i{display:block;height:100%;width:0;background:var(--red);transition:width .2s}
 .item.done .bar{display:none}
-.item .acts{display:flex;gap:8px;flex-wrap:wrap}
+.item .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
 .item a.save{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:10px;background:var(--ink);color:var(--bg);text-decoration:none;font-weight:700}
 .item .txt{overflow-wrap:anywhere;white-space:pre-wrap}
 .item .txt a{color:var(--red)}
-.item img.thumb{max-width:100%;max-height:220px;border-radius:8px;justify-self:start}
-.tag{font-size:13px;font-weight:700;color:var(--mute)}
-.spin{width:44px;height:44px;border:5px solid var(--line);border-top-color:var(--red);border-radius:50%;margin:30px auto;animation:r 1s linear infinite}
+.itag{font-size:13px;font-weight:700;color:var(--mute)}
+.itag.ok{color:var(--ok)}
+.th{border-radius:10px;overflow:hidden;display:grid;place-items:center;background:#eee;color:#fff;font:800 12px/1 Archivo,system-ui,sans-serif;letter-spacing:.04em;position:relative}
+.th img,.th video,.th canvas{width:100%;height:100%;object-fit:cover;background:#fff}
+.th.more{background:#111}
+.fsv{position:fixed;inset:0;background:#fff;color:#111;z-index:9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;cursor:zoom-out}
+.fsv img{width:min(92vw,78vh);image-rendering:pixelated}
+.fsv b{font:800 clamp(34px,8vw,56px)/1 Archivo,system-ui,sans-serif;letter-spacing:.12em}
+.fsv span{color:#666}
 @keyframes r{to{transform:rotate(1turn)}}
-@media (prefers-reduced-motion:reduce){.spin{animation:none}.bar i{transition:none}}
+.spin{width:44px;height:44px;border:5px solid var(--line);border-top-color:var(--red);border-radius:50%;margin:30px auto;animation:r 1s linear infinite}
+@media (prefers-reduced-motion:reduce){.spin,.qrbox.wait::after{animation:none}.bar i{transition:none}.item.pop{animation:none}}
+@media (max-width:380px){.lang button{padding:0 7px;font-size:14px}h1{font-size:21px}.tag{display:none}}
 </style>
 </head>
 <body>
 <main>
   <header>
-    <h1 data-t="title">QR পাঠাও</h1>
+    <div class="brand">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#e4002b"/><rect x="8" y="8" width="13" height="13" rx="3" fill="none" stroke="#fff" stroke-width="3"/><rect x="12.5" y="12.5" width="4" height="4" rx="1" fill="#fff"/><path d="M20 31 31 20M23.5 20H31v7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><h1 data-t="title"></h1><div class="tag" data-t="tagline"></div></div>
+    </div>
     <div class="lang" role="group" aria-label="Language">
       <button data-l="bn">বাংলা</button><button data-l="hi">हिंदी</button><button data-l="en">EN</button>
     </div>
   </header>
 
-  <!-- Shows a QR: either "receive" (waiting) or "share" (files picked first) -->
+  <!-- A QR ticket: "receive" (waiting) or "share" (files picked first) -->
   <section id="vQr" class="view">
-    <div class="staged" id="staged" hidden><span id="stagedTxt"></span><button class="btn ghost" id="cancel" data-t="cancel"></button></div>
-    <div class="qrbox" id="qr"><div class="spin"></div></div>
+    <div class="ticket">
+      <div class="tk-head" id="staged" hidden><div class="thumbs" id="stThumbs"></div><div class="sum" id="stagedTxt"></div><button class="x" id="cancel" data-t="cancel"></button></div>
+      <button class="qrbox wait" id="qr" data-al="fsOpen"></button>
+      <div class="perf"></div>
+      <div class="stub">
+        <div><small data-t="codeLbl"></small><b id="code">· · · · · ·</b><div class="url" id="url"></div></div>
+        <button class="iconbtn" id="fs" data-al="fsOpen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+      </div>
+    </div>
     <p class="big" id="qrMsg"></p>
     <p class="sub" id="qrSub"></p>
-    <p class="link"><span data-t="orOpen"></span><br><b id="qrLink"></b></p>
+    <div class="coach" id="coach" hidden>
+      <svg viewBox="0 0 62 80" aria-hidden="true"><rect x="3" y="3" width="42" height="74" rx="8" fill="none" stroke="currentColor" stroke-width="3"/><rect x="11" y="16" width="26" height="26" rx="2" fill="none" stroke="#e4002b" stroke-width="2.5" stroke-dasharray="7 12" stroke-dashoffset="3.5"/><path d="M14 29h20" stroke="#e4002b" stroke-width="2.5"/><path d="M48 40l10-6M48 46h11M48 52l10 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      <div><b data-t="coachT"></b><p data-t="coachP"></p><button class="btn ghost" id="coachOk" data-t="gotIt"></button></div>
+    </div>
     <button class="pick solid" id="pickFirst"><b data-t="pickFirst"></b><span data-t="pickFirstSub"></span></button>
     <input type="file" id="file2" multiple hidden>
+    <button class="textlink" id="codeToggle" data-t="noCam"></button>
+    <form class="codeform" id="codeForm" hidden><input id="codeIn" maxlength="6" autocomplete="off" autocapitalize="off" spellcheck="false" data-ph="codePh"><button class="btn" data-t="join"></button></form>
   </section>
 
   <!-- Scanner side, before connection -->
@@ -96,6 +152,7 @@ h2{font-size:17px;margin:26px 0 8px;color:var(--mute);font-weight:600}
 
   <!-- Connected: both sides can send -->
   <section id="vConn" class="view">
+    <div class="match"><b id="matchNum">--</b><span data-t="match"></span></div>
     <button class="pick" id="pick"><b data-t="pick"></b><span data-t="pickSub"></span></button>
     <input type="file" id="file" multiple hidden>
     <div class="row">
@@ -115,34 +172,21 @@ h2{font-size:17px;margin:26px 0 8px;color:var(--mute);font-weight:600}
     <ul class="list" id="hist"></ul>
   </section>
 </main>
+<div class="fsv" id="fsv" hidden><img id="fsImg" alt=""><b id="fsCode"></b><span data-t="tapClose"></span></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
 {
 const T={
-bn:{title:'QR পাঠাও',scan:'অন্য ফোনের ক্যামেরা দিয়ে এই QR স্ক্যান করুন',scanSub:'কোনো অ্যাপ লাগবে না। নম্বর সেভ করতে হবে না।',shareScan:'যাকে পাঠাবেন, সে এই QR স্ক্যান করুক',shareSub:'স্ক্যান করলেই ফাইল চলে যাবে',orOpen:'স্ক্যান না হলে এই লিংকটি খুলুন:',making:'QR তৈরি হচ্ছে…',ready:'স্ক্যানের অপেক্ষায়…',ready2:'আরেকজন স্ক্যান করলে তাকেও পাঠানো হবে',joining:'যুক্ত হচ্ছে…',connected:'যুক্ত হয়েছে',pick:'ফাইল পাঠান',pickSub:'ছবি, PDF, যেকোনো ফাইল · একসাথে অনেকগুলো বাছতে পারেন',pickFirst:'ফাইল বেছে QR দেখান',pickFirstSub:'যাকে পাঠাবেন সে শুধু স্ক্যান করবে',textPh:'লিংক বা লেখা এখানে দিন',sendText:'পাঠান',save:'সেভ করুন',copy:'কপি',copied:'কপি হয়েছে',sent:'পৌঁছেছে ✓',sending:'পাঠানো হচ্ছে',receiving:'আসছে',got:'এসেছে',you:'আপনি',them:'ওদিক থেকে',closed:'সংযোগ বন্ধ হয়ে গেছে',again:'নতুন QR',end:'বন্ধ করুন',cancel:'বাতিল',nFiles:'টি ফাইল',text1:'লেখা/লিংক',expired:'এই QR আর চালু নেই। নতুন QR স্ক্যান করুন।',failConn:'সংযোগ হচ্ছে না। দুটো ডিভাইসেই ইন্টারনেট আছে কিনা দেখুন, অথবা একই Wi‑Fi বা হটস্পটে যুক্ত করুন।',noNet:'ইন্টারনেট পাওয়া যাচ্ছে না।',busy:'এই QR এখন অন্য কেউ ব্যবহার করছে।',keepOpen:'পাঠানো শেষ না হওয়া পর্যন্ত এই পেজ খোলা রাখুন',host:'পেজটি কোনো https ওয়েবসাইটে রাখলে তবেই QR কাজ করবে।',big:'ফাইলটি খুব বড় — ফোনে সমস্যা হতে পারে',history:'আদান-প্রদান',failed:'পাঠানো যায়নি',leave:'পাঠানো চলছে। বন্ধ করবেন?',install:'হোম স্ক্রিনে যোগ করুন',installSub:'তাহলে যেকোনো অ্যাপের Share মেনুতে "QR পাঠাও" আসবে'},
-hi:{title:'QR भेजो',scan:'दूसरे फ़ोन के कैमरे से यह QR स्कैन करें',scanSub:'कोई ऐप नहीं चाहिए। नंबर सेव करने की ज़रूरत नहीं।',shareScan:'जिसे भेजना है, वह यह QR स्कैन करे',shareSub:'स्कैन करते ही फ़ाइल चली जाएगी',orOpen:'स्कैन न हो तो यह लिंक खोलें:',making:'QR बन रहा है…',ready:'स्कैन का इंतज़ार…',ready2:'कोई और स्कैन करे तो उसे भी भेजा जाएगा',joining:'जुड़ रहा है…',connected:'जुड़ गया',pick:'फ़ाइल भेजें',pickSub:'फ़ोटो, PDF, कोई भी फ़ाइल · एक साथ कई चुन सकते हैं',pickFirst:'फ़ाइल चुनकर QR दिखाएँ',pickFirstSub:'जिसे भेजना है, वह बस स्कैन करे',textPh:'लिंक या संदेश यहाँ लिखें',sendText:'भेजें',save:'सेव करें',copy:'कॉपी',copied:'कॉपी हो गया',sent:'पहुँच गया ✓',sending:'भेजा जा रहा है',receiving:'आ रहा है',got:'आ गया',you:'आप',them:'उधर से',closed:'कनेक्शन बंद हो गया',again:'नया QR',end:'बंद करें',cancel:'रद्द करें',nFiles:' फ़ाइलें',text1:'संदेश/लिंक',expired:'यह QR अब चालू नहीं है। नया QR स्कैन करें।',failConn:'कनेक्शन नहीं हो रहा। दोनों डिवाइस में इंटरनेट देखें, या एक ही Wi‑Fi या हॉटस्पॉट से जोड़ें।',noNet:'इंटरनेट नहीं मिल रहा।',busy:'यह QR अभी कोई और इस्तेमाल कर रहा है।',keepOpen:'भेजना पूरा होने तक यह पेज खुला रखें',host:'यह पेज किसी https वेबसाइट पर रखने पर ही QR काम करेगा।',big:'फ़ाइल बहुत बड़ी है — फ़ोन पर दिक्कत हो सकती है',history:'लेन-देन',failed:'भेजा नहीं जा सका',leave:'भेजना चल रहा है। बंद करें?',install:'होम स्क्रीन पर जोड़ें',installSub:'फिर किसी भी ऐप के Share मेनू में "QR भेजो" आएगा'},
-en:{title:'QR Send',scan:'Scan this QR with the other phone’s camera',scanSub:'No app needed. No need to save the number.',shareScan:'Ask the other person to scan this QR',shareSub:'The files go as soon as they scan',orOpen:'If scanning fails, open this link:',making:'Making QR…',ready:'Waiting for scan…',ready2:'Anyone else who scans will get them too',joining:'Connecting…',connected:'Connected',pick:'Send files',pickSub:'Photos, PDFs, any file · pick several at once',pickFirst:'Pick files, then show QR',pickFirstSub:'The other person just scans',textPh:'Paste a link or type a message',sendText:'Send',save:'Save',copy:'Copy',copied:'Copied',sent:'Delivered ✓',sending:'Sending',receiving:'Receiving',got:'Received',you:'You',them:'From other side',closed:'Connection closed',again:'New QR',end:'Disconnect',cancel:'Cancel',nFiles:' files',text1:'message/link',expired:'This QR is no longer active. Scan a new one.',failConn:'Can’t connect. Check both devices have internet, or join the same Wi‑Fi or hotspot.',noNet:'No internet connection.',busy:'Someone else is using this QR right now.',keepOpen:'Keep this page open until sending finishes',host:'Put this page on an https website for the QR to work.',big:'Very large file — may struggle on a phone',history:'Transfers',failed:'Failed',leave:'Transfer in progress. Leave?',install:'Add to home screen',installSub:'Then “QR Send” appears in every app’s Share menu'}};
+bn:{title:'ঝটপট',tagline:'QR দেখান, ফাইল পাঠান',scan:'অন্য ফোনের ক্যামেরা দিয়ে এই QR স্ক্যান করুন',scanSub:'কোনো অ্যাপ লাগবে না। নম্বর সেভ করতে হবে না।',shareScan:'যাকে পাঠাবেন, সে এই QR স্ক্যান করুক',shareSub:'স্ক্যান করলেই ফাইল চলে যাবে',codeLbl:'কোড',coachT:'ঠিক UPI-র QR-এর মতো',coachP:'অন্য ফোনে ক্যামেরা খুলে এই QR-এর দিকে ধরুন। লিংক এলে খুলুন।',gotIt:'বুঝেছি',noCam:'ক্যামেরা নেই? কোড দিয়ে যুক্ত হন',codePh:'৬ অক্ষরের কোড',join:'যুক্ত হন',fsOpen:'QR বড় করুন',tapClose:'বন্ধ করতে যেকোনো জায়গায় ট্যাপ করুন',making:'QR তৈরি হচ্ছে…',ready:'স্ক্যানের অপেক্ষায়…',ready2:'আরেকজন স্ক্যান করলে তাকেও পাঠানো হবে',joining:'যুক্ত হচ্ছে…',connected:'যুক্ত হয়েছে',match:'দুই স্ক্রিনে একই নম্বর থাকলে বুঝবেন সঠিক ডিভাইসে যুক্ত হয়েছেন',pick:'ফাইল পাঠান',pickSub:'ছবি, PDF, যেকোনো ফাইল · একসাথে অনেকগুলো বাছতে পারেন',pickFirst:'ফাইল বেছে QR দেখান',pickFirstSub:'যাকে পাঠাবেন সে শুধু স্ক্যান করবে',textPh:'লিংক বা লেখা এখানে দিন',sendText:'পাঠান',save:'সেভ করুন',copy:'কপি',copied:'কপি হয়েছে',sent:'পৌঁছেছে ✓',sending:'পাঠানো হচ্ছে',receiving:'আসছে',got:'এসেছে ✓',you:'আপনি',them:'ওদিক থেকে',closed:'সংযোগ বন্ধ হয়ে গেছে',again:'নতুন QR',end:'বন্ধ করুন',cancel:'বাতিল',nFiles:'টি ফাইল',text1:'লেখা/লিংক',expired:'এই QR আর চালু নেই। নতুন QR স্ক্যান করুন।',badCode:'কোডটি ঠিক নয়',failConn:'সংযোগ হচ্ছে না। দুটো ডিভাইসেই ইন্টারনেট আছে কিনা দেখুন, অথবা একই Wi‑Fi বা হটস্পটে যুক্ত করুন।',noNet:'ইন্টারনেট পাওয়া যাচ্ছে না।',busy:'এই QR এখন অন্য কেউ ব্যবহার করছে।',keepOpen:'পাঠানো শেষ না হওয়া পর্যন্ত এই পেজ খোলা রাখুন',host:'পেজটি কোনো https ওয়েবসাইটে রাখলে তবেই QR কাজ করবে।',big:'ফাইলটি খুব বড় — ফোনে সমস্যা হতে পারে',history:'আদান-প্রদান',failed:'পাঠানো যায়নি',leave:'পাঠানো চলছে। বন্ধ করবেন?',install:'হোম স্ক্রিনে যোগ করুন',installSub:'তাহলে যেকোনো অ্যাপের Share মেনুতে "ঝটপট" আসবে'},
+hi:{title:'झटपट',tagline:'QR दिखाओ, फ़ाइल भेजो',scan:'दूसरे फ़ोन के कैमरे से यह QR स्कैन करें',scanSub:'कोई ऐप नहीं चाहिए। नंबर सेव करने की ज़रूरत नहीं।',shareScan:'जिसे भेजना है, वह यह QR स्कैन करे',shareSub:'स्कैन करते ही फ़ाइल चली जाएगी',codeLbl:'कोड',coachT:'बिल्कुल UPI QR की तरह',coachP:'दूसरे फ़ोन का कैमरा खोलकर इस QR की ओर रखें। लिंक आए तो खोलें।',gotIt:'समझ गया',noCam:'कैमरा नहीं? कोड से जुड़ें',codePh:'6 अक्षर का कोड',join:'जुड़ें',fsOpen:'QR बड़ा करें',tapClose:'बंद करने के लिए कहीं भी टैप करें',making:'QR बन रहा है…',ready:'स्कैन का इंतज़ार…',ready2:'कोई और स्कैन करे तो उसे भी भेजा जाएगा',joining:'जुड़ रहा है…',connected:'जुड़ गया',match:'दोनों स्क्रीन पर एक ही नंबर हो तो सही डिवाइस से जुड़े हैं',pick:'फ़ाइल भेजें',pickSub:'फ़ोटो, PDF, कोई भी फ़ाइल · एक साथ कई चुन सकते हैं',pickFirst:'फ़ाइल चुनकर QR दिखाएँ',pickFirstSub:'जिसे भेजना है, वह बस स्कैन करे',textPh:'लिंक या संदेश यहाँ लिखें',sendText:'भेजें',save:'सेव करें',copy:'कॉपी',copied:'कॉपी हो गया',sent:'पहुँच गया ✓',sending:'भेजा जा रहा है',receiving:'आ रहा है',got:'आ गया ✓',you:'आप',them:'उधर से',closed:'कनेक्शन बंद हो गया',again:'नया QR',end:'बंद करें',cancel:'रद्द करें',nFiles:' फ़ाइलें',text1:'संदेश/लिंक',expired:'यह QR अब चालू नहीं है। नया QR स्कैन करें।',badCode:'कोड सही नहीं है',failConn:'कनेक्शन नहीं हो रहा। दोनों डिवाइस में इंटरनेट देखें, या एक ही Wi‑Fi या हॉटस्पॉट से जोड़ें।',noNet:'इंटरनेट नहीं मिल रहा।',busy:'यह QR अभी कोई और इस्तेमाल कर रहा है।',keepOpen:'भेजना पूरा होने तक यह पेज खुला रखें',host:'यह पेज किसी https वेबसाइट पर रखने पर ही QR काम करेगा।',big:'फ़ाइल बहुत बड़ी है — फ़ोन पर दिक्कत हो सकती है',history:'लेन-देन',failed:'भेजा नहीं जा सका',leave:'भेजना चल रहा है। बंद करें?',install:'होम स्क्रीन पर जोड़ें',installSub:'फिर किसी भी ऐप के Share मेनू में "झटपट" आएगा'},
+en:{title:'Jhatpat',tagline:'Show a QR, send a file',scan:'Scan this QR with the other phone’s camera',scanSub:'No app needed. No need to save the number.',shareScan:'Ask the other person to scan this QR',shareSub:'The files go as soon as they scan',codeLbl:'Code',coachT:'Just like a UPI QR',coachP:'Open the camera on the other phone and point it here. Open the link that pops up.',gotIt:'Got it',noCam:'No camera? Join with the code',codePh:'6-letter code',join:'Join',fsOpen:'Enlarge QR',tapClose:'Tap anywhere to close',making:'Making QR…',ready:'Waiting for scan…',ready2:'Anyone else who scans will get them too',joining:'Connecting…',connected:'Connected',match:'If both screens show the same number, you’re connected to the right device',pick:'Send files',pickSub:'Photos, PDFs, any file · pick several at once',pickFirst:'Pick files, then show QR',pickFirstSub:'The other person just scans',textPh:'Paste a link or type a message',sendText:'Send',save:'Save',copy:'Copy',copied:'Copied',sent:'Delivered ✓',sending:'Sending',receiving:'Receiving',got:'Received ✓',you:'You',them:'From other side',closed:'Connection closed',again:'New QR',end:'Disconnect',cancel:'Cancel',nFiles:' files',text1:'message/link',expired:'This QR is no longer active. Scan a new one.',badCode:'That code isn’t valid',failConn:'Can’t connect. Check both devices have internet, or join the same Wi‑Fi or hotspot.',noNet:'No internet connection.',busy:'Someone else is using this QR right now.',keepOpen:'Keep this page open until sending finishes',host:'Put this page on an https website for the QR to work.',big:'Very large file — may struggle on a phone',history:'Transfers',failed:'Failed',leave:'Transfer in progress. Leave?',install:'Add to home screen',installSub:'Then “Jhatpat” appears in every app’s Share menu'}};
 const $=s=>document.querySelector(s);
 let lang;try{lang=localStorage.getItem('qrp-lang')}catch(e){}
 if(!T[lang])lang=/^hi/.test(navigator.language)?'hi':/^en/.test(navigator.language)?'en':'bn';
 const t=k=>T[lang][k]||k;
-let statusKey='',statusExtra='',statusCls='';
-function applyLang(){
-  document.documentElement.lang=lang;
-  document.querySelectorAll('[data-t]').forEach(e=>e.textContent=t(e.dataset.t));
-  document.querySelectorAll('[data-ph]').forEach(e=>e.placeholder=t(e.dataset.ph));
-  document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===lang));
-  document.querySelectorAll('[data-k]').forEach(e=>e.textContent=t(e.dataset.k));
-  $('#qrMsg').textContent=t(role==='share'?'shareScan':'scan');
-  $('#qrSub').textContent=t(role==='share'?'shareSub':'scanSub');
-  renderStaged();document.title=t('title');renderStatus();
-}
-function setStatus(k,cls='',extra=''){statusKey=k;statusCls=cls;statusExtra=extra;renderStatus()}
-function renderStatus(){const s=$('#status');s.textContent=statusKey?t(statusKey)+(statusExtra?' — '+statusExtra:''):'';s.className='status '+statusCls;s.hidden=!statusKey}
-document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{lang=b.dataset.l;try{localStorage.setItem('qrp-lang',lang)}catch(e){}applyLang()});
-function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id===id))}
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 
 const PREFIX='qrpathao-',CHUNK=64*1024,HIGH=4<<20;
 const ICE={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}
@@ -155,28 +199,72 @@ const fmt=b=>b<1024?b+' B':b<1<<20?(b/1024).toFixed(0)+' KB':b<1<<30?(b/1048576)
 const dev=()=>{const u=navigator.userAgent;return/iPhone|iPad/.test(u)?'iPhone':/Android/.test(u)?'Android':/Windows/.test(u)?'Windows PC':/Mac/.test(u)?'Mac':'PC'};
 const isIOS=/iPhone|iPad/.test(navigator.userAgent);
 
-let peer=null,conn=null,role='',busyOut=0,cur=null,wake=null,joinTimer=null;
+let peer=null,conn=null,role='',busyOut=0,cur=null,wake=null,joinTimer=null,code='';
 let staged={files:[],texts:[]};
+let statusKey='',statusExtra='',statusCls='';
 const items={};
 
+/* ---------- language & status ---------- */
+function applyLang(){
+  document.documentElement.lang=lang;
+  document.querySelectorAll('[data-t]').forEach(e=>e.textContent=t(e.dataset.t));
+  document.querySelectorAll('[data-ph]').forEach(e=>e.placeholder=t(e.dataset.ph));
+  document.querySelectorAll('[data-al]').forEach(e=>e.setAttribute('aria-label',t(e.dataset.al)));
+  document.querySelectorAll('[data-k]').forEach(e=>e.textContent=t(e.dataset.k));
+  document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===lang));
+  $('#qrMsg').textContent=t(role==='share'?'shareScan':'scan');
+  $('#qrSub').textContent=t(role==='share'?'shareSub':'scanSub');
+  renderStaged();document.title=t('title')+' — '+t('tagline');renderStatus();
+}
+function setStatus(k,cls='',extra=''){statusKey=k;statusCls=cls;statusExtra=extra;renderStatus()}
+function renderStatus(){const s=$('#status');s.textContent=statusKey?t(statusKey)+(statusExtra?' — '+statusExtra:''):'';s.className='status '+statusCls;s.hidden=!statusKey}
+document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{lang=b.dataset.l;store.set('qrp-lang',lang);applyLang()});
+function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id===id))}
+
+/* ---------- thumbnails ---------- */
+const KIND=[[/pdf$/i,'#c62828'],[/docx?$|odt$|rtf$|txt$/i,'#1e5bb8'],[/xlsx?$|csv$|ods$/i,'#1d7a46'],[/pptx?$|odp$/i,'#c4511a'],[/zip$|rar$|7z$|gz$/i,'#5a5a5a'],[/mp3$|m4a$|wav$|ogg$|aac$|opus$/i,'#6b3fa0'],[/apk$/i,'#2e7d32']];
+let pdfLib=null;
+function loadPdf(){
+  if(!pdfLib)pdfLib=new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    s.onload=()=>{window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';res(window.pdfjsLib)};s.onerror=rej;document.head.append(s)});
+  return pdfLib;
+}
+function thumb(blob,name,mime){
+  const el=document.createElement('div');el.className='th';
+  const ext=(name.split('.').pop()||'').slice(0,4);
+  const badge=()=>{el.textContent=ext.toUpperCase()||'FILE';el.style.background=(KIND.find(k=>k[0].test(ext))||[0,'#3a3a3a'])[1]};
+  badge();
+  if(!blob)return el;
+  const url=URL.createObjectURL(blob);
+  if(/^image\//.test(mime)){const im=new Image();im.alt='';im.onload=()=>{el.textContent='';el.append(im)};im.src=url}
+  else if(/^video\//.test(mime)){const v=document.createElement('video');v.muted=true;v.preload='metadata';v.playsInline=true;v.onloadeddata=()=>{el.textContent='';el.append(v)};v.src=url+'#t=0.5'}
+  else if((/pdf/.test(mime)||/^pdf$/i.test(ext))&&blob.size<40e6){
+    loadPdf().then(async lib=>{const doc=await lib.getDocument({data:await blob.arrayBuffer()}).promise;const p=await doc.getPage(1);
+      const v0=p.getViewport({scale:1}),vp=p.getViewport({scale:140/v0.width});const c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;
+      await p.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;el.textContent='';el.style.background='#fff';c.style.objectPosition='top';el.append(c)}).catch(()=>{});
+  }
+  return el;
+}
+
 /* ---------- history list ---------- */
-function addItem(id,name,size,dir){
+function addItem(id,name,size,dir,file){
   $('#histWrap').hidden=false;
   const li=document.createElement('li');li.className='item';
-  li.innerHTML='<div class="top"><span class="name"></span><span class="meta"></span></div><div class="bar"><i></i></div><div class="tag"></div><div class="acts"></div>';
+  li.append(thumb(file||null,name,file?file.type:''));
+  li.insertAdjacentHTML('beforeend','<div class="top"><span class="name"></span><span class="meta"></span></div><div class="bar"><i></i></div><div class="itag"></div><div class="acts"></div>');
   li.querySelector('.name').textContent=name;
   li.querySelector('.meta').textContent=fmt(size);
   setTag(li,dir==='out'?'sending':'receiving');
   $('#hist').prepend(li);items[id]=li;return li;
 }
-function setTag(li,k){const g=li.querySelector('.tag');g.dataset.k=k;g.textContent=t(k)}
+function setTag(li,k){const g=li.querySelector('.itag');g.dataset.k=k;g.textContent=t(k);g.classList.toggle('ok',k==='sent'||k==='got')}
 function prog(li,p){li.querySelector('.bar i').style.width=Math.min(100,p*100).toFixed(1)+'%'}
 function copyBtn(text){const b=document.createElement('button');b.className='btn ghost';b.dataset.k='copy';b.textContent=t('copy');
   b.onclick=async()=>{try{await navigator.clipboard.writeText(text);b.dataset.k='copied';b.textContent=t('copied')}catch(e){}};return b}
 function addText(v,dir){
   $('#histWrap').hidden=false;
-  const li=document.createElement('li');li.className='item done';
-  const tag=document.createElement('div');tag.className='tag';tag.dataset.k=dir==='out'?'you':'them';tag.textContent=t(tag.dataset.k);
+  const li=document.createElement('li');li.className='item done txt-item'+(dir==='in'?' pop':'');
+  const tag=document.createElement('div');tag.className='itag';tag.dataset.k=dir==='out'?'you':'them';tag.textContent=t(tag.dataset.k);
   const p=document.createElement('div');p.className='txt';
   v.split(/(https?:\/\/[^\s]+)/g).forEach((part,i)=>{
     if(i%2){const a=document.createElement('a');a.href=part;a.target='_blank';a.rel='noopener';a.textContent=part;p.append(a)}
@@ -185,43 +273,70 @@ function addText(v,dir){
   li.append(tag,p,acts);$('#hist').prepend(li);
 }
 function renderStaged(){
-  const n=staged.files.length,m=staged.texts.length;
   $('#staged').hidden=role!=='share';
   if(role!=='share')return;
-  const parts=[];
+  const n=staged.files.length,m=staged.texts.length,parts=[];
   if(n)parts.push((n===1?staged.files[0].name:n+t('nFiles'))+' · '+fmt(staged.files.reduce((s,f)=>s+f.size,0)));
   if(m)parts.push(t('text1'));
   $('#stagedTxt').textContent=parts.join(' + ');
 }
+function renderStagedThumbs(){
+  const box=$('#stThumbs');box.textContent='';
+  staged.files.slice(0,3).forEach(f=>box.append(thumb(f,f.name,f.type)));
+  if(staged.files.length>3){const m=document.createElement('div');m.className='th more';m.textContent='+'+(staged.files.length-3);box.append(m)}
+}
+
+/* ---------- feedback: chime + vibration ---------- */
+let actx=null;
+document.addEventListener('pointerdown',()=>{try{actx=actx||new AudioContext();actx.resume()}catch(e){}},{once:true});
+function chime(){
+  try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(e){}
+  try{actx=actx||new AudioContext();const t0=actx.currentTime;
+    [880,1320].forEach((f,i)=>{const o=actx.createOscillator(),g=actx.createGain(),s=t0+i*.13;o.type='sine';o.frequency.value=f;
+      g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(.18,s+.02);g.gain.exponentialRampToValueAtTime(.001,s+.45);o.connect(g).connect(actx.destination);o.start(s);o.stop(s+.5)})}catch(e){}
+}
+
+/* ---------- full-screen QR ---------- */
+function openFs(){
+  const c=$('#qr canvas');if(!c||!code)return;
+  $('#fsImg').src=c.toDataURL();$('#fsCode').textContent=code;$('#fsv').hidden=false;
+  try{$('#fsv').requestFullscreen&&$('#fsv').requestFullscreen().catch(()=>{})}catch(e){}
+}
+function closeFs(){$('#fsv').hidden=true;try{document.fullscreenElement&&document.exitFullscreen()}catch(e){}}
+$('#qr').onclick=openFs;$('#fs').onclick=openFs;$('#fsv').onclick=closeFs;
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeFs()});
 
 /* ---------- hosting a QR (receive mode or share mode) ---------- */
 function hostQR(mode){
   role=mode;show('vQr');setStatus('making');applyLang();
-  $('#pickFirst').hidden=mode==='share';
-  $('#qr').innerHTML='<div class="spin"></div>';$('#qrLink').textContent='';
+  $('#pickFirst').hidden=mode==='share';$('#codeToggle').hidden=mode==='share';$('#codeForm').hidden=true;
+  $('#coach').hidden=!!store.get('qrp-coach');
+  if(mode==='share')renderStagedThumbs();
+  const q=$('#qr');q.innerHTML='';q.classList.add('wait');$('#code').textContent='· · · · · ·';$('#url').textContent='';code='';
   $('#againWrap').hidden=true;$('#endWrap').hidden=true;
   if(!/^https:|^http:\/\/(localhost|127\.)/.test(location.href))setStatus('host','bad');
-  const code=rid(6);
-  peer=new Peer(PREFIX+code,{config:ICE});
+  const c=rid(6);
+  peer=new Peer(PREFIX+c,{config:ICE});
   peer.on('open',()=>{
-    const url=base+'#'+code;
-    $('#qr').innerHTML='';
-    new QRCode($('#qr'),{text:url,width:512,height:512,correctLevel:QRCode.CorrectLevel.L});
-    $('#qrLink').textContent=url.replace(/^https:\/\//,'');
+    code=c;q.innerHTML='';q.classList.remove('wait');
+    new QRCode(q,{text:base+'#'+c,width:512,height:512,correctLevel:QRCode.CorrectLevel.L});
+    $('#code').textContent=c.slice(0,3)+' '+c.slice(3);
+    $('#url').textContent=base.replace(/^https?:\/\//,'').replace(/\/$/,'');
     if(statusKey!=='host')setStatus('ready');
+    lockScreen();
   });
-  peer.on('connection',c=>{
-    if(conn&&conn.open){c.on('open',()=>{c.send(JSON.stringify({t:'busy'}));setTimeout(()=>c.close(),800)});return}
-    setup(c);
+  peer.on('connection',cn=>{
+    if(conn&&conn.open){cn.on('open',()=>{cn.send(JSON.stringify({t:'busy'}));setTimeout(()=>cn.close(),800)});return}
+    setup(cn);
   });
   peer.on('error',peerErr);
   peer.on('disconnected',()=>{if(peer&&!peer.destroyed)setTimeout(()=>{try{if(peer.disconnected)peer.reconnect()}catch(e){}},1500)});
 }
-function joiner(code){
+function joiner(c){
   role='join';show('vJoin');setStatus('joining');
   peer=new Peer({config:ICE});
   peer.on('open',()=>{
-    setup(peer.connect(PREFIX+code,{serialization:'raw',reliable:true}));
+    setup(peer.connect(PREFIX+c,{serialization:'raw',reliable:true}));
     joinTimer=setTimeout(()=>{if(!(conn&&conn.open))fail('failConn')},25000);
   });
   peer.on('error',peerErr);
@@ -233,12 +348,14 @@ function peerErr(e){
 }
 function fail(k){setStatus(k,'bad');if(role==='join'){show('vJoin');$('#vJoin').innerHTML=''}
   $('#againWrap').hidden=false;$('#endWrap').hidden=true}
+function matchNum(a,b){let h=0;for(const ch of[a,b].sort().join('|'))h=(h*31+ch.charCodeAt(0))>>>0;return 10+h%90}
 function setup(c){
   conn=c;
   c.on('open',()=>{
-    clearTimeout(joinTimer);
+    clearTimeout(joinTimer);closeFs();
+    $('#matchNum').textContent=matchNum(peer.id,c.peer);
     show('vConn');setStatus('connected','good','…');$('#endWrap').hidden=false;$('#againWrap').hidden=true;
-    c.send(JSON.stringify({t:'hi',dev:dev()}));lockScreen();
+    c.send(JSON.stringify({t:'hi',dev:dev()}));lockScreen();chime();
     if(role==='share'){staged.texts.forEach(v=>{c.send(JSON.stringify({t:'x',v}));addText(v,'out')});sendFiles(staged.files)}
   });
   c.on('data',onData);
@@ -247,13 +364,13 @@ function setup(c){
   setTimeout(()=>{const pc=c.peerConnection;if(pc)pc.addEventListener('iceconnectionstatechange',()=>{if(pc.iceConnectionState==='failed'){if(c.open)closed('failConn');else fail('failConn')}})},0);
 }
 function closed(k){
-  if(!conn)return;conn=null;unlock();queue.length=0;
+  if(!conn)return;conn=null;queue.length=0;
   if(cur){setTag(cur.li,'failed');cur=null}
-  for(const id in items){const li=items[id];if(li.querySelector('.tag').dataset.k==='sending'&&!li.classList.contains('done'))setTag(li,'failed')}
+  for(const id in items){const li=items[id];if(li.querySelector('.itag').dataset.k==='sending'&&!li.classList.contains('done'))setTag(li,'failed')}
   $('#endWrap').hidden=true;
   if(role==='share'){show('vQr');setStatus('ready2','good');return} // same QR keeps working for the next person
-  setStatus(k,'bad');$('#againWrap').hidden=false;
-  if(role==='join'){show('vJoin');$('#vJoin').innerHTML=''}else{show('vQr');$('#qr').innerHTML=''}
+  unlock();setStatus(k,'bad');$('#againWrap').hidden=false;
+  if(role==='join'){show('vJoin');$('#vJoin').innerHTML=''}else{show('vQr');$('#qr').innerHTML='';$('#code').textContent='· · · · · ·';code=''}
 }
 function reset(){
   try{conn&&conn.close()}catch(e){}conn=null;
@@ -266,6 +383,13 @@ $('#end').onclick=()=>{if(busyOut&&!window.confirm(t('leave')))return;reset();st
 $('#cancel').onclick=$('#again').onclick;
 $('#pickFirst').onclick=()=>$('#file2').click();
 $('#file2').onchange=e=>{const fs=[...e.target.files];e.target.value='';if(fs.length)startShare(fs,[])};
+$('#coachOk').onclick=()=>{store.set('qrp-coach','1');$('#coach').hidden=true};
+$('#codeToggle').onclick=()=>{$('#codeForm').hidden=!$('#codeForm').hidden;if(!$('#codeForm').hidden)$('#codeIn').focus()};
+$('#codeForm').onsubmit=e=>{
+  e.preventDefault();const v=$('#codeIn').value.toLowerCase().replace(/[^a-z0-9]/g,'');
+  if(!/^[a-z0-9]{6}$/.test(v)||v===code){setStatus('badCode','bad');return}
+  reset();location.hash=v;
+};
 
 /* ---------- receiving ---------- */
 function onData(d){
@@ -275,7 +399,7 @@ function onData(d){
     else if(m.t==='busy'){conn.close();fail('busy')}
     else if(m.t==='f'){cur={id:m.id,name:String(m.name).slice(0,200)||'file',size:+m.size||0,mime:String(m.mime||''),parts:[],got:0};cur.li=addItem(m.id,cur.name,cur.size,'in')}
     else if(m.t==='e'&&cur&&cur.id===m.id)finish();
-    else if(m.t==='x')addText(String(m.v).slice(0,20000),'in');
+    else if(m.t==='x'){addText(String(m.v).slice(0,20000),'in');chime()}
     else if(m.t==='ok'&&items[m.id])setTag(items[m.id],'sent');
     return;
   }
@@ -287,11 +411,12 @@ function finish(){
   const f=cur;cur=null;
   const blob=new Blob(f.parts,{type:f.mime||'application/octet-stream'});f.parts=null;
   const url=URL.createObjectURL(blob),li=f.li;
-  li.classList.add('done');setTag(li,'got');
-  if(/^image\//.test(f.mime)){const im=document.createElement('img');im.className='thumb';im.src=url;im.alt='';li.insertBefore(im,li.querySelector('.acts'))}
+  li.firstElementChild.replaceWith(thumb(blob,f.name,f.mime));
+  li.classList.add('done','pop');setTag(li,'got');
   const a=document.createElement('a');a.className='save';a.href=url;a.download=f.name;a.dataset.k='save';a.textContent=t('save');
   li.querySelector('.acts').append(a);
   if(!isIOS)try{a.click()}catch(e){}
+  chime();
   conn&&conn.open&&conn.send(JSON.stringify({t:'ok',id:f.id}));
 }
 
@@ -304,7 +429,7 @@ async function pump(){
   running=false;
 }
 async function sendOne(f){
-  const id=rid(),li=addItem(id,f.name,f.size,'out');
+  const id=rid(),li=addItem(id,f.name,f.size,'out',f);
   if(f.size>1.5*(1<<30))setStatus('big','bad');
   busyOut++;
   try{
@@ -338,7 +463,7 @@ document.addEventListener('drop',e=>{
   if(conn&&conn.open)sendFiles(fs);else if(role!=='join')startShare(fs,[]);
 });
 document.addEventListener('paste',e=>{
-  if(document.activeElement===$('#text'))return;
+  const ae=document.activeElement;if(ae===$('#text')||ae===$('#codeIn'))return;
   const fs=[...(e.clipboardData.files||[])],v=e.clipboardData.getData('text');
   if(conn&&conn.open){
     if(fs.length){e.preventDefault();sendFiles(fs)}else if(v){e.preventDefault();$('#text').value=v;sendText()}
@@ -346,9 +471,9 @@ document.addEventListener('paste',e=>{
 });
 
 /* ---------- keep screen awake, warn before leaving ---------- */
-async function lockScreen(){try{wake=await navigator.wakeLock.request('screen')}catch(e){}}
+async function lockScreen(){if(wake)return;try{wake=await navigator.wakeLock.request('screen');wake.addEventListener('release',()=>{wake=null})}catch(e){}}
 function unlock(){try{wake&&wake.release()}catch(e){}wake=null}
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&conn&&conn.open)lockScreen()});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&(code||conn))lockScreen()});
 window.addEventListener('beforeunload',e=>{if(busyOut||cur){e.preventDefault();e.returnValue=t('leave')}});
 
 /* ---------- install (Android) + share menu ---------- */
@@ -373,11 +498,11 @@ async function takeShared(){
 
 /* ---------- start ---------- */
 applyLang();
-if(typeof Peer==='undefined'||typeof QRCode==='undefined'){show('vQr');$('#qr').innerHTML='';$('#pickFirst').hidden=true;setStatus('noNet','bad')}
+if(typeof Peer==='undefined'||typeof QRCode==='undefined'){show('vQr');$('#qr').classList.remove('wait');$('#pickFirst').hidden=true;setStatus('noNet','bad')}
 else{
   const h=location.hash.slice(1);
-  if(/^[a-z0-9]{6,20}$/.test(h)&&h!=='share')joiner(h);
-  else if(h==='share')takeShared().then(s=>{if(s.files.length||s.texts.length)startShare(s.files,s.texts);else{reset();hostQR('recv')}});
+  if(h==='share')takeShared().then(s=>{if(s.files.length||s.texts.length)startShare(s.files,s.texts);else{reset();hostQR('recv')}});
+  else if(/^[a-z0-9]{6,20}$/.test(h))joiner(h);
   else hostQR('recv');
 }
 window.addEventListener('hashchange',()=>location.reload());
