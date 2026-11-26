@@ -33,6 +33,7 @@ h1{font-size:23px;line-height:1.05;margin:0}.tag{font-size:13px;color:var(--mute
 .btn{font:inherit;font-weight:700;min-height:52px;padding:0 18px;border-radius:12px;border:0;background:var(--red);color:#fff;cursor:pointer;width:100%}
 .btn.ghost{background:none;color:var(--ink);border:2px solid var(--line)}
 .btn.ink{background:var(--ink);color:var(--bg)}
+.lv{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:12px 0 6px}.lv button{font:inherit;padding:8px 6px;border-radius:12px;border:2px solid var(--line);background:none;color:var(--ink);cursor:pointer;text-align:center;min-height:58px}.lv button b{display:block;font-size:16px;line-height:1.2}.lv button span{display:block;font-size:12px;color:var(--mute);line-height:1.2}.lv button[aria-pressed=true]{border-color:var(--red);box-shadow:inset 0 0 0 1px var(--red)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset:2px}
 .sub{color:var(--mute);margin:6px 0 10px;font-size:15px}
@@ -79,13 +80,22 @@ ol.how{margin:6px 0 0;padding-left:1.3em;font-size:15px;color:var(--mute)}ol.how
       <div class="card">
         <button class="btn ghost" id="qPick" data-t="pick"></button><input type="file" id="qFile" hidden>
         <label class="chk"><input type="checkbox" id="qShrink" checked><span data-t="shrink"></span></label>
-        <p class="sub" id="qInfo"></p>
+        <div class="lv" id="qLevel" role="group"><button data-lv="0"><b data-t="lv0"></b><span data-t="lv0s"></span></button><button data-lv="1"><b data-t="lv1"></b><span data-t="lv1s"></span></button><button data-lv="2"><b data-t="lv2"></b><span data-t="lv2s"></span></button></div>
+        <p class="sub" id="qInfo" style="margin-bottom:0"></p><p class="sub" id="qEst" style="margin-top:2px;font-weight:700"></p>
+      </div>
+      <div id="qrStart" class="card" hidden style="text-align:center">
+        <div class="big" data-t="step1"></div>
+        <p class="sub" data-t="step1p"></p>
+        <div class="qrwrap" id="qrStartBox" style="max-width:300px;margin:0 auto"></div>
+        <p class="sub" data-t="step1n" style="font-size:13px"></p>
+        <button class="btn" id="qGo" data-t="go" style="width:100%"></button>
       </div>
       <div id="qrAnim" hidden>
         <div class="qrwrap" id="qrBox"></div>
         <div class="big" id="qFrame"></div>
         <p class="sub" style="text-align:center" data-t="holdSteady"></p>
-        <label class="sub" style="display:block"><span data-t="speed"></span> <b id="fpsV"></b><input type="range" id="fps" min="3" max="15" value="8"></label>
+        <label class="sub" style="display:block"><span data-t="speed"></span> <b id="fpsV"></b><input type="range" id="fps" min="3" max="15" value="6"></label>
+        <button class="btn ghost" id="qShowStart" data-t="showStart" style="width:100%;margin-bottom:8px"></button>
       </div>
       <button class="btn ghost" id="qBack1" data-t="back"></button>
     </div>
@@ -93,7 +103,9 @@ ol.how{margin:6px 0 0;padding-left:1.3em;font-size:15px;color:var(--mute)}ol.how
       <div class="cam"><video id="qVid" playsinline muted></video><i></i></div>
       <div class="bar"><i id="qBar"></i></div>
       <div class="big" id="qGot"></div>
+      <p class="sub" data-t="recvTip" style="text-align:center"></p>
       <ul class="files" id="qOut"></ul>
+      <button class="btn" id="qAgain" data-t="again" hidden style="width:100%;margin-top:10px"></button>
       <button class="btn ghost" id="qBack2" data-t="back" style="margin-top:12px"></button>
     </div>
   </section>
@@ -129,9 +141,9 @@ ol.how{margin:6px 0 0;padding-left:1.3em;font-size:15px;color:var(--mute)}ol.how
 <script>
 {
 const T={
-bn:{title:'নেটওয়ার্ক ছাড়া পাঠান',tagline:'ইন্টারনেট, Wi‑Fi, ব্লুটুথ — কিছুই লাগবে না',mQr:'অ্যানিমেটেড QR',mQrSub:'কোনো নেটওয়ার্ক নয় · ছোট ফাইল',mHs:'হটস্পট',mHsSub:'ইন্টারনেট ছাড়া · বড় ফাইল, দ্রুত',send:'পাঠাব',recv:'নেব',qrHow:'পাঠানোর ফোনের স্ক্রিনে QR নাচবে, নেওয়ার ফোনের ক্যামেরা পড়ে নেবে। ছবি, PDF, ছোট ফাইলের জন্য (৫০০ KB পর্যন্ত ভালো চলে)।',pick:'ফাইল বেছে নিন',pickMany:'ফাইল পাঠান',shrink:'ছবি হলে ছোট করে পাঠান (অনেক দ্রুত)',holdSteady:'অন্য ফোনের ক্যামেরা এই QR-এর দিকে স্থির করে ধরুন',speed:'গতি:',back:'ফিরে যান',frames:'ফ্রেম',estTime:'আনুমানিক সময়',sec:'সেকেন্ড',min:'মিনিট',tooBig:'ফাইলটি বড় (১ MB-র বেশি)। হটস্পট মোড ব্যবহার করুন।',camNo:'ক্যামেরা চালু করা গেল না। অনুমতি দিন বা অন্য ব্রাউজার চেষ্টা করুন।',looking:'QR খোঁজা হচ্ছে…',got:'পাওয়া গেছে',done:'সম্পূর্ণ ✓ — যাচাই করা হয়েছে',bad:'ফাইল নষ্ট হয়েছে, আবার চেষ্টা করুন',save:'সেভ',hs1:'দুটো ডিভাইস একই হটস্পট বা Wi‑Fi-এ যুক্ত করুন (ইন্টারনেট না থাকলেও চলবে)।',hs2:'একজন "শুরু করব" চাপুন, অন্যজন "যোগ দেব"।',hs3:'দুজনকেই একবার করে একে অন্যের QR স্ক্যান করতে হবে।',hStart:'শুরু করব',hJoin:'যোগ দেব',showToJoin:'যিনি যোগ দেবেন, তিনি এই QR স্ক্যান করুন',scanReply:'ওঁর ফোনের উত্তর-QR স্ক্যান করুন',scanStart:'শুরু করা ফোনের QR স্ক্যান করুন',showReply:'এবার এই উত্তর-QR শুরু করা ফোনকে স্ক্যান করতে দিন',scanTheirReply:'ওঁর উত্তর-QR স্ক্যান করুন',connecting:'যুক্ত হচ্ছে…',connected:'যুক্ত হয়েছে — এখন ফাইল পাঠান',hsFail:'যুক্ত হওয়া গেল না। দুটো ডিভাইস একই হটস্পট/Wi‑Fi-এ আছে কিনা দেখুন।',preparing:'তৈরি হচ্ছে…',sending:'পাঠানো হচ্ছে',receiving:'আসছে',sent:'পাঠানো হয়েছে ✓',wrongQr:'এটি ঠিক QR নয়',home:'← মূল পাতা'},
-hi:{title:'नेटवर्क के बिना भेजें',tagline:'इंटरनेट, Wi‑Fi, ब्लूटूथ — कुछ नहीं चाहिए',mQr:'एनिमेटेड QR',mQrSub:'कोई नेटवर्क नहीं · छोटी फ़ाइल',mHs:'हॉटस्पॉट',mHsSub:'बिना इंटरनेट · बड़ी फ़ाइल, तेज़',send:'भेजूँगा',recv:'लूँगा',qrHow:'भेजने वाले फ़ोन की स्क्रीन पर QR चलेगा, लेने वाले फ़ोन का कैमरा पढ़ लेगा। फ़ोटो, PDF, छोटी फ़ाइलों के लिए (500 KB तक अच्छा चलता है)।',pick:'फ़ाइल चुनें',pickMany:'फ़ाइल भेजें',shrink:'फ़ोटो हो तो छोटा करके भेजें (बहुत तेज़)',holdSteady:'दूसरे फ़ोन का कैमरा इस QR की ओर स्थिर रखें',speed:'गति:',back:'वापस',frames:'फ़्रेम',estTime:'अनुमानित समय',sec:'सेकंड',min:'मिनट',tooBig:'फ़ाइल बड़ी है (1 MB से ज़्यादा)। हॉटस्पॉट मोड इस्तेमाल करें।',camNo:'कैमरा चालू नहीं हुआ। अनुमति दें या दूसरा ब्राउज़र आज़माएँ।',looking:'QR ढूँढ रहे हैं…',got:'मिला',done:'पूरा ✓ — जाँच हो गई',bad:'फ़ाइल ख़राब हुई, फिर कोशिश करें',save:'सेव',hs1:'दोनों डिवाइस एक ही हॉटस्पॉट या Wi‑Fi से जोड़ें (इंटरनेट न हो तब भी चलेगा)।',hs2:'एक "शुरू करूँगा" दबाए, दूसरा "जुड़ूँगा"।',hs3:'दोनों को एक-एक बार एक-दूसरे का QR स्कैन करना होगा।',hStart:'शुरू करूँगा',hJoin:'जुड़ूँगा',showToJoin:'जो जुड़ेगा, वह यह QR स्कैन करे',scanReply:'उनके फ़ोन का जवाब-QR स्कैन करें',scanStart:'शुरू करने वाले फ़ोन का QR स्कैन करें',showReply:'अब यह जवाब-QR शुरू करने वाले फ़ोन को स्कैन करने दें',scanTheirReply:'उनका जवाब-QR स्कैन करें',connecting:'जुड़ रहा है…',connected:'जुड़ गया — अब फ़ाइल भेजें',hsFail:'जुड़ नहीं सका। देखें दोनों डिवाइस एक ही हॉटस्पॉट/Wi‑Fi पर हैं।',preparing:'तैयार हो रहा है…',sending:'भेजा जा रहा है',receiving:'आ रहा है',sent:'भेज दिया ✓',wrongQr:'यह सही QR नहीं है',home:'← मुख्य पेज'},
-en:{title:'Send without a network',tagline:'No internet, Wi‑Fi or Bluetooth needed',mQr:'Animated QR',mQrSub:'No network at all · small files',mHs:'Hotspot',mHsSub:'No internet · big files, fast',send:'Send',recv:'Receive',qrHow:'The sending screen plays a moving QR; the receiving phone’s camera reads it. For photos, PDFs and small files (works well up to 500 KB).',pick:'Choose a file',pickMany:'Send files',shrink:'Shrink photos before sending (much faster)',holdSteady:'Hold the other phone’s camera steady on this QR',speed:'Speed:',back:'Back',frames:'frames',estTime:'About',sec:'sec',min:'min',tooBig:'That file is over 1 MB. Use Hotspot mode instead.',camNo:'Couldn’t start the camera. Allow it, or try another browser.',looking:'Looking for the QR…',got:'Got',done:'Complete ✓ — verified',bad:'The file got corrupted, try again',save:'Save',hs1:'Join both devices to the same hotspot or Wi‑Fi (no internet needed).',hs2:'One taps “Start”, the other “Join”.',hs3:'Each scans the other’s QR once.',hStart:'Start',hJoin:'Join',showToJoin:'Let the other device scan this QR',scanReply:'Scan their reply QR',scanStart:'Scan the QR on the starting device',showReply:'Now let the starting device scan this reply QR',scanTheirReply:'Scan their reply QR',connecting:'Connecting…',connected:'Connected — send files now',hsFail:'Couldn’t connect. Check both are on the same hotspot/Wi‑Fi.',preparing:'Preparing…',sending:'Sending',receiving:'Receiving',sent:'Sent ✓',wrongQr:'That’s not the right QR',home:'← Main page'}};
+bn:{lv0:'সহজ',lv0s:'বড় QR, সবচেয়ে নিশ্চিত',lv1:'মাঝারি',lv1s:'ভালো ক্যামেরা',lv2:'দ্রুত',lv2s:'নতুন ফোন, কাছে ধরুন',step1:'ধাপ ১',step1p:'অন্য ফোনের সাধারণ ক্যামেরায় এই QR স্ক্যান করুন — ঝটপটের “নেব” পাতা খুলে যাবে।',step1n:'ইন্টারনেট না থাকলে: ওই ফোনে আগে একবার ঝটপট খোলা থাকতে হবে। নইলে ঝটপট → নেটওয়ার্ক ছাড়া → নেব চাপুন।',go:'ধাপ ২: পাঠানো শুরু করুন',showStart:'প্রথম QR আবার দেখান',frame:'ফ্রেম',slowHint:'বড় ফাইল — হটস্পট মোডে অনেক দ্রুত হবে',reading:'পড়া হচ্ছে… ফোন স্থির রাখুন',waitData:'ফাইলের তথ্য এসেছে, বাকিটা আসছে…',waitName:'প্রায় শেষ…',recvTip:'কিছু ফ্রেম বাদ গেলেও চিন্তা নেই — যেকোনো ফ্রেম থেকেই ফাইল জোড়া লাগবে।',again:'আরেকটা ফাইল নিন',oldQr:'পাঠানোর ফোনে পাতাটি আবার খুলুন (পুরোনো সংস্করণ)',title:'নেটওয়ার্ক ছাড়া পাঠান',tagline:'ইন্টারনেট, Wi‑Fi, ব্লুটুথ — কিছুই লাগবে না',mQr:'অ্যানিমেটেড QR',mQrSub:'কোনো নেটওয়ার্ক নয় · ছোট ফাইল',mHs:'হটস্পট',mHsSub:'ইন্টারনেট ছাড়া · বড় ফাইল, দ্রুত',send:'পাঠাব',recv:'নেব',qrHow:'পাঠানোর ফোনের স্ক্রিনে QR নাচবে, নেওয়ার ফোনের ক্যামেরা পড়ে নেবে। ছবি, PDF, ছোট ফাইলের জন্য (২০০ KB পর্যন্ত ভালো চলে)।',pick:'ফাইল বেছে নিন',pickMany:'ফাইল পাঠান',shrink:'ছবি হলে ছোট করে পাঠান (অনেক দ্রুত)',holdSteady:'অন্য ফোনের ক্যামেরা এই QR-এর দিকে স্থির করে ধরুন',speed:'গতি:',back:'ফিরে যান',frames:'ফ্রেম',estTime:'আনুমানিক সময়',sec:'সেকেন্ড',min:'মিনিট',tooBig:'ফাইলটি বড় (১ MB-র বেশি)। হটস্পট মোড ব্যবহার করুন।',camNo:'ক্যামেরা চালু করা গেল না। অনুমতি দিন বা অন্য ব্রাউজার চেষ্টা করুন।',looking:'QR খোঁজা হচ্ছে…',got:'পাওয়া গেছে',done:'সম্পূর্ণ ✓ — যাচাই করা হয়েছে',bad:'ফাইল নষ্ট হয়েছে, আবার চেষ্টা করুন',save:'সেভ',hs1:'দুটো ডিভাইস একই হটস্পট বা Wi‑Fi-এ যুক্ত করুন (ইন্টারনেট না থাকলেও চলবে)।',hs2:'একজন "শুরু করব" চাপুন, অন্যজন "যোগ দেব"।',hs3:'দুজনকেই একবার করে একে অন্যের QR স্ক্যান করতে হবে।',hStart:'শুরু করব',hJoin:'যোগ দেব',showToJoin:'যিনি যোগ দেবেন, তিনি এই QR স্ক্যান করুন',scanReply:'ওঁর ফোনের উত্তর-QR স্ক্যান করুন',scanStart:'শুরু করা ফোনের QR স্ক্যান করুন',showReply:'এবার এই উত্তর-QR শুরু করা ফোনকে স্ক্যান করতে দিন',scanTheirReply:'ওঁর উত্তর-QR স্ক্যান করুন',connecting:'যুক্ত হচ্ছে…',connected:'যুক্ত হয়েছে — এখন ফাইল পাঠান',hsFail:'যুক্ত হওয়া গেল না। দুটো ডিভাইস একই হটস্পট/Wi‑Fi-এ আছে কিনা দেখুন।',preparing:'তৈরি হচ্ছে…',sending:'পাঠানো হচ্ছে',receiving:'আসছে',sent:'পাঠানো হয়েছে ✓',wrongQr:'এটি ঠিক QR নয়',home:'← মূল পাতা'},
+hi:{lv0:'आसान',lv0s:'बड़ा QR, सबसे पक्का',lv1:'मध्यम',lv1s:'अच्छा कैमरा',lv2:'तेज़',lv2s:'नया फ़ोन, पास रखें',step1:'चरण 1',step1p:'दूसरे फ़ोन के सामान्य कैमरे से यह QR स्कैन करें — झटपट का “लूँगा” पेज खुल जाएगा।',step1n:'इंटरनेट न हो तो: उस फ़ोन पर पहले एक बार झटपट खुला होना चाहिए। वरना झटपट → बिना नेटवर्क → लूँगा दबाएँ।',go:'चरण 2: भेजना शुरू करें',showStart:'पहला QR फिर दिखाएँ',frame:'फ़्रेम',slowHint:'बड़ी फ़ाइल — हॉटस्पॉट मोड में बहुत तेज़ होगा',reading:'पढ़ रहे हैं… फ़ोन स्थिर रखें',waitData:'फ़ाइल की जानकारी मिली, बाकी आ रहा है…',waitName:'लगभग पूरा…',recvTip:'कुछ फ़्रेम छूट जाएँ तो चिंता नहीं — किसी भी फ़्रेम से फ़ाइल जुड़ जाएगी।',again:'एक और फ़ाइल लें',oldQr:'भेजने वाले फ़ोन पर पेज दोबारा खोलें (पुराना संस्करण)',title:'नेटवर्क के बिना भेजें',tagline:'इंटरनेट, Wi‑Fi, ब्लूटूथ — कुछ नहीं चाहिए',mQr:'एनिमेटेड QR',mQrSub:'कोई नेटवर्क नहीं · छोटी फ़ाइल',mHs:'हॉटस्पॉट',mHsSub:'बिना इंटरनेट · बड़ी फ़ाइल, तेज़',send:'भेजूँगा',recv:'लूँगा',qrHow:'भेजने वाले फ़ोन की स्क्रीन पर QR चलेगा, लेने वाले फ़ोन का कैमरा पढ़ लेगा। फ़ोटो, PDF, छोटी फ़ाइलों के लिए (200 KB तक अच्छा चलता है)।',pick:'फ़ाइल चुनें',pickMany:'फ़ाइल भेजें',shrink:'फ़ोटो हो तो छोटा करके भेजें (बहुत तेज़)',holdSteady:'दूसरे फ़ोन का कैमरा इस QR की ओर स्थिर रखें',speed:'गति:',back:'वापस',frames:'फ़्रेम',estTime:'अनुमानित समय',sec:'सेकंड',min:'मिनट',tooBig:'फ़ाइल बड़ी है (1 MB से ज़्यादा)। हॉटस्पॉट मोड इस्तेमाल करें।',camNo:'कैमरा चालू नहीं हुआ। अनुमति दें या दूसरा ब्राउज़र आज़माएँ।',looking:'QR ढूँढ रहे हैं…',got:'मिला',done:'पूरा ✓ — जाँच हो गई',bad:'फ़ाइल ख़राब हुई, फिर कोशिश करें',save:'सेव',hs1:'दोनों डिवाइस एक ही हॉटस्पॉट या Wi‑Fi से जोड़ें (इंटरनेट न हो तब भी चलेगा)।',hs2:'एक "शुरू करूँगा" दबाए, दूसरा "जुड़ूँगा"।',hs3:'दोनों को एक-एक बार एक-दूसरे का QR स्कैन करना होगा।',hStart:'शुरू करूँगा',hJoin:'जुड़ूँगा',showToJoin:'जो जुड़ेगा, वह यह QR स्कैन करे',scanReply:'उनके फ़ोन का जवाब-QR स्कैन करें',scanStart:'शुरू करने वाले फ़ोन का QR स्कैन करें',showReply:'अब यह जवाब-QR शुरू करने वाले फ़ोन को स्कैन करने दें',scanTheirReply:'उनका जवाब-QR स्कैन करें',connecting:'जुड़ रहा है…',connected:'जुड़ गया — अब फ़ाइल भेजें',hsFail:'जुड़ नहीं सका। देखें दोनों डिवाइस एक ही हॉटस्पॉट/Wi‑Fi पर हैं।',preparing:'तैयार हो रहा है…',sending:'भेजा जा रहा है',receiving:'आ रहा है',sent:'भेज दिया ✓',wrongQr:'यह सही QR नहीं है',home:'← मुख्य पेज'},
+en:{lv0:'Easy',lv0s:'Big QR, most reliable',lv1:'Normal',lv1s:'Good camera',lv2:'Fast',lv2s:'New phone, hold close',step1:'Step 1',step1p:'Scan this QR with the other phone’s normal camera — it opens Jhatpat’s Receive page.',step1n:'With no internet, that phone must have opened Jhatpat once before. Otherwise open Jhatpat → No internet → Receive.',go:'Step 2: Start sending',showStart:'Show the first QR again',frame:'Frame',slowHint:'big file — Hotspot mode is much faster',reading:'Reading… hold the phone steady',waitData:'Got the file info, the rest is coming…',waitName:'Almost done…',recvTip:'Missed frames don’t matter — the file is rebuilt from whichever frames you catch.',again:'Receive another file',oldQr:'Reopen the page on the sending phone (old version)',title:'Send without a network',tagline:'No internet, Wi‑Fi or Bluetooth needed',mQr:'Animated QR',mQrSub:'No network at all · small files',mHs:'Hotspot',mHsSub:'No internet · big files, fast',send:'Send',recv:'Receive',qrHow:'The sending screen plays a moving QR; the receiving phone’s camera reads it. For photos, PDFs and small files (works best up to 200 KB).',pick:'Choose a file',pickMany:'Send files',shrink:'Shrink photos before sending (much faster)',holdSteady:'Hold the other phone’s camera steady on this QR',speed:'Speed:',back:'Back',frames:'frames',estTime:'About',sec:'sec',min:'min',tooBig:'That file is over 1 MB. Use Hotspot mode instead.',camNo:'Couldn’t start the camera. Allow it, or try another browser.',looking:'Looking for the QR…',got:'Got',done:'Complete ✓ — verified',bad:'The file got corrupted, try again',save:'Save',hs1:'Join both devices to the same hotspot or Wi‑Fi (no internet needed).',hs2:'One taps “Start”, the other “Join”.',hs3:'Each scans the other’s QR once.',hStart:'Start',hJoin:'Join',showToJoin:'Let the other device scan this QR',scanReply:'Scan their reply QR',scanStart:'Scan the QR on the starting device',showReply:'Now let the starting device scan this reply QR',scanTheirReply:'Scan their reply QR',connecting:'Connecting…',connected:'Connected — send files now',hsFail:'Couldn’t connect. Check both are on the same hotspot/Wi‑Fi.',preparing:'Preparing…',sending:'Sending',receiving:'Receiving',sent:'Sent ✓',wrongQr:'That’s not the right QR',home:'← Main page'}};
 const $=s=>document.querySelector(s);
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 let lang=store.get('qrp-lang');if(!T[lang])lang=/^hi/.test(navigator.language)?'hi':/^en/.test(navigator.language)?'en':'bn';
@@ -150,7 +162,9 @@ function mode(m){$('#mQr').setAttribute('aria-pressed',m==='qr');$('#mHs').setAt
 $('#mQr').onclick=()=>mode('qr');$('#mHs').onclick=()=>mode('hs');
 
 /* ---------- camera + QR reader (shared) ---------- */
-let camStream=null,camRAF=0;
+let camStream=null,camRAF=0,detP=null;
+function nativeDetector(){/* Android Chrome has a fast built-in QR reader */
+  if(!detP)detP=(async()=>{try{if('BarcodeDetector' in window&&(await BarcodeDetector.getSupportedFormats()).includes('qr_code'))return new BarcodeDetector({formats:['qr_code']})}catch(e){}return null})();return detP}
 async function startScan(video,onText){
   stopScan();
   try{camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}},audio:false})}
@@ -158,13 +172,15 @@ async function startScan(video,onText){
   window.__jpScanCb=onText;
   video.srcObject=camStream;await video.play().catch(()=>{});
   const cv=document.createElement('canvas'),cx=cv.getContext('2d',{willReadFrequently:true});
+  const det=await nativeDetector();let busy=false;
   const tick=()=>{
     if(!camStream)return;
-    if(video.readyState>=2&&video.videoWidth){
-      const s=Math.min(1,720/Math.max(video.videoWidth,video.videoHeight));
-      cv.width=video.videoWidth*s|0;cv.height=video.videoHeight*s|0;cx.drawImage(video,0,0,cv.width,cv.height);
-      const r=jsQR(cx.getImageData(0,0,cv.width,cv.height).data,cv.width,cv.height,{inversionAttempts:'dontInvert'});
-      if(r&&r.data)onText(r.data);
+    if(video.readyState>=2&&video.videoWidth&&!busy){
+      if(det){busy=true;det.detect(video).then(rs=>{for(const r of rs)if(r.rawValue)onText(r.rawValue)}).catch(()=>{}).finally(()=>{busy=false})}
+      else{const vw=video.videoWidth,vh=video.videoHeight,sq=Math.min(vw,vh)*.9,k=Math.min(1,800/sq);
+        cv.width=cv.height=sq*k|0;cx.drawImage(video,(vw-sq)/2,(vh-sq)/2,sq,sq,0,0,cv.width,cv.height);
+        const r=jsQR(cx.getImageData(0,0,cv.width,cv.height).data,cv.width,cv.height,{inversionAttempts:'dontInvert'});
+        if(r&&r.data)onText(r.data)}
     }
     camRAF=requestAnimationFrame(tick);
   };
@@ -174,62 +190,149 @@ function stopScan(){cancelAnimationFrame(camRAF);if(camStream){camStream.getTrac
 function stopAll(){stopScan();stopAnim();if(pc){try{pc.close()}catch(e){}pc=null;dc=null}
   ['#qrSendBox','#qrRecvBox','#hsQrBox','#hsCamBox','#hsConn','#hBack','#hsScanReply'].forEach(s=>$(s).hidden=true);$('#qrHome').hidden=false;$('#hsHome').hidden=false}
 
-/* ================= Animated QR: send ================= */
-const CHUNK=400;let frames=[],fi=0,animT=0,qr=null;
+/* ================= Animated QR v2: fountain-coded frames =================
+   The file is cut into K blocks. Every frame is a random XOR mix of blocks (LT / "fountain" code), so the
+   receiver can rebuild the file from ANY ~K+10% frames it manages to catch —
+   missed frames cost nothing and there is no waiting for the loop to come round. */
+const LV=[{B:110,f:6},{B:200,f:8},{B:340,f:10}];
+let lv=+(store.get('jp-qlv')||0);if(!LV[lv])lv=0;
+function mulberry(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let x=Math.imul(a^a>>>15,1|a);x=x+Math.imul(x^x>>>7,61|x)^x;return((x^x>>>14)>>>0)/4294967296}}
+function idNum(id){let h=2166136261;for(const c of id)h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0}
+const cdfCache={};
+function solitonCdf(K){
+  if(cdfCache[K])return cdfCache[K];
+  const c=.05,dl=.5,R=Math.max(1,c*Math.log(K/dl)*Math.sqrt(K)),p=new Float64Array(K+1);
+  p[1]=1/K;for(let d=2;d<=K;d++)p[d]=1/(d*(d-1));
+  const piv=Math.min(K,Math.max(1,Math.floor(K/R)));
+  for(let d=1;d<piv;d++)p[d]+=R/(d*K);p[piv]+=Math.max(0,R*Math.log(R/dl)/K);
+  let s=0;for(let d=1;d<=K;d++)s+=p[d];
+  const cdf=new Float64Array(K+1);let a=0;for(let d=1;d<=K;d++){a+=p[d]/s;cdf[d]=a}
+  return cdfCache[K]=cdf;
+}
+function blocksFor(id,K,seed){
+  const r=mulberry(idNum(id)^Math.imul(seed,2654435761)),cdf=solitonCdf(K),u=r();
+  let d=1;while(d<K&&cdf[d]<u)d++;
+  const set=new Set();while(set.size<d)set.add(Math.floor(r()*K));return[...set];
+}
+const xorInto=(a,b)=>{for(let i=0;i<a.length;i++)a[i]^=b[i]};
+
+/* ---------- send ---------- */
+let curFile=null,sid='',K=0,B=0,size=0,data=null,meta='',seedN=0,frameN=0,animT=0,qr=null;
 function stopAnim(){clearInterval(animT);animT=0}
 async function shrink(file){
-  if(!/^image\//.test(file.type)||!$('#qShrink').checked||file.size<120*1024)return file;
-  const img=await createImageBitmap(file);const k=Math.min(1,1280/Math.max(img.width,img.height));
+  if(!/^image\//.test(file.type)||/gif|svg/.test(file.type)||!$('#qShrink').checked||file.size<60*1024)return file;
+  const img=await createImageBitmap(file);const k=Math.min(1,1024/Math.max(img.width,img.height));
   const c=document.createElement('canvas');c.width=img.width*k|0;c.height=img.height*k|0;c.getContext('2d').drawImage(img,0,0,c.width,c.height);
-  const b=await new Promise(r=>c.toBlob(r,'image/jpeg',.72));
+  const b=await new Promise(r=>c.toBlob(r,'image/jpeg',.6));
   return b&&b.size<file.size?new File([b],file.name.replace(/\.\w+$/,'')+'.jpg',{type:'image/jpeg'}):file;
 }
-async function buildFrames(file){
-  const u=new Uint8Array(await file.arrayBuffer()),id=rid(4),n=Math.ceil(u.length/CHUNK);
-  const meta=b64.enc(new TextEncoder().encode(JSON.stringify({n:file.name.slice(0,60),s:u.length,m:file.type||'',h:await hex(u)})));
-  const out=['JP1|'+id+'|0|'+n+'|'+meta];
-  for(let i=0;i<n;i++)out.push('JP1|'+id+'|'+(i+1)+'|'+n+'|'+b64.enc(u.subarray(i*CHUNK,(i+1)*CHUNK)));
-  return out;
+async function prepare(f){
+  B=LV[lv].B;const u=new Uint8Array(await f.arrayBuffer());size=u.length;K=Math.max(1,Math.ceil(size/B));
+  data=new Uint8Array(K*B);data.set(u);sid=rid(4);seedN=0;frameN=0;
+  meta='J2M|'+sid+'|'+b64.enc(new TextEncoder().encode(JSON.stringify({n:f.name.slice(0,60),m:f.type||'',h:await hex(u)})));
+  $('#qInfo').textContent=f.name+' · '+fmt(size);estimate();
 }
-function showFrame(){if(!frames.length)return;qr.makeCode(frames[fi]);$('#qFrame').textContent=(fi+1)+' / '+frames.length;fi=(fi+1)%frames.length}
-function runAnim(){stopAnim();const f=+$('#fps').value;$('#fpsV').textContent=f+'/s';animT=setInterval(showFrame,1000/f);estimate()}
-function estimate(){const f=+$('#fps').value,s=Math.ceil(frames.length/f*1.6);$('#qInfo').textContent=frames.length+' '+t('frames')+' · '+t('estTime')+' '+(s<90?s+' '+t('sec'):Math.ceil(s/60)+' '+t('min'))}
-$('#qSend').onclick=()=>{$('#qrHome').hidden=true;$('#qrSendBox').hidden=false;$('#qrAnim').hidden=true;$('#qInfo').textContent=''};
+function nextFrame(){
+  frameN++;if(frameN%8===1)return meta;
+  const s=seedN++,out=new Uint8Array(B);
+  for(const i of blocksFor(sid,K,s))xorInto(out,data.subarray(i*B,(i+1)*B));
+  return 'J2|'+sid+'|'+size+'|'+B+'|'+s+'|'+b64.enc(out);
+}
+function showFrame(){const tx=nextFrame();window.__jpLastQr=tx;qr.makeCode(tx);$('#qFrame').textContent=t('frame')+' '+frameN}
+function runAnim(){stopAnim();const f=+$('#fps').value;$('#fpsV').textContent=f+'/s';showFrame();animT=setInterval(showFrame,1000/f);estimate()}
+function estimate(){
+  if(!K)return;const f=+$('#fps').value,s=Math.ceil(K*1.08/(f*.7))+3;
+  $('#qEst').textContent=t('estTime')+' '+(s<90?s+' '+t('sec'):Math.ceil(s/60)+' '+t('min'))+(s>180?' — '+t('slowHint'):'');
+}
+function renderLv(){document.querySelectorAll('#qLevel button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.lv===lv))}
+document.querySelectorAll('#qLevel button').forEach(b=>b.onclick=async()=>{
+  lv=+b.dataset.lv;store.set('jp-qlv',lv);renderLv();$('#fps').value=LV[lv].f;$('#fpsV').textContent=LV[lv].f+'/s';
+  if(curFile){const was=!!animT;await prepare(curFile);if(was)runAnim()}});
+const rxUrl=()=>location.href.split('#')[0].split('?')[0]+'#rx';
+function showStart(){
+  stopAnim();$('#qrAnim').hidden=true;$('#qrStart').hidden=false;
+  $('#qrStartBox').innerHTML='';new QRCode($('#qrStartBox'),{text:rxUrl(),width:480,height:480,correctLevel:QRCode.CorrectLevel.M});
+}
+$('#qSend').onclick=()=>{$('#qrHome').hidden=true;$('#qrSendBox').hidden=false;$('#qrAnim').hidden=true;$('#qrStart').hidden=true;$('#qInfo').textContent='';$('#qEst').textContent='';renderLv()};
 $('#qPick').onclick=()=>$('#qFile').click();
 $('#qFile').onchange=async e=>{
   let f=e.target.files[0];e.target.value='';if(!f)return;
   setStatus('preparing');f=await shrink(f);
   if(f.size>1048576){setStatus('tooBig','bad');return}
-  frames=await buildFrames(f);fi=0;setStatus('');
-  $('#qrAnim').hidden=false;$('#qrBox').innerHTML='';
-  qr=new QRCode($('#qrBox'),{width:560,height:560,correctLevel:QRCode.CorrectLevel.L});
-  $('#qInfo').textContent=f.name+' · '+fmt(f.size);runAnim();
+  curFile=f;$('#fps').value=LV[lv].f;await prepare(f);setStatus('');showStart();
   try{await navigator.wakeLock.request('screen')}catch(x){}
 };
-$('#fps').oninput=()=>{if(frames.length)runAnim()};
-$('#qBack1').onclick=stopAll;$('#qBack2').onclick=stopAll;
+$('#qGo').onclick=()=>{
+  $('#qrStart').hidden=true;$('#qrAnim').hidden=false;$('#qrBox').innerHTML='';
+  qr=new QRCode($('#qrBox'),{width:560,height:560,correctLevel:QRCode.CorrectLevel.L});runAnim();$('#qrAnim').scrollIntoView({behavior:'smooth',block:'start'});
+};
+$('#qShowStart').onclick=showStart;
+$('#fps').oninput=()=>{if(animT)runAnim();else{$('#fpsV').textContent=$('#fps').value+'/s';estimate()}};
+$('#qBack1').onclick=()=>{curFile=null;K=0;stopAll()};$('#qBack2').onclick=stopAll;
+/* for tests: a batch of frames (meta + n coded frames) */
+async function buildFrames(file,extra=1.6){curFile=file;await prepare(file);const out=[meta];frameN=1;const n=Math.ceil(K*extra)+4;for(let i=0;i<n;i++){frameN=2;out.push(nextFrame())}return out}
 
-/* ================= Animated QR: receive ================= */
+/* ---------- receive ---------- */
 let rx=null;
-function rxReset(){rx={id:null,n:0,got:new Map(),meta:null,done:false}}
+function rxReset(){rx={id:null,K:0,B:0,size:0,known:null,nKnown:0,by:null,eqs:[],seen:new Set(),metas:{},done:false,caught:0,lastGE:0}}
+function rxInit(id,sz,b){rxReset();rx.id=id;rx.size=sz;rx.B=b;rx.K=Math.max(1,Math.ceil(sz/b));rx.known=new Array(rx.K).fill(null);rx.by=Array.from({length:rx.K},()=>[])}
+function learn(i,buf){
+  const q=[[i,buf]];
+  while(q.length){const[b,v]=q.pop();if(rx.known[b])continue;rx.known[b]=v;rx.nKnown++;
+    for(const e of rx.by[b]){if(!e.s.has(b))continue;e.s.delete(b);xorInto(e.d,v);if(e.s.size===1){const[j]=e.s;e.s.clear();q.push([j,e.d])}}
+    rx.by[b]=[]}
+}
+function addEq(idx,buf){
+  const rest=[];for(const i of idx){if(rx.known[i])xorInto(buf,rx.known[i]);else rest.push(i)}
+  if(!rest.length)return;if(rest.length===1){learn(rest[0],buf);return}
+  const e={s:new Set(rest),d:buf};rx.eqs.push(e);for(const i of rest)rx.by[i].push(e);
+}
+/* When simple peeling stalls but we already hold about as many frames as blocks,
+   solve the remaining unknowns directly (Gauss-Jordan over GF(2)). */
+function solveRest(){
+  const eqs=rx.eqs=rx.eqs.filter(e=>e.s.size>0);
+  const unk=[];const col=new Int32Array(rx.K).fill(-1);
+  rx.known.forEach((v,i)=>{if(!v){col[i]=unk.length;unk.push(i)}});
+  const U=unk.length;if(!U||eqs.length<U)return;
+  const W=(U+31)>>>5,rows=eqs.map(e=>{const b=new Uint32Array(W);for(const i of e.s){const c=col[i];b[c>>>5]|=1<<(c&31)}return{b,d:e.d.slice()}});
+  let rank=0;const piv=new Int32Array(U).fill(-1);
+  for(let c=0;c<U&&rank<rows.length;c++){
+    const w=c>>>5,m=1<<(c&31);let r=rank;while(r<rows.length&&!(rows[r].b[w]&m))r++;
+    if(r===rows.length)continue;
+    [rows[rank],rows[r]]=[rows[r],rows[rank]];const P=rows[rank];
+    for(let k=0;k<rows.length;k++){if(k!==rank&&(rows[k].b[w]&m)){const R=rows[k];for(let j=0;j<W;j++)R.b[j]^=P.b[j];xorInto(R.d,P.d)}}
+    piv[c]=rank++;
+  }
+  for(let c=0;c<U;c++){const r=piv[c];if(r<0)continue;const R=rows[r];let n=0;for(let j=0;j<W;j++){let x=R.b[j];while(x){x&=x-1;n++}}if(n===1)learn(unk[c],R.d)}
+}
 function onFrame(txt){
-  const m=/^JP1\|([a-z0-9]{4})\|(\d+)\|(\d+)\|(.*)$/.exec(txt);if(!m||rx.done)return;
-  const [,id,is,ns,data]=m,i=+is,n=+ns;
-  if(rx.id!==id){rxReset();rx.id=id;rx.n=n}
-  if(rx.got.has(i)&&i!==0)return;
-  try{if(i===0)rx.meta=JSON.parse(new TextDecoder().decode(b64.dec(data)));else rx.got.set(i,b64.dec(data))}catch(e){return}
-  const have=rx.got.size+(rx.meta?1:0),all=n+1;
-  $('#qBar').style.width=(have/all*100).toFixed(1)+'%';$('#qGot').textContent=t('got')+' '+have+' / '+all;
-  if(rx.meta&&rx.got.size===n)finishRx();
+  if(!rx||rx.done)return;
+  let m=/^J2M\|([a-z0-9]{4})\|(.+)$/.exec(txt);
+  if(m){if(!rx.metas[m[1]]){try{rx.metas[m[1]]=JSON.parse(new TextDecoder().decode(b64.dec(m[2])))}catch(e){return}}progress();return}
+  m=/^J2\|([a-z0-9]{4})\|(\d+)\|(\d+)\|(\d+)\|(.+)$/.exec(txt);
+  if(!m){if(/^JP1\|/.test(txt))setStatus('oldQr','bad');return}
+  const[,id,sz,bs,sd,d]=m,seed=+sd;
+  if(rx.id!==id){const metas=rx.metas;rxInit(id,+sz,+bs);rx.metas=metas}
+  if(rx.seen.has(seed))return;rx.seen.add(seed);rx.caught++;
+  let buf;try{buf=b64.dec(d)}catch(e){return}if(buf.length!==rx.B)return;
+  addEq(blocksFor(id,rx.K,seed),buf);
+  if(rx.nKnown<rx.K&&rx.caught>=rx.K&&rx.caught-rx.lastGE>=Math.max(3,rx.K>>5)){rx.lastGE=rx.caught;solveRest()}
+  progress();
+}
+function progress(){
+  if(stK==='looking'||stK==='oldQr')setStatus('reading');
+  if(!rx.K){$('#qGot').textContent=t('waitData');return}
+  const pct=rx.nKnown===rx.K?100:Math.min(99,Math.floor(Math.max(rx.nKnown,rx.caught/1.06)/rx.K*100));
+  $('#qBar').style.width=pct+'%';$('#qGot').textContent=t('got')+' '+pct+'%';
+  if(rx.nKnown===rx.K){if(rx.metas[rx.id])finishRx();else $('#qGot').textContent=t('waitName')}
 }
 async function finishRx(){
   rx.done=true;stopScan();
-  const parts=[];for(let i=1;i<=rx.n;i++)parts.push(rx.got.get(i));
-  const u=new Uint8Array(parts.reduce((a,p)=>a+p.length,0));let o=0;for(const p of parts){u.set(p,o);o+=p.length}
-  const ok=u.length===rx.meta.s&&await hex(u)===rx.meta.h;
-  if(!ok){setStatus('bad','bad');return}
+  const u=new Uint8Array(rx.K*rx.B);rx.known.forEach((b,i)=>u.set(b,i*rx.B));const file=u.subarray(0,rx.size),mt=rx.metas[rx.id];
+  if(await hex(file)!==mt.h){setStatus('bad','bad');return}
   setStatus('done','good');try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(e){}
-  addOut($('#qOut'),new Blob([u],{type:rx.meta.m||'application/octet-stream'}),rx.meta.n||'file');
+  addOut($('#qOut'),new Blob([file],{type:mt.m||'application/octet-stream'}),mt.n||'file');
+  $('#qAgain').hidden=false;
 }
 function addOut(list,blob,name){
   const li=document.createElement('li'),d=document.createElement('div');
@@ -239,8 +342,11 @@ function addOut(list,blob,name){
   if(/^image\//.test(blob.type)){const im=new Image();im.className='preview';im.src=a.href;im.alt='';li.append(im);im.style.gridColumn='1/-1'}
   list.prepend(li);return li;
 }
-$('#qRecv').onclick=async()=>{$('#qrHome').hidden=true;$('#qrRecvBox').hidden=false;$('#qBar').style.width='0';$('#qGot').textContent='';rxReset();setStatus('looking');
-  if(await startScan($('#qVid'),onFrame))setStatus('looking')};
+async function startRecv(){
+  $('#qrHome').hidden=true;$('#qrRecvBox').hidden=false;$('#qAgain').hidden=true;$('#qBar').style.width='0';$('#qGot').textContent='';rxReset();setStatus('looking');
+  await startScan($('#qVid'),onFrame);
+}
+$('#qRecv').onclick=startRecv;$('#qAgain').onclick=startRecv;
 
 /* ================= Hotspot (WebRTC, no signalling server) ================= */
 let pc=null,dc=null;
@@ -312,8 +418,9 @@ $('#hJoin').onclick=async()=>{
 $('#hBack').onclick=()=>{stopAll();setStatus('')};
 
 /* ---------- test hooks (used for automated checks) ---------- */
-window.__jpOffline={buildFrames,onFrame,rxReset,pack,unpack};
-applyLang();
+window.__jpOffline={buildFrames,onFrame,rxReset,pack,unpack,get rx(){return rx}};
+applyLang();renderLv();
+if(location.hash==='#rx'){history.replaceState(null,'',location.pathname);mode('qr');startRecv()}
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
 }
 </script>

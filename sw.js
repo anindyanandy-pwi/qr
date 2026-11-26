@@ -1,6 +1,6 @@
 // Receives files/links from the Android Share menu and hands them to the page.
 // ---- offline copy of the app: network first (always fresh when online), cache when offline
-const APP_CACHE='jp-app-v3';
+const APP_CACHE='jp-app-v4';
 const PRE=['./','home.html','credit.js','index.html','offline.html','present.html','shop.html','desk.html','manifest.json','icon-192.png',
   'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js','https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js',
   'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js','https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'];
