@@ -4,7 +4,7 @@
    number is saved as the CONTACT_WA secret on the worker (the number never
    appears in this site's code). */
 (()=>{
-const CONTACT='';
+const CONTACT='https://jhatpat-drop.jhatpat-drop.workers.dev/contact';
 const N={bn:'বানিয়েছেন অনিন্দ্য নন্দী',hi:'निर्माता: अनिंद्य नंदी',en:'Made by Anindya Nandy'};
 window.JP_CREDIT={contact:CONTACT,text:l=>N[l]||N.en,all:'বানিয়েছেন অনিন্দ্য নন্দী · निर्माता: अनिंद्य नंदी · Made by Anindya Nandy'};
 const st=document.createElement('style');
