@@ -191,6 +191,7 @@ body.disp main{max-width:none;padding:0}body.disp header{display:none}
   .sd-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6mm;margin:2.6mm 3.5mm 0}
   .sd-steps div{border:.3mm solid #ccc;border-radius:2mm;padding:1.4mm 1mm;text-align:center;font-size:2.35mm;line-height:1.22}
   .sd-steps i{display:block;font:800 4.2mm/1 Archivo,sans-serif;font-style:normal;color:#e4002b;margin-bottom:.6mm}
+  .sd-cr{display:block;font-size:2mm;opacity:.75;margin-top:.8mm}
   .sd-foot{margin-top:auto;background:#111;color:#fff;text-align:center;font-size:2.4mm;padding:2mm 3mm;line-height:1.3}
 }
 </style>
@@ -322,7 +323,7 @@ body.disp main{max-width:none;padding:0}body.disp header{display:none}
     <div id="sdS2"><i>2</i>ফাইল বেছে পাঠান<br>फ़ाइल चुनकर भेजें<br>Pick &amp; send files</div>
     <div id="sdS3"><i>3</i>টোকেন নম্বর বলুন<br>टोकन नंबर बताएँ<br>Tell your token no.</div>
   </div>
-  <div class="sd-foot">নম্বর সেভ লাগবে না · नंबर सेव नहीं · No number needed<br>কোনো অ্যাপ লাগবে না · कोई ऐप नहीं · No app needed<br><span id="sdOwn"></span></div>
+  <div class="sd-foot">নম্বর সেভ লাগবে না · नंबर सेव नहीं · No number needed<br>কোনো অ্যাপ লাগবে না · कोई ऐप नहीं · No app needed<br><span id="sdOwn"></span><span class="sd-cr">বানিয়েছেন অনিন্দ্য নন্দী · निर्माता: अनिंद्य नंदी · Made by Anindya Nandy</span></div>
 </div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -859,7 +860,7 @@ function openRcpt(){
     x.fillStyle='#111';x.font='600 22px "Hind Siliguri",sans-serif';x.fillText(String(f.name).slice(0,44),62,y);
     x.fillStyle='#666';x.font='400 16px monospace';x.fillText(fmt(+f.size||0)+'  SHA-256 '+String(f.h||'').slice(0,32),62,y+lh-6);y+=lh*2});
   x.fillStyle='#555';x.font='400 19px "Hind Siliguri",sans-serif';note.forEach(l=>{x.fillText(l,30,y);y+=28});
-  x.fillStyle='#e4002b';x.font='700 18px "Hind Siliguri",sans-serif';x.fillText('ঝটপট · Jhatpat',30,y+22);
+  x.fillStyle='#e4002b';x.font='700 18px "Hind Siliguri",sans-serif';x.fillText('ঝটপট · Jhatpat',30,y+22);x.fillStyle='#777';x.font='400 16px "Hind Siliguri",sans-serif';x.textAlign='right';x.fillText(window.JP_CREDIT?JP_CREDIT.text(lang):'Made by Anindya Nandy',W-30,y+22);x.textAlign='left';
   const url=c.toDataURL('image/png');$('#rcptImg').src=url;$('#rcptSave').href=url;$('#rcptSave').download='receipt-token-'+(+r.n)+'.png';$('#rcptModal').hidden=false;
 }
 $('#cRcptBtn').onclick=openRcpt;$('#rcptClose').onclick=()=>{$('#rcptModal').hidden=true};
@@ -915,5 +916,6 @@ window.addEventListener('hashchange',()=>location.reload());
 }
 </script>
 <script>/* brand → home */{const b=document.querySelector('.brand');if(b){b.style.cursor='pointer';b.setAttribute('role','link');b.onclick=()=>location.href='home.html'}}</script>
+<script src="credit.js"></script>
 </body>
 </html>

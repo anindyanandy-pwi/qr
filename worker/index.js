@@ -61,6 +61,13 @@ async function route(req, env, ctx) {
   const p = new URL(req.url).pathname.split('/').filter(Boolean);
   if (p[0] === 'vapid') return json({ key: env.VAPID_PUBLIC });
   if (p[0] === 'health') return json({ ok: true });
+  // Maker contact: redirects to WhatsApp so the number is never in the site's code.
+  // Set with: npx wrangler secret put CONTACT_WA   (digits with country code, e.g. 9198xxxxxxxx)
+  if (p[0] === 'contact') {
+    const n = String(env.CONTACT_WA || '').replace(/\D/g, '');
+    if (!n) return new Response('Contact link not set yet.', { status: 404, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+    return Response.redirect('https://wa.me/' + n + '?text=' + encodeURIComponent('Hello, I found you through Jhatpat (ঝটপট).'), 302);
+  }
   if (p[0] !== 'd' || !/^[a-z0-9]{6}$/.test(p[1] || '')) return json({ error: 'not found' }, 404);
   const code = p[1], act = p[2], M = req.method;
 
