@@ -37,6 +37,7 @@ let schemaReady = false;
 async function ensureSchema(env) {
   if (schemaReady) return;
   await env.DB.batch(SCHEMA.map(q => env.DB.prepare(q)));
+  try { await env.DB.prepare('ALTER TABLE desks ADD COLUMN pref TEXT').run(); } catch (e) { /* already there */ }
   schemaReady = true;
 }
 
@@ -79,9 +80,18 @@ async function route(req, env, ctx) {
 
   // Public: visitor fetches the desk's public key to encrypt for it
   if (act === 'key' && M === 'GET') {
-    const d = await env.DB.prepare('SELECT pub,name,mode FROM desks WHERE code=?').bind(code).first();
+    const d = await env.DB.prepare('SELECT pub,name,mode,pref FROM desks WHERE code=?').bind(code).first();
     if (!d) return json({ error: 'none' }, 404);
-    return json({ pub: JSON.parse(d.pub), name: d.name, mode: d.mode });
+    return json({ pub: JSON.parse(d.pub), name: d.name, mode: d.mode, pref: d.pref || 'pc' });
+  }
+
+  // Owner chooses which of their devices gets files first: 'pc' or 'phone'
+  if (act === 'pref' && M === 'POST') {
+    if (!await owner(req, env, code)) return json({ error: 'auth' }, 401);
+    const b = await req.json();
+    const v = b.pref === 'phone' ? 'phone' : 'pc';
+    await env.DB.prepare('UPDATE desks SET pref=? WHERE code=?').bind(v, code).run();
+    return json({ ok: true, pref: v });
   }
 
   if (act === 'drops') {

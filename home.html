@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#e4002b">
+<title>ঝটপট</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=Hind+Siliguri:wght@400;600;700&family=Hind:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#f3f1ec,#0e0e0e);--ink:light-dark(#111,#f2f2f2);--mute:light-dark(#5b5b5b,#a8a8a8);--line:light-dark(#dcd8cf,#2a2a2a);--red:#e4002b;--card:light-dark(#fff,#181818)}
+*{box-sizing:border-box;min-width:0}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 "Hind Siliguri","Hind",system-ui,sans-serif;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+main{max-width:760px;margin:0 auto;padding:0 16px 40px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0 8px}
+.brand{display:flex;align-items:center;gap:10px}.brand svg{width:44px;height:44px;flex:none}
+h1{font:800 28px/1 Archivo,"Hind Siliguri",system-ui,sans-serif;margin:0;letter-spacing:-.01em}.tag{font-size:14px;color:var(--mute);margin-top:4px;line-height:1.2}
+.lang{display:flex;gap:4px}.lang button{font:inherit;font-size:15px;min-height:40px;padding:0 9px;border:1px solid var(--line);background:none;color:var(--ink);border-radius:8px;cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+h2{font-size:15px;color:var(--mute);font-weight:700;margin:22px 4px 8px;text-transform:uppercase;letter-spacing:.04em}
+.tile{display:grid;grid-template-columns:52px minmax(0,1fr);gap:4px 14px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 14px 12px;margin-bottom:10px}
+.ic{grid-row:span 2;width:52px;height:52px;border-radius:14px;background:var(--red);display:grid;place-items:center;color:#fff}
+.ic svg{width:28px;height:28px}
+.tile b{font-size:19px;line-height:1.2}.tile p{margin:0;color:var(--mute);font-size:14px;line-height:1.35}
+.row{grid-column:1/-1;display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:700;font-size:16px;min-height:46px;padding:0 16px;border-radius:12px;border:0;background:var(--red);color:#fff;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;flex:1 1 0}
+.btn.ghost{background:none;color:var(--ink);border:2px solid var(--line)}
+.btn.mine{background:var(--ink);color:var(--bg);flex-basis:100%}
+button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.note{font-size:13px;color:var(--mute);margin:18px 4px 0}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:12px;font-weight:700;z-index:9}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#e4002b"/><rect x="8" y="8" width="13" height="13" rx="3" fill="none" stroke="#fff" stroke-width="3"/><rect x="12.5" y="12.5" width="4" height="4" rx="1" fill="#fff"/><path d="M20 31 31 20M23.5 20H31v7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><h1>ঝটপট</h1><div class="tag" data-t="tag"></div></div></div>
+    <div class="lang"><button data-l="bn">বাংলা</button><button data-l="hi">हिंदी</button><button data-l="en">EN</button></div>
+  </header>
+  <h2 data-t="tools"></h2>
+  <div id="tiles"></div>
+  <p class="note" data-t="note"></p>
+</main>
+<div class="toast" id="toast" hidden></div>
+<script>
+{
+const T={
+bn:{tag:'নম্বর ছাড়াই QR দিয়ে ফাইল আদান-প্রদান',tools:'সব কিছু এক জায়গায়',open:'খুলুন',share:'লিংক পাঠান',copied:'লিংক কপি হয়েছে ✓',
+ quickT:'দ্রুত পাঠান / নিন',quickP:'সামনের কারও সঙ্গে এক্ষুনি ফাইল বা লিংক আদান-প্রদান',
+ deskT:'আমার ডেস্ক',deskP:'স্থায়ী QR — যে কেউ স্ক্যান করে আপনাকে ফাইল পাঠাবে, আপনি অফলাইন থাকলেও',
+ shopT:'প্রিন্ট দোকান',shopP:'দোকানের কাউন্টারে টোকেন, দাম, UPI আর “তৈরি” ডিসপ্লে',
+ presT:'মিটিং স্ক্রিন',presP:'প্রজেক্টর ছাড়াই নকশা সবার ফোনে, জুম আর লাল পয়েন্টার সহ',
+ offT:'ইন্টারনেট ছাড়া',offP:'নেট নেই? চলমান QR বা হটস্পট দিয়ে ফাইল পাঠান',
+ myDesk:'আমার ডেস্কের লিংক পাঠান (অন্যরা আমাকে ফাইল পাঠাবে)',myShop:'দোকানের লিংক পাঠান (গ্রাহকদের জন্য)',
+ note:'“লিংক পাঠান” চাপলে শুধু ওই অংশটির লিংক যাবে — যাকে পাঠাবেন সে শুধু সেটাই দেখবে। এই পাতাটি বুকমার্ক বা হোম স্ক্রিনে রাখুন।'},
+hi:{tag:'नंबर के बिना QR से फ़ाइल लेन-देन',tools:'सब कुछ एक जगह',open:'खोलें',share:'लिंक भेजें',copied:'लिंक कॉपी हो गया ✓',
+ quickT:'झटपट भेजें / लें',quickP:'सामने वाले से अभी फ़ाइल या लिंक का लेन-देन',
+ deskT:'मेरी डेस्क',deskP:'स्थायी QR — कोई भी स्कैन करके आपको फ़ाइल भेजे, आप ऑफ़लाइन हों तब भी',
+ shopT:'प्रिंट दुकान',shopP:'दुकान के काउंटर के लिए टोकन, दाम, UPI और “तैयार” डिस्प्ले',
+ presT:'मीटिंग स्क्रीन',presP:'बिना प्रोजेक्टर नक्शा सबके फ़ोन पर, ज़ूम और लाल पॉइंटर के साथ',
+ offT:'बिना इंटरनेट',offP:'नेट नहीं? चलते QR या हॉटस्पॉट से फ़ाइल भेजें',
+ myDesk:'मेरी डेस्क का लिंक भेजें (दूसरे मुझे फ़ाइल भेजेंगे)',myShop:'दुकान का लिंक भेजें (ग्राहकों के लिए)',
+ note:'“लिंक भेजें” दबाने पर सिर्फ़ उसी हिस्से का लिंक जाएगा — पाने वाला सिर्फ़ वही देखेगा। इस पेज को बुकमार्क या होम स्क्रीन पर रखें।'},
+en:{tag:'Share files by QR — no phone numbers',tools:'Everything in one place',open:'Open',share:'Share link',copied:'Link copied ✓',
+ quickT:'Quick send / receive',quickP:'Swap a file or link with someone in front of you, right now',
+ deskT:'My desk',deskP:'A permanent QR — anyone scans it to send you files, even when you’re offline',
+ shopT:'Print shop',shopP:'Counter tokens, prices, UPI and a “ready” display for print shops',
+ presT:'Meeting screen',presP:'Your drawing on everyone’s phone with zoom and a red pointer — no projector',
+ offT:'No internet',offP:'No network? Send files by moving QR or hotspot',
+ myDesk:'Share my desk link (others send files to me)',myShop:'Share my shop link (for customers)',
+ note:'“Share link” sends only that part — whoever gets it sees just that tool. Bookmark this page or add it to your home screen.'}};
+const IC={
+quick:'<path d="M5 12h11M12 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>',
+desk:'<rect x="3" y="4" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M8 20h8M12 16v4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>',
+shop:'<path d="M7 8V3h10v5M7 17H4v-8h16v8h-3M7 14h10v7H7z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>',
+pres:'<rect x="3" y="4" width="18" height="12" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="15" cy="9" r="2" fill="currentColor"/><path d="M9 20l3-4 3 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>',
+off:'<path d="M3 3l18 18M8.5 16.5a5 5 0 0 1 7 0M5 13a10 10 0 0 1 4-2.4M19 13a10 10 0 0 0-2.6-1.8M2 9.5a15 15 0 0 1 4.5-2.8M22 9.5A15 15 0 0 0 11 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>'};
+const TOOLS=[['quick','index.html'],['desk','desk.html'],['shop','shop.html'],['pres','present.html'],['off','offline.html']];
+const $=s=>document.querySelector(s);
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let lang=store.get('qrp-lang');if(!T[lang])lang=/^hi/.test(navigator.language)?'hi':/^en/.test(navigator.language)?'en':'bn';
+const t=k=>T[lang][k]??k;
+const dir=location.href.split('#')[0].split('?')[0].replace(/[^/]*$/,'');
+const abs=p=>dir+p;
+function toast(m){const e=$('#toast');e.textContent=m;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,2200)}
+async function share(title,url){
+  if(navigator.share){try{await navigator.share({title,url});return}catch(e){if(e&&e.name==='AbortError')return}}
+  try{await navigator.clipboard.writeText(url)}catch(e){const i=document.createElement('textarea');i.value=url;document.body.append(i);i.select();try{document.execCommand('copy')}catch(_){}i.remove()}
+  toast(t('copied'));
+}
+function draw(){
+  document.documentElement.lang=lang;
+  document.querySelectorAll('[data-t]').forEach(e=>e.textContent=t(e.dataset.t));
+  document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===lang));
+  const deskCode=store.get('jpd-shop-code'),shopCode=store.get('jp-shop-code');
+  const box=$('#tiles');box.innerHTML='';
+  for(const[k,p] of TOOLS){
+    const d=document.createElement('div');d.className='tile';d.id='tile-'+k;
+    d.innerHTML=`<div class="ic"><svg viewBox="0 0 24 24">${IC[k]}</svg></div><b></b><p></p><div class="row"><a class="btn" href="${p}"></a><button class="btn ghost" type="button"></button></div>`;
+    d.querySelector('b').textContent=t(k+'T');d.querySelector('p').textContent=t(k+'P');
+    d.querySelector('a').textContent=t('open');
+    const sb=d.querySelector('button');sb.textContent=t('share');sb.onclick=()=>share(t(k+'T')+' — ঝটপট',abs(p));
+    const mine=k==='desk'&&deskCode?['myDesk','desk.html#c-'+deskCode,'deskT']:k==='shop'&&shopCode?['myShop','shop.html#c-'+shopCode,'shopT']:null;
+    if(mine){const m=document.createElement('button');m.type='button';m.className='btn mine';m.textContent=t(mine[0]);m.onclick=()=>share(t(mine[2])+' — ঝটপট',abs(mine[1]));d.querySelector('.row').append(m)}
+    box.append(d);
+  }
+}
+document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{lang=b.dataset.l;store.set('qrp-lang',lang);draw()});
+draw();
+if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
