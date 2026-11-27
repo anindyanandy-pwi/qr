@@ -1,9 +1,9 @@
 // Receives files/links from the Android Share menu and hands them to the page.
 // ---- offline copy of the app: network first (always fresh when online), cache when offline
-const APP_CACHE='jp-app-v4';
-const PRE=['./','home.html','credit.js','index.html','offline.html','present.html','shop.html','desk.html','manifest.json','icon-192.png',
+const APP_CACHE='jp-app-v5';
+const PRE=['./','home.html','send.html','jp-link.js','credit.js','index.html','offline.html','present.html','shop.html','desk.html','manifest.json','icon-192.png',
   'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js','https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js',
-  'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js','https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'];
+  'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js','https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js','https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'];
 const LIB=/^(cdnjs\.cloudflare\.com|cdn\.jsdelivr\.net|unpkg\.com|fonts\.googleapis\.com|fonts\.gstatic\.com)$/;
 self.addEventListener('install',e=>e.waitUntil((async()=>{
   const c=await caches.open(APP_CACHE);
@@ -43,14 +43,24 @@ self.addEventListener('fetch',e=>{
       const txt=[fd.get('title'),fd.get('text'),fd.get('url')].filter(v=>typeof v==='string'&&v.trim()).join('\n').trim();
       if(txt)await c.put(new Request(scope+'qrp-share/text'),new Response(txt));
     }catch(err){}
-    return Response.redirect(scope+'#share',303);
+    return Response.redirect(scope+'send.html#share',303);
   })());
 });
 
 // ---- "files waiting" notifications for desk/shop owners (pushed by the drop box)
 const PUSH_N={bn:n=>`${n}টি নতুন ফাইল/বার্তা অপেক্ষায় — খুলতে ট্যাপ করুন`,hi:n=>`${n} नई फ़ाइल/संदेश इंतज़ार में — खोलने के लिए टैप करें`,en:n=>`${n} new item${n>1?'s':''} waiting — tap to open`};
 const PUSH_G={bn:'নতুন ফাইল এসেছে — খুলতে ট্যাপ করুন',hi:'नई फ़ाइल आई है — खोलने के लिए टैप करें',en:'New files arrived — tap to open'};
+const API='https://jhatpat-drop.jhatpat-drop.workers.dev';
+const PUSH_L={bn:n=>`আপনার পাঠানো লিংক খোলা হয়েছে${n?` (${n}টি ফাইল)`:''} ✓`,hi:n=>`आपका भेजा लिंक खोला गया${n?` (${n} फ़ाइलें)`:''} ✓`,en:n=>`Your link was opened${n?` (${n} file${n>1?'s':''})`:''} ✓`};
+async function linkMsg(){
+  try{const s=await self.registration.pushManager.getSubscription();if(!s)return false;
+    const h=[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s.endpoint)))].map(x=>x.toString(16).padStart(2,'0')).join('');
+    const m=await (await fetch(API+'/pm/'+h,{cache:'no-store'})).json();
+    if(m&&m.k==='opened'){await self.registration.showNotification('ঝটপট',{body:(PUSH_L[m.lang]||PUSH_L.en)(m.n),icon:'icon-192.png',badge:'icon-192.png',tag:'jp-link',renotify:true,data:{page:'send.html'}});return true}
+  }catch(x){}return false;
+}
 self.addEventListener('push',e=>{e.waitUntil((async()=>{
+  if(await linkMsg())return;
   let total=0,page='desk.html',lang='bn',name='';
   try{
     const c=await caches.open('jp-auth');

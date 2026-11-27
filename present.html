@@ -93,6 +93,9 @@ body.viewer main{padding:0 8px 12px}
         <label class="chk"><input type="checkbox" id="oPtr" checked><span data-t="laser"></span></label>
         <label class="chk"><input type="checkbox" id="oDl"><span data-t="allowDl"></span></label>
         <button class="btn ghost" id="newDeck" data-t="newDeck" style="width:100%;margin-top:8px"></button>
+        <button class="btn" id="linkAll" data-t="linkAll" style="width:100%;margin-top:8px;min-height:52px;line-height:1.2"></button>
+        <div id="linkBox" hidden style="margin-top:8px"><p class="sub" id="linkTxt" style="word-break:break-all;font-size:13px;margin:0 0 6px"></p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><button class="btn ghost" id="linkCopy" data-t="copy"></button><button class="btn ghost" id="linkShare" data-t="share"></button></div></div>
       </div>
     </aside>
   </section>
@@ -109,6 +112,7 @@ body.viewer main{padding:0 8px 12px}
     <button class="btn" id="vLive" data-t="backLive" hidden></button>
     <p class="vmsg" data-t="viewTip" style="font-size:13px;color:#999;margin-top:8px"></p>
     <div id="vSave" style="margin-top:8px"></div>
+    <a class="btn" id="vLink" target="_blank" rel="noopener" hidden style="display:flex;align-items:center;justify-content:center;text-decoration:none;margin-top:8px;line-height:1.2"></a>
   </section>
 
   <div class="status" id="status" hidden></div>
@@ -116,12 +120,13 @@ body.viewer main{padding:0 8px 12px}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="jp-link.js"></script>
 <script>
 {
 const T={
-bn:{title:'মিটিং স্ক্রিন',tagline:'প্রজেক্টর ছাড়াই সবার ফোনে আপনার নকশা',pick:'PDF বা ছবি বেছে নিন',pickSub:'নকশা, স্লাইড, নোটিশ — সবাই নিজের ফোনে দেখবে; আপনি পাতা বদলালে বা বড় করলে সবার স্ক্রিনেও তাই হবে',presTip:'← → কী বা তীর দিয়ে পাতা বদলান। + / − বা Ctrl+মাউস-চাকা দিয়ে বড়-ছোট করুন — সবার ফোনে একই জায়গা বড় হবে। নকশার উপর মাউস রাখলে সবার ফোনে লাল বিন্দু দেখা যাবে।',code:'মিটিং কোড',watching:'জন দেখছেন',laser:'লাল পয়েন্টার দেখান',allowDl:'সবাইকে ফাইল সেভ করতে দিন',newDeck:'অন্য ফাইল দেখান',fit:'পুরো পাতা',live:'লাইভ',notLive:'আপনি নিজে দেখছেন',backLive:'লাইভে ফিরুন',viewTip:'দুই আঙুলে টেনে বা দুবার ছুঁয়ে বড় করুন। বড় অবস্থায় আঙুলে সরান।',joining:'মিটিংয়ে যুক্ত হচ্ছে…',slow:'যুক্ত হতে দেরি হচ্ছে… Wi‑Fi আর মোবাইল ডেটা বদলে চেষ্টা করুন।',loading:'নকশা আসছে',ended:'মিটিং শেষ হয়ে গেছে বা কোডটি ভুল।',lost:'সংযোগ কেটে গেছে। পেজটি আবার খুলুন।',save:'ফাইল সেভ করুন',noNet:'ইন্টারনেট পাওয়া যাচ্ছে না।',libFail:'এই ব্রাউজারে PDF খোলা গেল না। ফোনের সফটওয়্যার আপডেট করে বা Chrome-এ চেষ্টা করুন।',bad:'এই ফাইল খোলা গেল না (শুধু PDF ও ছবি)।',page:'পাতা'},
-hi:{title:'मीटिंग स्क्रीन',tagline:'बिना प्रोजेक्टर के सबके फ़ोन पर आपका नक्शा',pick:'PDF या फ़ोटो चुनें',pickSub:'नक्शा, स्लाइड, नोटिस — सब अपने फ़ोन पर देखेंगे; आप पेज बदलें या ज़ूम करें तो सबकी स्क्रीन पर भी वही होगा',presTip:'← → कुंजी या तीर से पेज बदलें। + / − या Ctrl+माउस-व्हील से ज़ूम करें — सबके फ़ोन पर वही जगह बड़ी होगी। नक्शे पर माउस रखें तो सबके फ़ोन पर लाल बिंदु दिखेगा।',code:'मीटिंग कोड',watching:'लोग देख रहे हैं',laser:'लाल पॉइंटर दिखाएँ',allowDl:'सबको फ़ाइल सेव करने दें',newDeck:'दूसरी फ़ाइल दिखाएँ',fit:'पूरा पेज',live:'लाइव',notLive:'आप ख़ुद देख रहे हैं',backLive:'लाइव पर लौटें',viewTip:'दो उँगलियों से खींचें या दो बार छूकर बड़ा करें। बड़ा होने पर उँगली से सरकाएँ।',joining:'मीटिंग से जुड़ रहे हैं…',slow:'जुड़ने में देर हो रही है… Wi‑Fi और मोबाइल डेटा बदलकर देखें।',loading:'नक्शा आ रहा है',ended:'मीटिंग ख़त्म हो गई या कोड ग़लत है।',lost:'कनेक्शन टूट गया। पेज दोबारा खोलें।',save:'फ़ाइल सेव करें',noNet:'इंटरनेट नहीं मिल रहा।',libFail:'इस ब्राउज़र में PDF नहीं खुली। फ़ोन का सॉफ़्टवेयर अपडेट करें या Chrome में खोलें।',bad:'यह फ़ाइल नहीं खुली (सिर्फ़ PDF और फ़ोटो)।',page:'पेज'},
-en:{title:'Meeting screen',tagline:'Your drawing on everyone’s phone — no projector',pick:'Choose a PDF or images',pickSub:'Drawings, slides, notices — everyone sees them on their own phone; when you turn a page or zoom in, their screens follow',presTip:'Use ← → keys or the arrows to change page. Zoom with + / − or Ctrl + mouse wheel — every phone zooms to the same spot. Hover over the drawing to show a red dot on every phone.',code:'Meeting code',watching:'watching',laser:'Show red pointer',allowDl:'Let everyone save the file',newDeck:'Show another file',fit:'Fit page',live:'Live',notLive:'You’re browsing on your own',backLive:'Back to live',viewTip:'Pinch or double-tap to zoom. Drag with one finger to move around when zoomed.',joining:'Joining the meeting…',slow:'Taking a while… try switching between Wi‑Fi and mobile data.',loading:'Loading the drawing',ended:'The meeting has ended or the code is wrong.',lost:'Connection lost. Open the page again.',save:'Save the file',noNet:'No internet connection.',libFail:'This browser couldn’t open PDFs. Update the phone’s software or try Chrome.',bad:'Couldn’t open this file (PDF and images only).',page:'Page'}};
+bn:{linkAll:'সবাইকে পরে নামানোর লিংক দিন (৭ দিন)',linkUp:'লিংক তৈরি হচ্ছে…',linkFail:'লিংক তৈরি হলো না — ইন্টারনেট দেখুন',copy:'কপি',copied:'কপি হয়েছে ✓',share:'পাঠান',vLink:'ফাইলটা পরে নামানোর লিংক — খুলে রাখুন',title:'মিটিং স্ক্রিন',tagline:'প্রজেক্টর ছাড়াই সবার ফোনে আপনার নকশা',pick:'PDF বা ছবি বেছে নিন',pickSub:'নকশা, স্লাইড, নোটিশ — সবাই নিজের ফোনে দেখবে; আপনি পাতা বদলালে বা বড় করলে সবার স্ক্রিনেও তাই হবে',presTip:'← → কী বা তীর দিয়ে পাতা বদলান। + / − বা Ctrl+মাউস-চাকা দিয়ে বড়-ছোট করুন — সবার ফোনে একই জায়গা বড় হবে। নকশার উপর মাউস রাখলে সবার ফোনে লাল বিন্দু দেখা যাবে।',code:'মিটিং কোড',watching:'জন দেখছেন',laser:'লাল পয়েন্টার দেখান',allowDl:'সবাইকে ফাইল সেভ করতে দিন',newDeck:'অন্য ফাইল দেখান',fit:'পুরো পাতা',live:'লাইভ',notLive:'আপনি নিজে দেখছেন',backLive:'লাইভে ফিরুন',viewTip:'দুই আঙুলে টেনে বা দুবার ছুঁয়ে বড় করুন। বড় অবস্থায় আঙুলে সরান।',joining:'মিটিংয়ে যুক্ত হচ্ছে…',slow:'যুক্ত হতে দেরি হচ্ছে… Wi‑Fi আর মোবাইল ডেটা বদলে চেষ্টা করুন।',loading:'নকশা আসছে',ended:'মিটিং শেষ হয়ে গেছে বা কোডটি ভুল।',lost:'সংযোগ কেটে গেছে। পেজটি আবার খুলুন।',save:'ফাইল সেভ করুন',noNet:'ইন্টারনেট পাওয়া যাচ্ছে না।',libFail:'এই ব্রাউজারে PDF খোলা গেল না। ফোনের সফটওয়্যার আপডেট করে বা Chrome-এ চেষ্টা করুন।',bad:'এই ফাইল খোলা গেল না (শুধু PDF ও ছবি)।',page:'পাতা'},
+hi:{linkAll:'सबको बाद में डाउनलोड का लिंक दें (7 दिन)',linkUp:'लिंक बन रहा है…',linkFail:'लिंक नहीं बना — इंटरनेट देखें',copy:'कॉपी',copied:'कॉपी हो गया ✓',share:'भेजें',vLink:'फ़ाइल बाद में डाउनलोड करने का लिंक — खोलकर रखें',title:'मीटिंग स्क्रीन',tagline:'बिना प्रोजेक्टर के सबके फ़ोन पर आपका नक्शा',pick:'PDF या फ़ोटो चुनें',pickSub:'नक्शा, स्लाइड, नोटिस — सब अपने फ़ोन पर देखेंगे; आप पेज बदलें या ज़ूम करें तो सबकी स्क्रीन पर भी वही होगा',presTip:'← → कुंजी या तीर से पेज बदलें। + / − या Ctrl+माउस-व्हील से ज़ूम करें — सबके फ़ोन पर वही जगह बड़ी होगी। नक्शे पर माउस रखें तो सबके फ़ोन पर लाल बिंदु दिखेगा।',code:'मीटिंग कोड',watching:'लोग देख रहे हैं',laser:'लाल पॉइंटर दिखाएँ',allowDl:'सबको फ़ाइल सेव करने दें',newDeck:'दूसरी फ़ाइल दिखाएँ',fit:'पूरा पेज',live:'लाइव',notLive:'आप ख़ुद देख रहे हैं',backLive:'लाइव पर लौटें',viewTip:'दो उँगलियों से खींचें या दो बार छूकर बड़ा करें। बड़ा होने पर उँगली से सरकाएँ।',joining:'मीटिंग से जुड़ रहे हैं…',slow:'जुड़ने में देर हो रही है… Wi‑Fi और मोबाइल डेटा बदलकर देखें।',loading:'नक्शा आ रहा है',ended:'मीटिंग ख़त्म हो गई या कोड ग़लत है।',lost:'कनेक्शन टूट गया। पेज दोबारा खोलें।',save:'फ़ाइल सेव करें',noNet:'इंटरनेट नहीं मिल रहा।',libFail:'इस ब्राउज़र में PDF नहीं खुली। फ़ोन का सॉफ़्टवेयर अपडेट करें या Chrome में खोलें।',bad:'यह फ़ाइल नहीं खुली (सिर्फ़ PDF और फ़ोटो)।',page:'पेज'},
+en:{linkAll:'Give everyone a download link (7 days)',linkUp:'Creating the link…',linkFail:'Couldn’t create the link — check the internet',copy:'Copy',copied:'Copied ✓',share:'Share',vLink:'Link to download the file later — open and keep it',title:'Meeting screen',tagline:'Your drawing on everyone’s phone — no projector',pick:'Choose a PDF or images',pickSub:'Drawings, slides, notices — everyone sees them on their own phone; when you turn a page or zoom in, their screens follow',presTip:'Use ← → keys or the arrows to change page. Zoom with + / − or Ctrl + mouse wheel — every phone zooms to the same spot. Hover over the drawing to show a red dot on every phone.',code:'Meeting code',watching:'watching',laser:'Show red pointer',allowDl:'Let everyone save the file',newDeck:'Show another file',fit:'Fit page',live:'Live',notLive:'You’re browsing on your own',backLive:'Back to live',viewTip:'Pinch or double-tap to zoom. Drag with one finger to move around when zoomed.',joining:'Joining the meeting…',slow:'Taking a while… try switching between Wi‑Fi and mobile data.',loading:'Loading the drawing',ended:'The meeting has ended or the code is wrong.',lost:'Connection lost. Open the page again.',save:'Save the file',noNet:'No internet connection.',libFail:'This browser couldn’t open PDFs. Update the phone’s software or try Chrome.',bad:'Couldn’t open this file (PDF and images only).',page:'Page'}};
 const $=s=>document.querySelector(s);
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 let lang=store.get('qrp-lang');if(!T[lang])lang=/^hi/.test(navigator.language)?'hi':/^en/.test(navigator.language)?'en':'bn';
@@ -234,6 +239,7 @@ async function load(list){
   setStatus('');
   try{const s=await buildSlides(list);if(!s.length)throw 0;files=list;slides=s;cur=0}catch(e){if(stK!=='libFail')setStatus('bad','bad');return}
   $('#vPick').hidden=true;$('#vPres').hidden=false;PV.z=1;PV.zl.textContent='100%';await render(PV);renderPg();lock();
+  deckLink='';$('#linkBox').hidden=true;$('#linkAll').hidden=false;
   if(!peer)goLive();else for(const c of viewers)sendDeck(c);
 }
 function goLive(){
@@ -256,7 +262,7 @@ async function sendDeck(c){
       const b=await f.slice(off,off+max).arrayBuffer();c.send(b);off+=b.byteLength}
     jsend(c,{t:'e',i});
   }
-  jsend(c,{t:'go',i:cur});jsend(c,viewMsg());if(lastPt)jsend(c,{t:'pt',...lastPt});
+  jsend(c,{t:'go',i:cur});jsend(c,viewMsg());if(lastPt)jsend(c,{t:'pt',...lastPt});if(deckLink)jsend(c,{t:'link',url:deckLink});
 }
 function bcast(o){for(const c of viewers)jsend(c,o)}
 function viewMsg(){const c=center(PV);return{t:'view',z:PV.z,x:c.x,y:c.y}}
@@ -276,6 +282,16 @@ $('#pSlide').addEventListener('pointerleave',()=>{lastPt=null;PV.dot.hidden=true
 $('#oPtr').onchange=()=>{if(!$('#oPtr').checked){lastPt=null;PV.dot.hidden=true;bcast({t:'pt',x:null})}};
 $('#oDl').onchange=()=>bcast({t:'dl',on:$('#oDl').checked});
 $('#newDeck').onclick=()=>$('#file').click();
+let deckLink='';
+$('#linkAll').onclick=async()=>{
+  const b=$('#linkAll');b.disabled=true;b.textContent=t('linkUp');
+  try{const r=await JPLink.createLink(files,{exp:604800,lang},p=>{b.textContent=t('linkUp')+' '+Math.round(p*100)+'%'});
+    deckLink=r.url;$('#linkTxt').textContent=deckLink;$('#linkBox').hidden=false;bcast({t:'link',url:deckLink});b.hidden=true}
+  catch(e){b.textContent=t('linkFail');setTimeout(()=>{b.textContent=t('linkAll');b.disabled=false},2500);return}
+  b.disabled=false;b.textContent=t('linkAll');
+};
+$('#linkCopy').onclick=async()=>{try{await navigator.clipboard.writeText(deckLink);$('#linkCopy').textContent=t('copied')}catch(e){}};
+$('#linkShare').onclick=async()=>{if(navigator.share){try{await navigator.share({title:'ঝটপট',url:deckLink})}catch(e){}}else $('#linkCopy').click()};
 
 /* ================= VIEWER ================= */
 let canDl=false,vconn=null,lastView=null,lastPtMsg=null;
@@ -302,6 +318,7 @@ function viewer(c){
       else if(m.t==='view'){lastView=m;if(follow&&slides.length&&vcur===liveCur)applyView(m)}
       else if(m.t==='pt'){lastPtMsg=m;if(follow&&vcur===liveCur)placeDot(VV,m)}
       else if(m.t==='dl'){canDl=m.on;saveBtn()}
+      else if(m.t==='link'&&/^https?:\/\/[^\s]+\/send\.html#g=/.test(m.url)){const a=$('#vLink');a.href=m.url;a.textContent=t('vLink');a.hidden=false}
       function prog(){if(!deck)return;$('#vBar').style.width=Math.min(100,(deck.got+(rx?rx.got:0))/Math.max(1,deck.total)*100)+'%'}
     });
     vconn.on('close',()=>setStatus('lost','bad'));

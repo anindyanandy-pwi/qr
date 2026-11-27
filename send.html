@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#e4002b">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>ঝটপট — পাঠান</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=Hind+Siliguri:wght@400;600;700&family=Hind:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#f3f1ec,#0e0e0e);--ink:light-dark(#111,#f2f2f2);--mute:light-dark(#5b5b5b,#a8a8a8);--line:light-dark(#dcd8cf,#2a2a2a);--red:#e4002b;--card:light-dark(#fff,#181818);--ok:light-dark(#0a7a3d,#4cd38a)}
+*{box-sizing:border-box;min-width:0}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 "Hind Siliguri","Hind",system-ui,sans-serif;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+main{max-width:640px;margin:0 auto;padding:0 16px 40px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0 6px}
+.brand{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none}.brand svg{width:42px;height:42px;flex:none}
+h1{font-size:24px;line-height:1.05;margin:0}.tag{font-size:13px;color:var(--mute);margin-top:3px;line-height:1.2}
+.lang{display:flex;gap:4px}.lang button{font:inherit;font-size:15px;min-height:40px;padding:0 9px;border:1px solid var(--line);background:none;color:var(--ink);border-radius:8px;cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+h2{font-size:21px;line-height:1.25;margin:18px 2px 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px}
+.btn{font:inherit;font-weight:700;min-height:50px;padding:0 18px;border-radius:12px;border:0;background:var(--red);color:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;text-align:center;line-height:1.2}
+.btn.ghost{background:none;color:var(--ink);border:2px solid var(--line)}.btn.ink{background:var(--ink);color:var(--bg)}
+.btn.wa{background:#1f9d55}.btn.full{width:100%}.btn:disabled{opacity:.5;cursor:default}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;min-height:150px;border:3px dashed var(--ink);border-radius:20px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer;padding:16px;text-align:center}
+.drop b{font-size:24px;line-height:1.2}.drop span{color:var(--mute);font-size:14px}.drop.drag{border-color:var(--red)}
+.items{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px}
+.items li{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 8px}
+.th{width:44px;height:44px;border-radius:8px;background:var(--line);object-fit:cover;display:grid;place-items:center;font:800 11px/1 Archivo,system-ui,sans-serif;color:var(--mute);overflow:hidden}
+.nm{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:15px}.mt{font-size:13px;color:var(--mute)}
+.x{font:inherit;font-size:20px;width:40px;height:40px;border-radius:10px;border:0;background:none;color:var(--mute);cursor:pointer}
+textarea,input[type=text],input[type=tel]{font:inherit;width:100%;border:2px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);padding:10px 12px}
+textarea{min-height:70px;resize:vertical}
+.sum{font-weight:700;margin:10px 2px 0}
+.ways{display:grid;gap:10px}
+.way{display:grid;grid-template-columns:48px minmax(0,1fr);gap:2px 14px;align-items:center;text-align:left;font:inherit;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px;cursor:pointer}
+.way .ic{grid-row:span 2;width:48px;height:48px;border-radius:14px;background:var(--red);color:#fff;display:grid;place-items:center}.way .ic svg{width:26px;height:26px}
+.way b{font-size:19px;line-height:1.2}.way span{color:var(--mute);font-size:14px;line-height:1.3}
+.way.main{border-color:var(--red)}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.seg button{font:inherit;font-weight:700;min-height:46px;border-radius:12px;border:2px solid var(--line);background:none;color:var(--ink);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+label.chk{display:flex;gap:12px;align-items:flex-start;margin:12px 0;cursor:pointer;line-height:1.35}label.chk input{width:22px;height:22px;flex:none;margin-top:1px;accent-color:var(--red)}
+label.chk small{display:block;color:var(--mute);font-size:13px}
+.lbl{font-weight:700;margin:4px 2px 6px;display:block}
+.pin{display:flex;gap:8px;align-items:center;margin:-4px 0 8px 34px}.pin input{width:9ch;font:800 22px/1 Archivo,system-ui,sans-serif;letter-spacing:.15em;text-align:center}
+.bar{height:12px;border-radius:6px;background:var(--line);overflow:hidden;margin:12px 0 6px}.bar i{display:block;height:100%;width:0;background:var(--red);transition:width .2s}
+.ok{color:var(--ok);font-weight:700}
+.linkbox{display:flex;gap:6px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:13px;word-break:break-all;margin:8px 0}
+.phone{display:grid;grid-template-columns:70px minmax(0,1fr);gap:6px;margin:8px 0}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.qrs{width:180px;margin:10px auto 4px;background:#fff;padding:8px;border-radius:12px}.qrs img,.qrs canvas{width:100%!important;height:auto!important}
+.pinnote{background:color-mix(in srgb,var(--red) 10%,var(--card));border-radius:12px;padding:10px 12px;margin:10px 0;font-size:15px}
+.pinnote b{font:800 24px/1 Archivo,system-ui,sans-serif;letter-spacing:.15em}
+.status{padding:12px 14px;border-radius:12px;background:var(--card);border:1px solid var(--line);text-align:center;font-weight:600;margin:12px 0}
+.status.bad{background:color-mix(in srgb,var(--red) 12%,var(--bg));color:light-dark(#9b001d,#ff8a9e);border-color:transparent}
+.status.good{color:var(--ok)}
+.mylinks li{grid-template-columns:minmax(0,1fr) auto auto}
+.from{font-size:22px;font-weight:700;line-height:1.25;margin:4px 0}
+.msg{white-space:pre-wrap;word-break:break-word;background:var(--bg);border-radius:12px;padding:10px 12px;margin:8px 0}
+.msg a{color:var(--red)}
+.prev{grid-column:1/-1;max-width:100%;border-radius:10px;margin-top:4px}
+.vo{grid-column:1/-1;position:relative;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.vo canvas{width:100%;height:auto;display:block;border-radius:8px;margin-top:6px;background:#fff}
+.small{font-size:13px;color:var(--mute)}
+.linkbtn{font:inherit;font-size:13px;background:none;border:0;color:var(--mute);text-decoration:underline;cursor:pointer;padding:8px}
+@media print{body.vonly{display:none}}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <a class="brand" href="home.html"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#e4002b"/><rect x="8" y="8" width="13" height="13" rx="3" fill="none" stroke="#fff" stroke-width="3"/><rect x="12.5" y="12.5" width="4" height="4" rx="1" fill="#fff"/><path d="M20 31 31 20M23.5 20H31v7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><h1 data-t="title"></h1><div class="tag" data-t="tagline"></div></div></a>
+    <div class="lang"><button data-l="bn">বাংলা</button><button data-l="hi">हिंदी</button><button data-l="en">EN</button></div>
+  </header>
+
+  <!-- ===== SENDER: step 1 — what ===== -->
+  <section id="vPick" hidden>
+    <h2 data-t="q1"></h2>
+    <button class="drop" id="pick"><b data-t="pick"></b><span data-t="pickSub"></span></button>
+    <input type="file" id="file" multiple hidden>
+    <ul class="items" id="items"></ul>
+    <p class="sum" id="sum" hidden></p>
+    <label class="lbl" for="msg" data-t="msgLbl" style="margin-top:14px"></label>
+    <textarea id="msg"></textarea>
+    <div id="vWays" hidden>
+      <h2 data-t="q2"></h2>
+      <div class="ways">
+        <button class="way main" id="wAway"><span class="ic"><svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><b data-t="away"></b><span data-t="awaySub"></span></button>
+        <button class="way" id="wHere"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="14" y="3" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="3" y="14" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M14 14h3v3h-3zM18 18h3v3h-3z" fill="currentColor"/></svg></span><b data-t="here"></b><span data-t="hereSub"></span></button>
+        <button class="way" id="wOff"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M8.5 16.5a5 5 0 0 1 7 0M5 13a10 10 0 0 1 4-2.4M19 13a10 10 0 0 0-2.6-1.8M2 9.5a15 15 0 0 1 4.5-2.8M22 9.5A15 15 0 0 0 11 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span><b data-t="off"></b><span data-t="offSub"></span></button>
+      </div>
+    </div>
+    <div id="vMine" hidden>
+      <h2 data-t="mine"></h2>
+      <ul class="items mylinks" id="mine"></ul>
+    </div>
+  </section>
+
+  <!-- ===== SENDER: link options ===== -->
+  <section id="vOpts" hidden>
+    <h2 data-t="optsT"></h2>
+    <div class="card">
+      <label class="lbl" for="from" data-t="fromLbl"></label>
+      <input type="text" id="from" maxlength="60" autocomplete="name">
+      <span class="lbl" style="margin-top:14px" data-t="keep"></span>
+      <div class="seg" id="segExp"><button data-e="3600" data-t="e1"></button><button data-e="86400" data-t="e2"></button><button data-e="604800" data-t="e3"></button></div>
+      <label class="chk"><input type="checkbox" id="oOnce"><span><span data-t="once"></span><small data-t="onceSub"></small></span></label>
+      <label class="chk"><input type="checkbox" id="oPin"><span><span data-t="pinL"></span><small data-t="pinSub"></small></span></label>
+      <div class="pin" id="pinRow" hidden><input type="tel" id="pin" maxlength="6" inputmode="numeric" pattern="[0-9]*"><span class="small" data-t="pinEdit"></span></div>
+      <label class="chk"><input type="checkbox" id="oNotify"><span><span data-t="notify"></span><small data-t="notifySub"></small></span></label>
+      <label class="chk" id="voRow"><input type="checkbox" id="oVo"><span><span data-t="voL"></span><small data-t="voSub"></small></span></label>
+    </div>
+    <button class="btn full" id="make" data-t="make"></button>
+    <div id="upBox" hidden><div class="bar"><i id="upBar"></i></div><p class="small" id="upTxt" style="text-align:center"></p></div>
+    <button class="btn ghost full" id="optsBack" data-t="back" style="margin-top:10px"></button>
+  </section>
+
+  <!-- ===== SENDER: link ready ===== -->
+  <section id="vReady" hidden>
+    <h2 class="ok" data-t="readyT"></h2>
+    <p class="small" id="readyMeta" style="margin-top:-6px"></p>
+    <div class="card">
+      <span class="lbl" data-t="toNum"></span>
+      <div class="phone"><input type="tel" id="cc" value="+91" aria-label="country code"><input type="tel" id="num" inputmode="tel" autocomplete="off" data-tp="numPh"></div>
+      <div class="row"><a class="btn wa" id="waBtn" target="_blank" rel="noopener" data-t="wa"></a><a class="btn ink" id="smsBtn" data-t="sms"></a></div>
+      <p class="small" data-t="noSave" style="margin:8px 2px 0"></p>
+    </div>
+    <div class="pinnote" id="pinNote" hidden><span data-t="pinTell"></span> <b id="pinShow"></b></div>
+    <div class="card">
+      <div class="linkbox"><span id="linkTxt" style="flex:1"></span></div>
+      <div class="row"><button class="btn ghost" id="copyBtn" data-t="copy"></button><button class="btn ghost" id="shareBtn" data-t="share"></button></div>
+      <div class="qrs" id="linkQr"></div><p class="small" data-t="qrShow" style="text-align:center;margin:0"></p>
+    </div>
+    <button class="btn full" id="again" data-t="again"></button>
+  </section>
+
+  <!-- ===== RECEIVER ===== -->
+  <section id="vGet" hidden>
+    <div id="gLoad" class="card" style="text-align:center"><p id="gLoadTxt" style="margin:6px"></p></div>
+    <div id="gPin" class="card" hidden>
+      <h2 data-t="pinAsk" style="margin-top:4px"></h2>
+      <p class="small" data-t="pinAskSub"></p>
+      <input type="tel" id="gPinIn" maxlength="8" inputmode="numeric" pattern="[0-9]*" style="font:800 26px/1 Archivo,system-ui,sans-serif;letter-spacing:.2em;text-align:center">
+      <button class="btn full" id="gPinGo" data-t="openBtn" style="margin-top:10px"></button>
+    </div>
+    <div id="gBody" hidden>
+      <p class="small" data-t="fromPre" style="margin:12px 2px 0"></p>
+      <div class="from" id="gFrom"></div>
+      <div class="msg" id="gMsg" hidden></div>
+      <div id="gDl" hidden><div class="bar"><i id="gBar"></i></div><p class="small" id="gDlTxt" style="text-align:center"></p></div>
+      <ul class="items" id="gItems"></ul>
+      <button class="btn full" id="gZip" data-t="saveAll" hidden style="margin-top:12px"></button>
+      <p class="small" id="gExp" style="text-align:center;margin-top:12px"></p>
+      <div class="card" style="margin-top:16px;text-align:center">
+        <p style="margin:0 0 8px;font-weight:700" data-t="youToo"></p>
+        <a class="btn ghost full" href="send.html" data-t="youTooBtn"></a>
+      </div>
+    </div>
+    <p style="text-align:center"><button class="linkbtn" id="gReport" data-t="report" hidden></button></p>
+  </section>
+
+  <div class="status" id="status" hidden></div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="jp-link.js"></script>
+<script>
+{
+const T={
+bn:{getTitle:'আপনার জন্য ফাইল',title:'পাঠান',tagline:'যাকে খুশি, যেভাবে খুশি — নম্বর সেভ না করেই',q1:'কী পাঠাবেন?',pick:'ফাইল বেছে নিন',pickSub:'যত খুশি ফাইল — ছবি, PDF, যেকোনো কিছু (একবারে ১০০ MB পর্যন্ত)',addMore:'আরও ফাইল যোগ করুন',msgLbl:'বার্তা বা লিংক (ইচ্ছে হলে)',q2:'যাকে পাঠাবেন, সে কোথায়?',
+ away:'দূরে আছে — লিংক পাঠান',awaySub:'হোয়াটসঅ্যাপ বা SMS-এ — নম্বর সেভ করতে হবে না। ফাইল ওর জন্য অপেক্ষা করবে।',here:'সামনে আছে — QR দেখান',hereSub:'ও শুধু স্ক্যান করবে, সঙ্গে সঙ্গে চলে যাবে',off:'ইন্টারনেট নেই',offSub:'চলমান QR বা হটস্পট দিয়ে',
+ mine:'আপনার চালু লিংকগুলো',optsT:'লিংকের নিয়ম',fromLbl:'আপনার নাম (ওদিকে দেখাবে)',keep:'কতক্ষণ থাকবে',e1:'১ ঘণ্টা',e2:'১ দিন',e3:'৭ দিন',
+ once:'শুধু একবার ডাউনলোড',onceSub:'একবার খোলা হলেই লিংক বন্ধ হয়ে যাবে',pinL:'PIN দিয়ে তালা দিন',pinSub:'PIN টা আলাদা করে (ফোনে) বলবেন। ৫ বার ভুল হলে ফাইল মুছে যাবে।',pinEdit:'বদলাতে পারেন',
+ notify:'খোলা হলে আমাকে জানান',notifySub:'ও লিংক খুললেই আপনার ফোনে নোটিফিকেশন আসবে',voL:'শুধু দেখার জন্য',voSub:'ছবি ও PDF ওদিকে শুধু দেখা যাবে, সেভ করা যাবে না। একবারই খোলা যাবে।',
+ make:'লিংক তৈরি করুন',back:'← পেছনে',up:'লক করে আপলোড হচ্ছে…',readyT:'লিংক তৈরি ✓',until:'পর্যন্ত খোলা যাবে',toNum:'যাকে পাঠাবেন তার নম্বর',numPh:'মোবাইল নম্বর (ইচ্ছে হলে)',wa:'হোয়াটসঅ্যাপে পাঠান',sms:'SMS-এ পাঠান',noSave:'নম্বর সেভ হবে না। নম্বর না দিলে হোয়াটসঅ্যাপে কাকে পাঠাবেন বেছে নিতে পারবেন।',
+ pinTell:'ওকে ফোন করে এই PIN বলুন:',copy:'লিংক কপি',copied:'কপি হয়েছে ✓',share:'অন্যভাবে পাঠান',qrShow:'সামনে থাকলে এই QR-ও দেখাতে পারেন',again:'আরেকটা পাঠান',
+ waMsg:(w,n,u,d)=>`${w} আপনাকে ঝটপট দিয়ে ${n} পাঠিয়েছেন:\n${u}\n(${d} পর্যন্ত খোলা যাবে)`,someone:'একজন',nf:n=>n?n+'টি ফাইল':'একটি বার্তা',
+ del:'মুছুন',expIn:'থাকবে',files:'টি ফাইল',
+ opening:'খোলা হচ্ছে…',pinAsk:'PIN দিন',pinAskSub:'যিনি পাঠিয়েছেন তিনি আপনাকে PIN বলবেন',openBtn:'খুলুন',pinWrong:n=>`PIN ভুল। আর ${n} বার চেষ্টা করা যাবে।`,
+ fromPre:'পাঠিয়েছেন',dl:'নামানো হচ্ছে…',save:'সেভ',saveAll:'সব একসাথে সেভ (ZIP)',view:'দেখুন',voMark:'শুধু দেখার জন্য',gExp:'এই লিংক খোলা থাকবে',gOnce:'এটা একবারের লিংক — এখনই সেভ করে নিন, পেজ বন্ধ করলে আর পাবেন না।',
+ youToo:'আপনিও কাউকে এভাবে ফাইল পাঠাতে চান?',youTooBtn:'ঝটপট দিয়ে পাঠান',report:'এই লিংকে আপত্তিকর কিছু আছে? জানান',reportSure:'নিশ্চিত? আবার চাপুন',reported:'জানানো হয়েছে, ধন্যবাদ।',
+ g_none:'এই লিংক নেই বা মুছে গেছে।',g_expired:'এই লিংকের সময় শেষ — ফাইল মুছে গেছে।',g_used:'এই লিংক একবারই খোলা যেত — আগেই খোলা হয়ে গেছে।',g_blocked:'অভিযোগের কারণে এই লিংক বন্ধ করা হয়েছে।',g_locked:'বারবার ভুল PIN — ফাইল মুছে ফেলা হয়েছে।',g_notready:'ফাইল এখনও আপলোড হচ্ছে — একটু পরে আবার খুলুন।',g_bad:'লিংকটি অসম্পূর্ণ — পুরো লিংক কপি করে খুলুন।',
+ e_daily:'আজকের সীমা শেষ (দিনে ৩০টি লিংক / ৩০০ MB)। কাল আবার চেষ্টা করুন।',e_store:'সার্ভার এখন ভর্তি — ছোট ফাইল বা কম সময়ের লিংক দিন।',e_limits:'একবারে সর্বোচ্চ ৩০টি ফাইল, মোট ১০০ MB।',e_net:'আপলোড হলো না — ইন্টারনেট দেখে আবার চেষ্টা করুন।',
+ tooBig:'একবারে মোট ১০০ MB-এর বেশি পাঠানো যাবে না।',tooMany:'একবারে ৩০টির বেশি ফাইল নয়।',offBig:'চলমান QR ছোট ফাইলের জন্য — হটস্পট খুলছে।',notifyNo:'নোটিফিকেশনের অনুমতি পাওয়া গেল না — লিংক তবুও তৈরি হয়েছে।',zip:'ZIP তৈরি হচ্ছে…'},
+hi:{getTitle:'आपके लिए फ़ाइलें',title:'भेजें',tagline:'किसी को भी, कैसे भी — नंबर सेव किए बिना',q1:'क्या भेजना है?',pick:'फ़ाइल चुनें',pickSub:'जितनी चाहें फ़ाइलें — फ़ोटो, PDF, कुछ भी (एक बार में 100 MB तक)',addMore:'और फ़ाइल जोड़ें',msgLbl:'संदेश या लिंक (चाहें तो)',q2:'जिसे भेजना है, वह कहाँ है?',
+ away:'दूर है — लिंक भेजें',awaySub:'व्हाट्सऐप या SMS पर — नंबर सेव करने की ज़रूरत नहीं। फ़ाइल उसका इंतज़ार करेगी।',here:'सामने है — QR दिखाएँ',hereSub:'वह बस स्कैन करे, तुरंत चली जाएगी',off:'इंटरनेट नहीं है',offSub:'चलते QR या हॉटस्पॉट से',
+ mine:'आपके चालू लिंक',optsT:'लिंक के नियम',fromLbl:'आपका नाम (उधर दिखेगा)',keep:'कितनी देर रहे',e1:'1 घंटा',e2:'1 दिन',e3:'7 दिन',
+ once:'सिर्फ़ एक बार डाउनलोड',onceSub:'एक बार खुलते ही लिंक बंद हो जाएगा',pinL:'PIN से ताला लगाएँ',pinSub:'PIN अलग से (फ़ोन पर) बताएँ। 5 बार गलत होने पर फ़ाइल मिट जाएगी।',pinEdit:'बदल सकते हैं',
+ notify:'खुलने पर मुझे बताएँ',notifySub:'वह लिंक खोलेगा तो आपके फ़ोन पर सूचना आएगी',voL:'सिर्फ़ देखने के लिए',voSub:'फ़ोटो और PDF उधर सिर्फ़ दिखेंगे, सेव नहीं होंगे। एक ही बार खुलेगा।',
+ make:'लिंक बनाएँ',back:'← पीछे',up:'लॉक करके अपलोड हो रहा है…',readyT:'लिंक तैयार ✓',until:'तक खुलेगा',toNum:'जिसे भेजना है उसका नंबर',numPh:'मोबाइल नंबर (चाहें तो)',wa:'व्हाट्सऐप पर भेजें',sms:'SMS पर भेजें',noSave:'नंबर सेव नहीं होगा। नंबर न दें तो व्हाट्सऐप में किसे भेजना है चुन सकते हैं।',
+ pinTell:'उसे फ़ोन करके यह PIN बताएँ:',copy:'लिंक कॉपी',copied:'कॉपी हो गया ✓',share:'और तरीके से भेजें',qrShow:'सामने हो तो यह QR भी दिखा सकते हैं',again:'एक और भेजें',
+ waMsg:(w,n,u,d)=>`${w} ने आपको झटपट से ${n} भेजी है:\n${u}\n(${d} तक खुलेगा)`,someone:'किसी',nf:n=>n?n+' फ़ाइलें':'एक संदेश',
+ del:'मिटाएँ',expIn:'रहेगा',files:' फ़ाइलें',
+ opening:'खुल रहा है…',pinAsk:'PIN डालें',pinAskSub:'भेजने वाला आपको PIN बताएगा',openBtn:'खोलें',pinWrong:n=>`गलत PIN। ${n} बार और कोशिश कर सकते हैं।`,
+ fromPre:'भेजने वाले',dl:'डाउनलोड हो रहा है…',save:'सेव',saveAll:'सब एक साथ सेव (ZIP)',view:'देखें',voMark:'सिर्फ़ देखने के लिए',gExp:'यह लिंक खुला रहेगा',gOnce:'यह एक बार का लिंक है — अभी सेव कर लें, पेज बंद करने पर फिर नहीं मिलेगा।',
+ youToo:'आप भी किसी को ऐसे फ़ाइल भेजना चाहते हैं?',youTooBtn:'झटपट से भेजें',report:'इस लिंक में कुछ आपत्तिजनक है? बताएँ',reportSure:'पक्का? फिर दबाएँ',reported:'बता दिया गया, धन्यवाद।',
+ g_none:'यह लिंक नहीं है या मिट गया।',g_expired:'इस लिंक का समय ख़त्म — फ़ाइल मिट गई।',g_used:'यह लिंक एक ही बार खुल सकता था — पहले ही खुल चुका है।',g_blocked:'शिकायत के कारण यह लिंक बंद कर दिया गया है।',g_locked:'बार-बार गलत PIN — फ़ाइल मिटा दी गई।',g_notready:'फ़ाइल अभी अपलोड हो रही है — थोड़ी देर बाद खोलें।',g_bad:'लिंक अधूरा है — पूरा लिंक कॉपी करके खोलें।',
+ e_daily:'आज की सीमा ख़त्म (दिन में 30 लिंक / 300 MB)। कल फिर कोशिश करें।',e_store:'सर्वर अभी भरा है — छोटी फ़ाइल या कम समय का लिंक दें।',e_limits:'एक बार में ज़्यादा से ज़्यादा 30 फ़ाइलें, कुल 100 MB।',e_net:'अपलोड नहीं हुआ — इंटरनेट देखकर फिर कोशिश करें।',
+ tooBig:'एक बार में कुल 100 MB से ज़्यादा नहीं भेज सकते।',tooMany:'एक बार में 30 से ज़्यादा फ़ाइलें नहीं।',offBig:'चलता QR छोटी फ़ाइलों के लिए है — हॉटस्पॉट खुल रहा है।',notifyNo:'सूचना की अनुमति नहीं मिली — लिंक फिर भी बन गया।',zip:'ZIP बन रहा है…'},
+en:{getTitle:'Files for you',title:'Send',tagline:'To anyone, any way — without saving their number',q1:'What do you want to send?',pick:'Choose files',pickSub:'As many files as you like — photos, PDFs, anything (up to 100 MB at once)',addMore:'Add more files',msgLbl:'Message or link (optional)',q2:'Where is the other person?',
+ away:'Away — send a link',awaySub:'By WhatsApp or SMS — no need to save their number. The files wait for them.',here:'Here — show a QR',hereSub:'They just scan; it goes straight away',off:'No internet',offSub:'By moving QR or hotspot',
+ mine:'Your active links',optsT:'Link settings',fromLbl:'Your name (shown to them)',keep:'Keep for',e1:'1 hour',e2:'1 day',e3:'7 days',
+ once:'One download only',onceSub:'The link closes as soon as it’s opened once',pinL:'Lock with a PIN',pinSub:'Tell them the PIN separately (on a call). 5 wrong tries delete the files.',pinEdit:'you can change it',
+ notify:'Tell me when it’s opened',notifySub:'You get a notification on this phone when they open the link',voL:'View only',voSub:'Photos and PDFs can only be viewed there, not saved. Opens once.',
+ make:'Create link',back:'← Back',up:'Locking and uploading…',readyT:'Link ready ✓',until:'available until',toNum:'Their number',numPh:'Mobile number (optional)',wa:'Send on WhatsApp',sms:'Send by SMS',noSave:'The number isn’t saved. Leave it empty to pick a chat in WhatsApp.',
+ pinTell:'Call them and tell them this PIN:',copy:'Copy link',copied:'Copied ✓',share:'Share another way',qrShow:'If they’re next to you, they can scan this QR too',again:'Send something else',
+ waMsg:(w,n,u,d)=>`${w} sent you ${n} with Jhatpat:\n${u}\n(available until ${d})`,someone:'Someone',nf:n=>n?n+(n>1?' files':' file'):'a message',
+ del:'Delete',expIn:'until',files:' files',
+ opening:'Opening…',pinAsk:'Enter the PIN',pinAskSub:'The person who sent this will tell you the PIN',openBtn:'Open',pinWrong:n=>`Wrong PIN. ${n} tries left.`,
+ fromPre:'From',dl:'Downloading…',save:'Save',saveAll:'Save all (ZIP)',view:'View',voMark:'VIEW ONLY',gExp:'This link stays open until',gOnce:'This is a one-time link — save the files now; once you close the page they’re gone.',
+ youToo:'Want to send files like this too?',youTooBtn:'Send with Jhatpat',report:'Something wrong with this link? Report it',reportSure:'Sure? Tap again',reported:'Reported, thank you.',
+ g_none:'This link doesn’t exist or was deleted.',g_expired:'This link has expired — the files were deleted.',g_used:'This link could be opened only once — it was already opened.',g_blocked:'This link was blocked after reports.',g_locked:'Too many wrong PINs — the files were deleted.',g_notready:'The files are still uploading — open the link again shortly.',g_bad:'This link is incomplete — copy the whole link and open it.',
+ e_daily:'Daily limit reached (30 links / 300 MB a day). Try again tomorrow.',e_store:'The server is full right now — send smaller files or a shorter-lived link.',e_limits:'At most 30 files and 100 MB at once.',e_net:'Upload failed — check the internet and try again.',
+ tooBig:'You can send at most 100 MB at once.',tooMany:'No more than 30 files at once.',offBig:'Moving QR is for small files — opening Hotspot instead.',notifyNo:'Notifications weren’t allowed — the link was still created.',zip:'Making the ZIP…'}};
+const $=s=>document.querySelector(s);
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let lang=store.get('qrp-lang');if(!T[lang])lang=/^hi/.test(navigator.language)?'hi':/^en/.test(navigator.language)?'en':'bn';
+const t=(k,...a)=>{const v=T[lang][k]??T.en[k]??k;return typeof v==='function'?v(...a):v};
+const LOC={bn:'bn-IN',hi:'hi-IN',en:'en-IN'};
+const when=ms=>new Date(ms).toLocaleString(LOC[lang],{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'});
+const fmt=b=>b<1024?b+' B':b<1048576?(b/1024).toFixed(0)+' KB':(b/1048576).toFixed(1)+' MB';
+let stK='',stC='',stA=[];
+function setStatus(k,c='',...a){stK=k;stC=c;stA=a;const s=$('#status');s.hidden=!k;s.className='status '+c;s.textContent=k?t(k,...a):''}
+let redraw=()=>{};
+function applyLang(){document.documentElement.lang=lang;document.querySelectorAll('[data-t]').forEach(e=>e.textContent=t(e.dataset.t));document.querySelectorAll('[data-tp]').forEach(e=>e.placeholder=t(e.dataset.tp));
+  document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===lang));document.title='ঝটপট — '+t(document.querySelector('h1').dataset.t);setStatus(stK,stC,...stA);redraw()}
+document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{lang=b.dataset.l;store.set('qrp-lang',lang);applyLang()});
+const show=id=>['vPick','vOpts','vReady','vGet'].forEach(v=>$('#'+v).hidden=v!==id);
+const isImg=f=>/^image\/(png|jpe?g|webp|gif|bmp)/.test(f.type||'');
+const isPdf=f=>/pdf/.test(f.type||'')||/\.pdf$/i.test(f.name);
+const ext=n=>(n.match(/\.(\w{1,5})$/)||[,'FILE'])[1].toUpperCase();
+function thumb(f){if(isImg(f)&&f instanceof Blob){const i=document.createElement('img');i.className='th';i.alt='';i.src=URL.createObjectURL(f);return i}const d=document.createElement('div');d.className='th';d.textContent=ext(f.name);return d}
+let zipP=null;function loadZip(){if(!zipP)zipP=new Promise((r,j)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';s.onload=()=>r(window.JSZip);s.onerror=j;document.head.append(s)});return zipP}
+function saveBlob(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.append(a);a.click();setTimeout(()=>{a.remove()},1000)}
+
+/* ===================== SENDER ===================== */
+let files=[];
+const MAXB=100*1048576,MAXN=30;
+function addFiles(list){
+  for(const f of list){if(files.length>=MAXN){setStatus('tooMany','bad');break}files.push(f)}
+  if(files.reduce((a,f)=>a+f.size,0)>MAXB)setStatus('tooBig','bad');else if(stK==='tooBig'||stK==='tooMany')setStatus('');
+  drawItems();
+}
+function drawItems(){
+  const ul=$('#items');ul.innerHTML='';
+  files.forEach((f,i)=>{const li=document.createElement('li');const d=document.createElement('div');d.innerHTML='<div class="nm"></div><div class="mt"></div>';d.firstChild.textContent=f.name;d.lastChild.textContent=fmt(f.size);
+    const x=document.createElement('button');x.className='x';x.textContent='×';x.setAttribute('aria-label','remove');x.onclick=()=>{files.splice(i,1);drawItems()};li.append(thumb(f),d,x);ul.append(li)});
+  const tot=files.reduce((a,f)=>a+f.size,0);
+  $('#sum').hidden=!files.length;$('#sum').textContent=files.length+t('files')+' · '+fmt(tot);
+  $('#pick').querySelector('b').textContent=t(files.length?'addMore':'pick');
+  checkWays();
+}
+function checkWays(){$('#vWays').hidden=!(files.length||$('#msg').value.trim())}
+$('#msg').oninput=checkWays;
+const pk=$('#pick');pk.onclick=()=>$('#file').click();
+$('#file').onchange=e=>{addFiles([...e.target.files]);e.target.value=''};
+['dragenter','dragover'].forEach(ev=>document.addEventListener(ev,e=>{e.preventDefault();pk.classList.add('drag')}));
+['dragleave','drop'].forEach(ev=>document.addEventListener(ev,e=>{e.preventDefault();pk.classList.remove('drag')}));
+document.addEventListener('drop',e=>{if(!$('#vPick').hidden&&e.dataTransfer.files.length)addFiles([...e.dataTransfer.files])});
+const tooMuch=()=>{const tot=files.reduce((a,f)=>a+f.size,0);if(tot>MAXB){setStatus('tooBig','bad');return true}return false};
+
+/* hand the chosen items to another page (same mailbox the Android Share menu uses) */
+async function handoff(list,texts,page){
+  const c=await caches.open('qrp-share');for(const k of await c.keys())await c.delete(k);
+  const scope=location.href.split('#')[0].split('?')[0].replace(/[^/]*$/,'');
+  for(let i=0;i<list.length;i++){const f=list[i];await c.put(new Request(scope+'qrp-share/f'+i),new Response(f,{headers:{'x-name':encodeURIComponent(f.name||'file'),'content-type':f.type||'application/octet-stream'}}))}
+  if(texts.length)await c.put(new Request(scope+'qrp-share/text'),new Response(texts.join('\n')));
+  location.href=page;
+}
+$('#wHere').onclick=()=>{if(tooMuch())return;const m=$('#msg').value.trim();handoff(files,m?[m]:[],'index.html#share')};
+$('#wOff').onclick=()=>{const m=$('#msg').value.trim();const list=files.slice();if(m)list.push(new File([m],'message.txt',{type:'text/plain'}));handoff(list,[],'offline.html#handoff')};
+$('#wAway').onclick=()=>{if(tooMuch())return;show('vOpts');setStatus('');
+  $('#voRow').hidden=!files.some(f=>isImg(f)||isPdf(f));if($('#voRow').hidden)$('#oVo').checked=false;window.scrollTo(0,0)};
+
+/* ---------- link options ---------- */
+let exp=+(store.get('jp-lexp')||86400);
+function drawExp(){document.querySelectorAll('#segExp button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.e===exp))}
+document.querySelectorAll('#segExp button').forEach(b=>b.onclick=()=>{exp=+b.dataset.e;store.set('jp-lexp',exp);drawExp()});
+$('#from').value=store.get('jp-from')||'';
+$('#oPin').onchange=()=>{$('#pinRow').hidden=!$('#oPin').checked;if($('#oPin').checked&&!$('#pin').value)$('#pin').value=String(1000+crypto.getRandomValues(new Uint16Array(1))[0]%9000)};
+$('#pin').oninput=()=>{$('#pin').value=$('#pin').value.replace(/\D/g,'').slice(0,6)};
+$('#oVo').onchange=()=>{if($('#oVo').checked){$('#oOnce').checked=true}};
+$('#optsBack').onclick=()=>{show('vPick');setStatus('')};
+let last=null;
+$('#make').onclick=async()=>{
+  const from=$('#from').value.trim();store.set('jp-from',from);
+  const pin=$('#oPin').checked?$('#pin').value:'';if($('#oPin').checked&&!/^\d{4,6}$/.test(pin)){$('#pin').focus();return}
+  $('#make').disabled=true;$('#upBox').hidden=false;$('#upTxt').textContent=t('up');setStatus('');
+  try{
+    last=await JPLink.createLink(files,{from,msg:$('#msg').value.trim(),exp,once:$('#oOnce').checked||$('#oVo').checked,pin,notify:$('#oNotify').checked,vo:$('#oVo').checked,lang},
+      p=>{$('#upBar').style.width=(p*100).toFixed(1)+'%';$('#upTxt').textContent=t('up')+' '+Math.round(p*100)+'%'});
+    last.from=from;last.nf=files.length;
+    if($('#oNotify').checked&&'Notification' in window&&Notification.permission!=='granted')setStatus('notifyNo');
+    ready();
+  }catch(e){setStatus('e_'+(['daily','store','limits'].includes(e.code)?e.code:'net'),'bad')}
+  finally{$('#make').disabled=false;$('#upBox').hidden=true;$('#upBar').style.width='0'}
+};
+function waText(){return t('waMsg',last.from||t('someone'),t('nf',last.nf),last.url,when(last.exp))}
+function num(){let n=($('#num').value||'').replace(/\D/g,'');if(!n)return'';const cc=($('#cc').value||'+91').replace(/\D/g,'')||'91';n=n.replace(/^0+/,'');if(n.length<=10)n=cc+n;return n}
+function drawSendBtns(){if(!last)return;const n=num(),m=encodeURIComponent(waText());
+  $('#waBtn').href='https://wa.me/'+n+'?text='+m;$('#smsBtn').href='sms:'+(n?'+'+n:'')+'?&body='+m}
+$('#num').oninput=drawSendBtns;$('#cc').oninput=drawSendBtns;
+function ready(){
+  show('vReady');window.scrollTo(0,0);
+  $('#readyMeta').textContent=t('nf',last.nf)+' · '+t('until')+' '+when(last.exp)+(last.once?' · '+t('once'):'');
+  $('#linkTxt').textContent=last.url;$('#pinNote').hidden=!last.pin;$('#pinShow').textContent=last.pin;
+  $('#linkQr').innerHTML='';new QRCode($('#linkQr'),{text:last.url,width:360,height:360,correctLevel:QRCode.CorrectLevel.L});
+  drawSendBtns();drawMine();
+}
+$('#copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(last.url)}catch(e){const i=document.createElement('textarea');i.value=last.url;document.body.append(i);i.select();document.execCommand('copy');i.remove()}$('#copyBtn').textContent=t('copied');setTimeout(()=>$('#copyBtn').textContent=t('copy'),1800)};
+$('#shareBtn').onclick=async()=>{if(navigator.share){try{await navigator.share({title:'ঝটপট',text:waText()})}catch(e){}}else $('#copyBtn').click()};
+$('#again').onclick=()=>{files=[];$('#msg').value='';drawItems();show('vPick');setStatus('');window.scrollTo(0,0)};
+
+function drawMine(){
+  const l=JPLink.myLinks();$('#vMine').hidden=!l.length;const ul=$('#mine');ul.innerHTML='';
+  l.forEach(r=>{const li=document.createElement('li'),d=document.createElement('div');d.innerHTML='<div class="nm"></div><div class="mt"></div>';
+    d.firstChild.textContent=(r.names||[]).join(', ')||t('nf',0);d.lastChild.textContent=t('nf',r.n)+' · '+t('until')+' '+when(r.exp)+(r.pin?' · PIN '+r.pin:'');
+    const c=document.createElement('button');c.className='btn ghost';c.style.minHeight='40px';c.textContent=t('copy');
+    c.onclick=async()=>{try{await navigator.clipboard.writeText(r.url);c.textContent='✓'}catch(e){}};
+    const x=document.createElement('button');x.className='x';x.textContent='🗑';x.title=t('del');x.onclick=async()=>{await JPLink.deleteLink(r);drawMine()};
+    li.append(d,c,x);ul.append(li)});
+}
+async function takeShared(){
+  try{const c=await caches.open('qrp-share');const texts=[];
+    for(const req of await c.keys()){const res=await c.match(req);
+      if(req.url.endsWith('/text'))texts.push(await res.text());
+      else{const b=await res.blob();files.push(new File([b],decodeURIComponent(res.headers.get('x-name')||'file'),{type:b.type}))}
+      await c.delete(req)}
+    if(texts.length)$('#msg').value=texts.join('\n');
+  }catch(e){}
+  drawItems();
+}
+
+/* ===================== RECEIVER ===================== */
+let G=null,got=[],reportArmed=false;
+async function receiver(id,key){
+  show('vGet');document.querySelector('.tag').hidden=true;document.querySelector('h1').dataset.t='getTitle';applyLang();
+  $('#gLoadTxt').textContent=t('opening');
+  let inf;try{inf=await JPLink.info(id)}catch(e){$('#gLoadTxt').textContent=t('e_net');return}
+  $('#gReport').hidden=false;
+  if(inf.gone){$('#gLoadTxt').textContent=t('g_'+inf.gone);return}
+  if(inf.pin){$('#gLoad').hidden=true;$('#gPin').hidden=false;$('#gPinIn').focus();
+    $('#gPinGo').onclick=()=>tryOpen(id,key,$('#gPinIn').value);
+    $('#gPinIn').onkeydown=e=>{if(e.key==='Enter')$('#gPinGo').click()};return}
+  tryOpen(id,key,'');
+}
+async function tryOpen(id,key,pin){
+  setStatus('');
+  try{G=await JPLink.openLink(id,key,pin)}
+  catch(e){
+    if(e.code==='pin'){setStatus('pinWrong','bad',e.left);$('#gPinIn').select();return}
+    $('#gPin').hidden=true;$('#gLoad').hidden=false;$('#gLoadTxt').textContent=t(e.code&&T.en['g_'+e.code]?'g_'+e.code:(e.name==='OperationError'||e instanceof SyntaxError)?'g_bad':'e_net');return}
+  $('#gPin').hidden=true;$('#gLoad').hidden=true;$('#gBody').hidden=false;
+  const m=G.man;
+  $('#gFrom').textContent=m.from||t('someone');
+  if(m.msg){const box=$('#gMsg');box.hidden=false;box.textContent='';
+    m.msg.split(/(https?:\/\/[^\s]+)/g).forEach((p,i)=>{if(i%2){const a=document.createElement('a');a.href=p;a.textContent=p;a.target='_blank';a.rel='noopener noreferrer nofollow';box.append(a)}else box.append(p)})}
+  if(m.vo)document.body.classList.add('vonly');
+  redraw=drawExpiry;drawExpiry();
+  if(!m.files.length)return;
+  $('#gDl').hidden=false;const tot=m.files.reduce((a,f)=>a+f.size,0);let base=0;
+  for(let n=0;n<m.files.length;n++){
+    const f=m.files[n];
+    const file=await JPLink.fetchFile(G,n,p=>{const pc=(base+p*f.size)/Math.max(1,tot)*100;$('#gBar').style.width=pc+'%';$('#gDlTxt').textContent=t('dl')+' '+Math.round(pc)+'%'});
+    base+=f.size;got.push(file);addGot(file,m.vo&&(isImg(file)||isPdf(file)));
+  }
+  $('#gDl').hidden=true;$('#gZip').hidden=got.filter((f,i)=>!(m.vo&&(isImg(f)||isPdf(f)))).length<2;
+}
+function drawExpiry(){if(!G)return;$('#gExp').textContent=G.once?t('gOnce'):t('gExp')+' '+when(G.exp)}
+function addGot(file,vo){
+  const li=document.createElement('li'),d=document.createElement('div');
+  d.innerHTML='<div class="nm"></div><div class="mt"></div>';d.firstChild.textContent=file.name;d.lastChild.textContent=fmt(file.size)+(vo?' · '+t('voMark'):'');
+  if(vo){const sp=document.createElement('span');li.append(vo&&isImg(file)?thumbBlank():thumb(file),d,sp);const v=document.createElement('div');v.className='vo';li.append(v);renderVo(file,v)}
+  else{const a=document.createElement('button');a.className='btn';a.style.minHeight='40px';a.textContent=t('save');a.onclick=()=>saveBlob(file,file.name);li.append(thumb(file),d,a);
+    if(isImg(file)){const im=new Image();im.className='prev';im.alt='';im.src=URL.createObjectURL(file);li.append(im)}}
+  $('#gItems').append(li);
+}
+function thumbBlank(){const d=document.createElement('div');d.className='th';d.textContent='👁';return d}
+function mark(c){const x=c.getContext('2d'),s=Math.max(18,c.width/18);x.save();x.translate(c.width/2,c.height/2);x.rotate(-Math.PI/7);x.font='800 '+s+'px Archivo,system-ui,sans-serif';x.textAlign='center';x.fillStyle='rgba(228,0,43,.28)';
+  for(let y=-c.height;y<c.height;y+=s*4)x.fillText(t('voMark')+' · ঝটপট',0,y);x.restore()}
+async function renderVo(file,box){
+  const stop=e=>e.preventDefault();box.addEventListener('contextmenu',stop);
+  if(isImg(file)){const im=await createImageBitmap(file);const c=document.createElement('canvas');const k=Math.min(1,1600/Math.max(im.width,im.height));c.width=im.width*k|0;c.height=im.height*k|0;c.getContext('2d').drawImage(im,0,0,c.width,c.height);mark(c);box.append(c);return}
+  await new Promise((r,j)=>{if(window.pdfjsLib)return r();const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';s.onload=r;s.onerror=j;document.head.append(s)});
+  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  const doc=await pdfjsLib.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;
+  for(let p=1;p<=Math.min(doc.numPages,40);p++){const pg=await doc.getPage(p),v0=pg.getViewport({scale:1}),vp=pg.getViewport({scale:Math.min(2,1400/v0.width)});
+    const c=document.createElement('canvas');c.width=vp.width|0;c.height=vp.height|0;await pg.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;mark(c);box.append(c)}
+}
+$('#gZip').onclick=async()=>{
+  const b=$('#gZip');b.disabled=true;b.textContent=t('zip');
+  try{const Z=await loadZip(),z=new Z(),seen={};
+    got.forEach(f=>{if(G.man.vo&&(isImg(f)||isPdf(f)))return;let n=f.name;if(seen[n]){const i=n.lastIndexOf('.');n=(i>0?n.slice(0,i):n)+' ('+(seen[f.name]++)+')'+(i>0?n.slice(i):'')}else seen[n]=1;z.file(n,f)});
+    if(G.man.msg)z.file('message.txt',G.man.msg);
+    saveBlob(await z.generateAsync({type:'blob'}),'jhatpat-files.zip')}catch(e){}
+  b.disabled=false;b.textContent=t('saveAll');
+};
+$('#gReport').onclick=async()=>{
+  if(!reportArmed){reportArmed=true;$('#gReport').textContent=t('reportSure');return}
+  await JPLink.report(G?G.id:location.hash.slice(3).split('.')[0]);$('#gReport').textContent=t('reported');$('#gReport').disabled=true;
+};
+
+/* ===================== start ===================== */
+applyLang();drawExp();
+const h=location.hash;
+const g=/^#g=([a-z0-9]{12})\.([A-Za-z0-9_-]{40,})$/.exec(h);
+if(g){history.replaceState(null,'','send.html#g='+g[1]+'.'+g[2]);receiver(g[1],g[2])}
+else if(/^#g=/.test(h)){show('vGet');$('#gLoadTxt').textContent=t('g_bad')}
+else{show('vPick');drawMine();if(h==='#share'){history.replaceState(null,'',location.pathname);takeShared()}else drawItems()}
+if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+window.__jpSend={get files(){return files},addFiles,get last(){return last},get got(){return got}};
+}
+</script>
+<script src="credit.js"></script>
+</body>
+</html>
