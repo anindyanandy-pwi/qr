@@ -389,10 +389,11 @@ function wire(ch){
   let cur=null;
   dc.onmessage=e=>{
     if(typeof e.data==='string'){const m=JSON.parse(e.data);
-      if(m.t==='f'){cur={...m,parts:[],got:0,li:null};cur.li=row(m.name,m.size,'receiving')}
-      else if(m.t==='e'&&cur){const b=new Blob(cur.parts,{type:cur.mime||'application/octet-stream'});cur.li.remove();addOut($('#hList'),b,cur.name);cur=null;try{navigator.vibrate&&navigator.vibrate(60)}catch(x){}}
+      if(m.t==='f'){const c=cur={...m,parts:[],got:0,li:null,n:0};cur.li=row(m.name,m.size,'receiving');
+        if(c.size>32*1048576&&window.JPSink)c.sinkP=JPSink.open('hs-'+Date.now(),c.name,c.size,c.mime).then(k=>{c.sink=k;for(const p of c.parts)k.write(p);c.parts=[]}).catch(()=>{})}
+      else if(m.t==='e'&&cur){const c=cur;cur=null;(async()=>{if(c.sinkP)await c.sinkP;const b=c.sink?await c.sink.close():new Blob(c.parts,{type:c.mime||'application/octet-stream'});c.li.remove();addOut($('#hList'),b,c.name);try{navigator.vibrate&&navigator.vibrate(60)}catch(x){}})()}
       return}
-    if(cur){cur.parts.push(e.data);cur.got+=e.data.byteLength;cur.li.querySelector('.mt').textContent=t('receiving')+' '+Math.round(cur.got/cur.size*100)+'%'}
+    if(cur){if(cur.sink)cur.sink.write(e.data);else cur.parts.push(e.data);cur.got+=e.data.byteLength;if(++cur.n%16===0||cur.got>=cur.size)cur.li.querySelector('.mt').textContent=t('receiving')+' '+Math.round(cur.got/cur.size*100)+'%'}
   };
 }
 function row(name,size,k){const li=document.createElement('li'),d=document.createElement('div');d.innerHTML='<div class="nm"></div><div class="mt"></div>';d.firstChild.textContent=name;d.lastChild.textContent=t(k)+' · '+fmt(size);li.append(d);$('#hList').prepend(li);return li}
@@ -402,7 +403,7 @@ async function sendFiles(list){
     dc.send(JSON.stringify({t:'f',name:f.name,size:f.size,mime:f.type}));
     let off=0;dc.bufferedAmountLowThreshold=1<<20;
     while(off<f.size){if(dc.bufferedAmount>4<<20)await new Promise(r=>dc.addEventListener('bufferedamountlow',r,{once:true}));
-      const b=await f.slice(off,off+65536).arrayBuffer();dc.send(b);off+=b.byteLength;li.querySelector('.mt').textContent=t('sending')+' '+Math.round(off/f.size*100)+'%'}
+      const b=await f.slice(off,off+524288).arrayBuffer();for(let p=0;p<b.byteLength;p+=65536)dc.send(b.slice(p,p+65536));off+=b.byteLength;li.querySelector('.mt').textContent=t('sending')+' '+Math.round(off/f.size*100)+'%'}
     dc.send(JSON.stringify({t:'e'}));li.querySelector('.mt').textContent=t('sent')+' · '+fmt(f.size);
   }
 }
@@ -449,6 +450,7 @@ if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceW
 }
 </script>
 <script>/* brand → home */{const b=document.querySelector('.brand');if(b){b.style.cursor='pointer';b.setAttribute('role','link');b.onclick=()=>location.href='home.html'}}</script>
+<script src="jp-sink.js"></script>
 <script src="credit.js"></script>
 </body>
 </html>

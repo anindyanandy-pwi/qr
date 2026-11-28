@@ -409,19 +409,22 @@ function onData(d){
     if(m.t==='hi')setStatus('connected','good',String(m.dev||'').slice(0,30));
     else if(m.t==='busy'){conn.close();fail('busy')}
     else if(m.t==='viewed'&&items[m.id])setTag(items[m.id],'voSeen');
-    else if(m.t==='f'){cur={id:m.id,name:String(m.name).slice(0,200)||'file',size:+m.size||0,mime:String(m.mime||''),vo:!!m.vo&&viewable(String(m.mime||''),String(m.name)),parts:[],got:0};cur.li=addItem(m.id,cur.name,cur.size,'in')}
+    else if(m.t==='f'){const c=cur={id:m.id,name:String(m.name).slice(0,200)||'file',size:+m.size||0,mime:String(m.mime||''),vo:!!m.vo&&viewable(String(m.mime||''),String(m.name)),parts:[],got:0};cur.li=addItem(m.id,cur.name,cur.size,'in');
+      /* big files go straight to storage instead of memory */
+      if(c.size>32*1048576&&window.JPSink&&!c.vo)c.sinkP=JPSink.open('qs-'+c.id,c.name,c.size,c.mime).then(k=>{c.sink=k;for(const p of c.parts)k.write(p);c.parts=[]}).catch(()=>{})}
     else if(m.t==='e'&&cur&&cur.id===m.id)finish();
     else if(m.t==='x'){addText(String(m.v).slice(0,20000),'in');chime()}
     else if(m.t==='ok'&&items[m.id])setTag(items[m.id],'sent');
     return;
   }
   if(!cur)return;
-  cur.parts.push(d);cur.got+=d.byteLength??d.size??0;
-  if(cur.parts.length%8===0||cur.got>=cur.size)prog(cur.li,cur.size?cur.got/cur.size:1);
+  if(cur.sink)cur.sink.write(d);else cur.parts.push(d);cur.got+=d.byteLength??d.size??0;
+  if((cur.n=(cur.n||0)+1)%8===0||cur.got>=cur.size)prog(cur.li,cur.size?cur.got/cur.size:1);
 }
-function finish(){
+async function finish(){
   const f=cur;cur=null;
-  const blob=new Blob(f.parts,{type:f.mime||'application/octet-stream'});f.parts=null;
+  if(f.sinkP)await f.sinkP;
+  const blob=f.sink?await f.sink.close():new Blob(f.parts,{type:f.mime||'application/octet-stream'});f.parts=null;
   if(f.vo){voArrived(f,blob);return}
   const url=URL.createObjectURL(blob),li=f.li;
   li.firstElementChild.replaceWith(thumb(blob,f.name,f.mime));
@@ -561,6 +564,7 @@ window.addEventListener('hashchange',()=>location.reload());
 }
 </script>
 <script>/* brand → home */{const b=document.querySelector('.brand');if(b){b.style.cursor='pointer';b.setAttribute('role','link');b.onclick=()=>location.href='home.html'}}</script>
+<script src="jp-sink.js"></script>
 <script src="credit.js"></script>
 </body>
 </html>

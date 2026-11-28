@@ -67,6 +67,9 @@ label.chk small{display:block;color:var(--mute);font-size:13px}
 .vo{grid-column:1/-1;position:relative;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .vo canvas{width:100%;height:auto;display:block;border-radius:8px;margin-top:6px;background:#fff}
 .small{font-size:13px;color:var(--mute)}
+.pb{grid-column:1/-1;height:8px;border-radius:4px;background:var(--line);overflow:hidden}.pb i{display:block;height:100%;width:0;background:var(--red)}
+.li-meta{grid-column:1/-1;font-size:13px;color:var(--mute);margin-top:-2px}
+.badge{display:inline-block;font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--line);margin-left:6px}
 .linkbtn{font:inherit;font-size:13px;background:none;border:0;color:var(--mute);text-decoration:underline;cursor:pointer;padding:8px}
 @media print{body.vonly{display:none}}
 </style>
@@ -91,9 +94,9 @@ label.chk small{display:block;color:var(--mute);font-size:13px}
     <div id="vWays" hidden>
       <h2 data-t="q2"></h2>
       <div class="ways">
-        <button class="way main" id="wAway"><span class="ic"><svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><b data-t="away"></b><span data-t="awaySub"></span></button>
-        <button class="way" id="wHere"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="14" y="3" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="3" y="14" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M14 14h3v3h-3zM18 18h3v3h-3z" fill="currentColor"/></svg></span><b data-t="here"></b><span data-t="hereSub"></span></button>
-        <button class="way" id="wOff"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M8.5 16.5a5 5 0 0 1 7 0M5 13a10 10 0 0 1 4-2.4M19 13a10 10 0 0 0-2.6-1.8M2 9.5a15 15 0 0 1 4.5-2.8M22 9.5A15 15 0 0 0 11 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span><b data-t="off"></b><span data-t="offSub"></span></button>
+        <button class="way main" id="wAway"><span class="ic"><svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><b data-t="away"></b><span id="awaySub" data-t="awaySub"></span></button>
+        <button class="way" id="wHere"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="14" y="3" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="3" y="14" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M14 14h3v3h-3zM18 18h3v3h-3z" fill="currentColor"/></svg></span><b data-t="here"></b><span id="hereSub" data-t="hereSub"></span></button>
+        <button class="way" id="wOff"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M8.5 16.5a5 5 0 0 1 7 0M5 13a10 10 0 0 1 4-2.4M19 13a10 10 0 0 0-2.6-1.8M2 9.5a15 15 0 0 1 4.5-2.8M22 9.5A15 15 0 0 0 11 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span><b data-t="off"></b><span id="offSub" data-t="offSub"></span></button>
       </div>
     </div>
     <div id="vMine" hidden>
@@ -140,6 +143,38 @@ label.chk small{display:block;color:var(--mute);font-size:13px}
     <button class="btn full" id="again" data-t="again"></button>
   </section>
 
+  <!-- ===== SENDER: live link for big files ===== -->
+  <section id="vLive" hidden>
+    <h2 data-t="liveT"></h2>
+    <div class="pinnote" data-t="liveKeep"></div>
+    <div class="card">
+      <span class="lbl" data-t="toNum"></span>
+      <div class="phone"><input type="tel" id="lcc" value="+91" aria-label="country code"><input type="tel" id="lnum" inputmode="tel" autocomplete="off" data-tp="numPh"></div>
+      <div class="row"><a class="btn wa" id="lWa" target="_blank" rel="noopener" data-t="wa"></a><a class="btn ink" id="lSms" data-t="sms"></a></div>
+    </div>
+    <div class="card">
+      <div class="linkbox"><span id="lLink" style="flex:1"></span></div>
+      <div class="row"><button class="btn ghost" id="lCopy" data-t="copy"></button><button class="btn ghost" id="lShare" data-t="share"></button></div>
+      <div class="qrs" id="lQr"></div><p class="small" data-t="liveQr" style="text-align:center;margin:0"></p>
+    </div>
+    <h2 data-t="liveWho"></h2>
+    <ul class="items" id="lWho"></ul><p class="small" id="lNone" data-t="liveNone"></p>
+    <button class="btn ghost full" id="lStop" data-t="liveStop" style="margin-top:12px"></button>
+  </section>
+
+  <!-- ===== RECEIVER: live link ===== -->
+  <section id="vLG" hidden>
+    <div class="status" id="lgState"></div>
+    <div id="lgBody" hidden>
+      <p class="small" data-t="fromPre" style="margin:12px 2px 0"></p>
+      <div class="from" id="lgFrom"></div>
+      <div class="msg" id="lgMsg" hidden></div>
+      <ul class="items" id="lgItems"></ul>
+      <button class="btn full" id="lgAll" data-t="saveAllLive" style="margin-top:12px"></button>
+      <p class="small" id="lgNote" style="text-align:center;margin-top:10px"></p>
+    </div>
+  </section>
+
   <!-- ===== RECEIVER ===== -->
   <section id="vGet" hidden>
     <div id="gLoad" class="card" style="text-align:center"><p id="gLoadTxt" style="margin:6px"></p></div>
@@ -170,10 +205,13 @@ label.chk small{display:block;color:var(--mute);font-size:13px}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="jp-link.js"></script>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="jp-sink.js"></script>
+<script src="jp-live.js"></script>
 <script>
 {
 const T={
-bn:{getTitle:'আপনার জন্য ফাইল',title:'পাঠান',tagline:'যাকে খুশি, যেভাবে খুশি — নম্বর সেভ না করেই',q1:'কী পাঠাবেন?',pick:'ফাইল বেছে নিন',pickSub:'যত খুশি ফাইল — ছবি, PDF, যেকোনো কিছু (একবারে ১০০ MB পর্যন্ত)',addMore:'আরও ফাইল যোগ করুন',msgLbl:'বার্তা বা লিংক (ইচ্ছে হলে)',q2:'যাকে পাঠাবেন, সে কোথায়?',
+bn:{awayBig:'বড় ফাইল: সরাসরি লাইভ লিংক — ওর নামানো শেষ না হওয়া পর্যন্ত এই পেজ খোলা রাখবেন',hereBig:'বড় ফাইল: সরাসরি QR — একই Wi‑Fi-এ সবচেয়ে দ্রুত',offBig2:'হটস্পট দিয়ে — মোবাইল ডেটা খরচ নেই',liveT:'লাইভ লিংক তৈরি ✓',liveKeep:'ফাইল সরাসরি আপনার ডিভাইস থেকে যাবে, কোনো সার্ভারে রাখা হবে না। ওর নামানো শেষ না হওয়া পর্যন্ত এই পেজ খোলা ও স্ক্রিন চালু রাখুন।',liveQr:'সামনে থাকলে এই QR স্ক্যান করতে বলুন',liveWho:'কে নামাচ্ছে',liveNone:'এখনও কেউ লিংক খোলেনি।',liveStop:'শেয়ার বন্ধ করুন',liveMsg:(w,n,u)=>`${w} আপনাকে ঝটপট দিয়ে ${n} পাঠাচ্ছেন:\n${u}\n(সরাসরি আসবে — উনি পেজ খোলা রাখলে নামানো যাবে)`,gotN:(a,b)=>`${a}/${b} ফাইল পেয়েছে`,relayBadge:'ধীর পথ',noNetLive:'লাইভ লিংক তৈরি হলো না — ইন্টারনেট দেখুন।',sec:'সেকেন্ড',min:'মিনিট',hr:'ঘণ্টা',left:d=>`${d} বাকি`,saveAllLive:'সব নামান',resume:p=>`চালিয়ে যান (${p}%)`,saving:'নামছে…',savedPc:'সেভ হয়েছে ✓',saveToPhone:'ফোনে সেভ',relayNote:'সরাসরি যুক্ত হওয়া যায়নি, ধীর পথে আসছে। একই Wi‑Fi বা হটস্পটে থাকলে অনেক দ্রুত হবে।',directNote:'সরাসরি যুক্ত ✓ — স্ক্রিন চালু রাখুন। মাঝপথে কেটে গেলে যেখানে থেমেছিল সেখান থেকে চলবে।',lg_connecting:'পাঠানো ফোনের সঙ্গে যুক্ত হচ্ছে…',lg_connected:'যুক্ত হয়েছে ✓',lg_slow:'দেরি হচ্ছে… পাঠানো ফোনে পেজটা খোলা আছে তো?',lg_offline:'যিনি পাঠাচ্ছেন তাঁর পেজ এখন খোলা নেই। ওঁকে খুলতে বলুন — খুললেই নিজে থেকে যুক্ত হবে।',lg_senderGone:'পাঠানো ফোন বন্ধ হয়ে গেছে। ওঁকে আবার খুলতে বলুন — যতটা নেমেছে, তার পর থেকে চলবে।',lg_paused:'সংযোগ কেটে গেছে — আবার যুক্ত হচ্ছে, যেখানে থেমেছিল সেখান থেকে চলবে…',lg_noNet:'ইন্টারনেট নেই — ফিরে এলে নিজে থেকে চলবে।',lg_space:'ফোনে জায়গা কম — কিছু জায়গা খালি করে আবার চেষ্টা করুন।',lg_memory:'এই ব্রাউজারে এত বড় ফাইল রাখা যাবে না। Chrome বা নতুন iPhone (iOS 17+) ব্যবহার করুন।',lg_failed:'নামানো থেমে গেছে — আবার চাপুন, যেখানে থেমেছিল সেখান থেকে চলবে।',lg_allDone:'সব ফাইল নামানো হয়েছে ✓',getTitle:'আপনার জন্য ফাইল',title:'পাঠান',tagline:'যাকে খুশি, যেভাবে খুশি — নম্বর সেভ না করেই',q1:'কী পাঠাবেন?',pick:'ফাইল বেছে নিন',pickSub:'যত খুশি ফাইল — ছবি, PDF, যেকোনো কিছু (একবারে ১০০ MB পর্যন্ত)',addMore:'আরও ফাইল যোগ করুন',msgLbl:'বার্তা বা লিংক (ইচ্ছে হলে)',q2:'যাকে পাঠাবেন, সে কোথায়?',
  away:'দূরে আছে — লিংক পাঠান',awaySub:'হোয়াটসঅ্যাপ বা SMS-এ — নম্বর সেভ করতে হবে না। ফাইল ওর জন্য অপেক্ষা করবে।',here:'সামনে আছে — QR দেখান',hereSub:'ও শুধু স্ক্যান করবে, সঙ্গে সঙ্গে চলে যাবে',off:'ইন্টারনেট নেই',offSub:'চলমান QR বা হটস্পট দিয়ে',
  mine:'আপনার চালু লিংকগুলো',optsT:'লিংকের নিয়ম',fromLbl:'আপনার নাম (ওদিকে দেখাবে)',keep:'কতক্ষণ থাকবে',e1:'১ ঘণ্টা',e2:'১ দিন',e3:'৭ দিন',
  once:'শুধু একবার ডাউনলোড',onceSub:'একবার খোলা হলেই লিংক বন্ধ হয়ে যাবে',pinL:'PIN দিয়ে তালা দিন',pinSub:'PIN টা আলাদা করে (ফোনে) বলবেন। ৫ বার ভুল হলে ফাইল মুছে যাবে।',pinEdit:'বদলাতে পারেন',
@@ -188,7 +226,7 @@ bn:{getTitle:'আপনার জন্য ফাইল',title:'পাঠান'
  g_none:'এই লিংক নেই বা মুছে গেছে।',g_expired:'এই লিংকের সময় শেষ — ফাইল মুছে গেছে।',g_used:'এই লিংক একবারই খোলা যেত — আগেই খোলা হয়ে গেছে।',g_blocked:'অভিযোগের কারণে এই লিংক বন্ধ করা হয়েছে।',g_locked:'বারবার ভুল PIN — ফাইল মুছে ফেলা হয়েছে।',g_notready:'ফাইল এখনও আপলোড হচ্ছে — একটু পরে আবার খুলুন।',g_bad:'লিংকটি অসম্পূর্ণ — পুরো লিংক কপি করে খুলুন।',
  e_daily:'আজকের সীমা শেষ (দিনে ৩০টি লিংক / ৩০০ MB)। কাল আবার চেষ্টা করুন।',e_store:'সার্ভার এখন ভর্তি — ছোট ফাইল বা কম সময়ের লিংক দিন।',e_limits:'একবারে সর্বোচ্চ ৩০টি ফাইল, মোট ১০০ MB।',e_net:'আপলোড হলো না — ইন্টারনেট দেখে আবার চেষ্টা করুন।',
  tooBig:'একবারে মোট ১০০ MB-এর বেশি পাঠানো যাবে না।',tooMany:'একবারে ৩০টির বেশি ফাইল নয়।',offBig:'চলমান QR ছোট ফাইলের জন্য — হটস্পট খুলছে।',notifyNo:'নোটিফিকেশনের অনুমতি পাওয়া গেল না — লিংক তবুও তৈরি হয়েছে।',zip:'ZIP তৈরি হচ্ছে…'},
-hi:{getTitle:'आपके लिए फ़ाइलें',title:'भेजें',tagline:'किसी को भी, कैसे भी — नंबर सेव किए बिना',q1:'क्या भेजना है?',pick:'फ़ाइल चुनें',pickSub:'जितनी चाहें फ़ाइलें — फ़ोटो, PDF, कुछ भी (एक बार में 100 MB तक)',addMore:'और फ़ाइल जोड़ें',msgLbl:'संदेश या लिंक (चाहें तो)',q2:'जिसे भेजना है, वह कहाँ है?',
+hi:{awayBig:'बड़ी फ़ाइल: सीधा लाइव लिंक — उसका डाउनलोड पूरा होने तक यह पेज खुला रखें',hereBig:'बड़ी फ़ाइल: सीधा QR — एक ही Wi‑Fi पर सबसे तेज़',offBig2:'हॉटस्पॉट से — मोबाइल डेटा ख़र्च नहीं',liveT:'लाइव लिंक तैयार ✓',liveKeep:'फ़ाइल सीधे आपके डिवाइस से जाएगी, किसी सर्वर पर नहीं रखी जाएगी। उसका डाउनलोड पूरा होने तक यह पेज खुला और स्क्रीन चालू रखें।',liveQr:'सामने हो तो यह QR स्कैन करने को कहें',liveWho:'कौन डाउनलोड कर रहा है',liveNone:'अभी किसी ने लिंक नहीं खोला।',liveStop:'शेयर बंद करें',liveMsg:(w,n,u)=>`${w} आपको झटपट से ${n} भेज रहे हैं:\n${u}\n(सीधे आएगी — जब तक उनका पेज खुला है, डाउनलोड कर सकते हैं)`,gotN:(a,b)=>`${a}/${b} फ़ाइलें मिलीं`,relayBadge:'धीमा रास्ता',noNetLive:'लाइव लिंक नहीं बना — इंटरनेट देखें।',sec:'सेकंड',min:'मिनट',hr:'घंटे',left:d=>`${d} बाकी`,saveAllLive:'सब डाउनलोड करें',resume:p=>`जारी रखें (${p}%)`,saving:'आ रहा है…',savedPc:'सेव हो गया ✓',saveToPhone:'फ़ोन में सेव',relayNote:'सीधा नहीं जुड़ सका, धीमे रास्ते से आ रहा है। एक ही Wi‑Fi या हॉटस्पॉट पर बहुत तेज़ होगा।',directNote:'सीधा जुड़ा ✓ — स्क्रीन चालू रखें। बीच में कटा तो जहाँ रुका था वहीं से चलेगा।',lg_connecting:'भेजने वाले फ़ोन से जुड़ रहे हैं…',lg_connected:'जुड़ गया ✓',lg_slow:'देर हो रही है… भेजने वाले फ़ोन पर पेज खुला है?',lg_offline:'भेजने वाले का पेज अभी खुला नहीं है। उन्हें खोलने को कहें — खुलते ही अपने-आप जुड़ जाएगा।',lg_senderGone:'भेजने वाला फ़ोन बंद हो गया। उन्हें फिर खोलने को कहें — जितना आ गया, उसके आगे से चलेगा।',lg_paused:'कनेक्शन टूटा — फिर जुड़ रहे हैं, जहाँ रुका था वहीं से चलेगा…',lg_noNet:'इंटरनेट नहीं — लौटते ही अपने-आप चलेगा।',lg_space:'फ़ोन में जगह कम है — थोड़ी जगह ख़ाली करके फिर कोशिश करें।',lg_memory:'इस ब्राउज़र में इतनी बड़ी फ़ाइल नहीं रखी जा सकती। Chrome या नया iPhone (iOS 17+) इस्तेमाल करें।',lg_failed:'डाउनलोड रुक गया — फिर दबाएँ, जहाँ रुका था वहीं से चलेगा।',lg_allDone:'सारी फ़ाइलें आ गईं ✓',getTitle:'आपके लिए फ़ाइलें',title:'भेजें',tagline:'किसी को भी, कैसे भी — नंबर सेव किए बिना',q1:'क्या भेजना है?',pick:'फ़ाइल चुनें',pickSub:'जितनी चाहें फ़ाइलें — फ़ोटो, PDF, कुछ भी (एक बार में 100 MB तक)',addMore:'और फ़ाइल जोड़ें',msgLbl:'संदेश या लिंक (चाहें तो)',q2:'जिसे भेजना है, वह कहाँ है?',
  away:'दूर है — लिंक भेजें',awaySub:'व्हाट्सऐप या SMS पर — नंबर सेव करने की ज़रूरत नहीं। फ़ाइल उसका इंतज़ार करेगी।',here:'सामने है — QR दिखाएँ',hereSub:'वह बस स्कैन करे, तुरंत चली जाएगी',off:'इंटरनेट नहीं है',offSub:'चलते QR या हॉटस्पॉट से',
  mine:'आपके चालू लिंक',optsT:'लिंक के नियम',fromLbl:'आपका नाम (उधर दिखेगा)',keep:'कितनी देर रहे',e1:'1 घंटा',e2:'1 दिन',e3:'7 दिन',
  once:'सिर्फ़ एक बार डाउनलोड',onceSub:'एक बार खुलते ही लिंक बंद हो जाएगा',pinL:'PIN से ताला लगाएँ',pinSub:'PIN अलग से (फ़ोन पर) बताएँ। 5 बार गलत होने पर फ़ाइल मिट जाएगी।',pinEdit:'बदल सकते हैं',
@@ -203,7 +241,7 @@ hi:{getTitle:'आपके लिए फ़ाइलें',title:'भेजे�
  g_none:'यह लिंक नहीं है या मिट गया।',g_expired:'इस लिंक का समय ख़त्म — फ़ाइल मिट गई।',g_used:'यह लिंक एक ही बार खुल सकता था — पहले ही खुल चुका है।',g_blocked:'शिकायत के कारण यह लिंक बंद कर दिया गया है।',g_locked:'बार-बार गलत PIN — फ़ाइल मिटा दी गई।',g_notready:'फ़ाइल अभी अपलोड हो रही है — थोड़ी देर बाद खोलें।',g_bad:'लिंक अधूरा है — पूरा लिंक कॉपी करके खोलें।',
  e_daily:'आज की सीमा ख़त्म (दिन में 30 लिंक / 300 MB)। कल फिर कोशिश करें।',e_store:'सर्वर अभी भरा है — छोटी फ़ाइल या कम समय का लिंक दें।',e_limits:'एक बार में ज़्यादा से ज़्यादा 30 फ़ाइलें, कुल 100 MB।',e_net:'अपलोड नहीं हुआ — इंटरनेट देखकर फिर कोशिश करें।',
  tooBig:'एक बार में कुल 100 MB से ज़्यादा नहीं भेज सकते।',tooMany:'एक बार में 30 से ज़्यादा फ़ाइलें नहीं।',offBig:'चलता QR छोटी फ़ाइलों के लिए है — हॉटस्पॉट खुल रहा है।',notifyNo:'सूचना की अनुमति नहीं मिली — लिंक फिर भी बन गया।',zip:'ZIP बन रहा है…'},
-en:{getTitle:'Files for you',title:'Send',tagline:'To anyone, any way — without saving their number',q1:'What do you want to send?',pick:'Choose files',pickSub:'As many files as you like — photos, PDFs, anything (up to 100 MB at once)',addMore:'Add more files',msgLbl:'Message or link (optional)',q2:'Where is the other person?',
+en:{awayBig:'Big files: a direct live link — keep this page open until they finish',hereBig:'Big files: direct QR — fastest on the same Wi‑Fi',offBig2:'By hotspot — uses no mobile data',liveT:'Live link ready ✓',liveKeep:'The files go straight from your device — nothing is stored on any server. Keep this page open and the screen on until they finish.',liveQr:'If they’re next to you, ask them to scan this QR',liveWho:'Who’s downloading',liveNone:'Nobody has opened the link yet.',liveStop:'Stop sharing',liveMsg:(w,n,u)=>`${w} is sending you ${n} with Jhatpat:\n${u}\n(direct transfer — works while their page is open)`,gotN:(a,b)=>`${a}/${b} files received`,relayBadge:'slow route',noNetLive:'Couldn’t create the live link — check the internet.',sec:'sec',min:'min',hr:'hours',left:d=>`${d} left`,saveAllLive:'Download all',resume:p=>`Continue (${p}%)`,saving:'Downloading…',savedPc:'Saved ✓',saveToPhone:'Save to phone',relayNote:'Couldn’t connect directly, so it’s using a slower route. On the same Wi‑Fi or hotspot it would be much faster.',directNote:'Connected directly ✓ — keep the screen on. If it drops, it continues where it stopped.',lg_connecting:'Connecting to the sender…',lg_connected:'Connected ✓',lg_slow:'Taking a while… is the page open on the sender’s phone?',lg_offline:'The sender’s page isn’t open right now. Ask them to open it — it connects by itself.',lg_senderGone:'The sender’s page closed. Ask them to reopen it — your download continues from where it stopped.',lg_paused:'Connection lost — reconnecting; it continues from where it stopped…',lg_noNet:'No internet — it carries on by itself when you’re back online.',lg_space:'Not enough space on this phone — free some up and try again.',lg_memory:'This browser can’t hold a file this big. Use Chrome or a newer iPhone (iOS 17+).',lg_failed:'Download stopped — tap again; it continues where it stopped.',lg_allDone:'All files downloaded ✓',getTitle:'Files for you',title:'Send',tagline:'To anyone, any way — without saving their number',q1:'What do you want to send?',pick:'Choose files',pickSub:'As many files as you like — photos, PDFs, anything (up to 100 MB at once)',addMore:'Add more files',msgLbl:'Message or link (optional)',q2:'Where is the other person?',
  away:'Away — send a link',awaySub:'By WhatsApp or SMS — no need to save their number. The files wait for them.',here:'Here — show a QR',hereSub:'They just scan; it goes straight away',off:'No internet',offSub:'By moving QR or hotspot',
  mine:'Your active links',optsT:'Link settings',fromLbl:'Your name (shown to them)',keep:'Keep for',e1:'1 hour',e2:'1 day',e3:'7 days',
  once:'One download only',onceSub:'The link closes as soon as it’s opened once',pinL:'Lock with a PIN',pinSub:'Tell them the PIN separately (on a call). 5 wrong tries delete the files.',pinEdit:'you can change it',
@@ -231,7 +269,7 @@ let redraw=()=>{};
 function applyLang(){document.documentElement.lang=lang;document.querySelectorAll('[data-t]').forEach(e=>e.textContent=t(e.dataset.t));document.querySelectorAll('[data-tp]').forEach(e=>e.placeholder=t(e.dataset.tp));
   document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===lang));document.title='ঝটপট — '+t(document.querySelector('h1').dataset.t);setStatus(stK,stC,...stA);redraw()}
 document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{lang=b.dataset.l;store.set('qrp-lang',lang);applyLang()});
-const show=id=>['vPick','vOpts','vReady','vGet'].forEach(v=>$('#'+v).hidden=v!==id);
+const show=id=>['vPick','vOpts','vReady','vGet','vLive','vLG'].forEach(v=>$('#'+v).hidden=v!==id);
 const isImg=f=>/^image\/(png|jpe?g|webp|gif|bmp)/.test(f.type||'');
 const isPdf=f=>/pdf/.test(f.type||'')||/\.pdf$/i.test(f.name);
 const ext=n=>(n.match(/\.(\w{1,5})$/)||[,'FILE'])[1].toUpperCase();
@@ -241,10 +279,10 @@ function saveBlob(blob,name){const a=document.createElement('a');a.href=URL.crea
 
 /* ===================== SENDER ===================== */
 let files=[];
-const MAXB=100*1048576,MAXN=30;
+const MAXB=100*1048576,MAXN=200;
 function addFiles(list){
   for(const f of list){if(files.length>=MAXN){setStatus('tooMany','bad');break}files.push(f)}
-  if(files.reduce((a,f)=>a+f.size,0)>MAXB)setStatus('tooBig','bad');else if(stK==='tooBig'||stK==='tooMany')setStatus('');
+  if(stK==='tooBig'||stK==='tooMany')setStatus('');
   drawItems();
 }
 function drawItems(){
@@ -256,14 +294,18 @@ function drawItems(){
   $('#pick').querySelector('b').textContent=t(files.length?'addMore':'pick');
   checkWays();
 }
-function checkWays(){$('#vWays').hidden=!(files.length||$('#msg').value.trim())}
+const BIG=100*1048576;
+const isBig=()=>files.reduce((a,f)=>a+f.size,0)>BIG;
+function checkWays(){$('#vWays').hidden=!(files.length||$('#msg').value.trim());const b=isBig();
+  $('#awaySub').dataset.t=b?'awayBig':'awaySub';$('#hereSub').dataset.t=b?'hereBig':'hereSub';$('#offSub').dataset.t=b?'offBig2':'offSub';
+  ['#awaySub','#hereSub','#offSub'].forEach(q=>$(q).textContent=t($(q).dataset.t))}
 $('#msg').oninput=checkWays;
 const pk=$('#pick');pk.onclick=()=>$('#file').click();
 $('#file').onchange=e=>{addFiles([...e.target.files]);e.target.value=''};
 ['dragenter','dragover'].forEach(ev=>document.addEventListener(ev,e=>{e.preventDefault();pk.classList.add('drag')}));
 ['dragleave','drop'].forEach(ev=>document.addEventListener(ev,e=>{e.preventDefault();pk.classList.remove('drag')}));
 document.addEventListener('drop',e=>{if(!$('#vPick').hidden&&e.dataTransfer.files.length)addFiles([...e.dataTransfer.files])});
-const tooMuch=()=>{const tot=files.reduce((a,f)=>a+f.size,0);if(tot>MAXB){setStatus('tooBig','bad');return true}return false};
+const tooMuch=()=>{if(files.length>30){setStatus('tooMany','bad');return true}return false};
 
 /* hand the chosen items to another page (same mailbox the Android Share menu uses) */
 async function handoff(list,texts,page){
@@ -273,9 +315,9 @@ async function handoff(list,texts,page){
   if(texts.length)await c.put(new Request(scope+'qrp-share/text'),new Response(texts.join('\n')));
   location.href=page;
 }
-$('#wHere').onclick=()=>{if(tooMuch())return;const m=$('#msg').value.trim();handoff(files,m?[m]:[],'index.html#share')};
+$('#wHere').onclick=()=>{if(isBig())return goLive();const m=$('#msg').value.trim();handoff(files,m?[m]:[],'index.html#share')};
 $('#wOff').onclick=()=>{const m=$('#msg').value.trim();const list=files.slice();if(m)list.push(new File([m],'message.txt',{type:'text/plain'}));handoff(list,[],'offline.html#handoff')};
-$('#wAway').onclick=()=>{if(tooMuch())return;show('vOpts');setStatus('');
+$('#wAway').onclick=()=>{if(isBig())return goLive();if(tooMuch())return;show('vOpts');setStatus('');
   $('#voRow').hidden=!files.some(f=>isImg(f)||isPdf(f));if($('#voRow').hidden)$('#oVo').checked=false;window.scrollTo(0,0)};
 
 /* ---------- link options ---------- */
@@ -406,15 +448,105 @@ $('#gReport').onclick=async()=>{
   await JPLink.report(G?G.id:location.hash.slice(3).split('.')[0]);$('#gReport').textContent=t('reported');$('#gReport').disabled=true;
 };
 
+/* ===================== BIG FILES: live link (direct, resumable) ===================== */
+let H=null,wake=null;
+async function keepAwake(){try{wake=await navigator.wakeLock.request('screen')}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&(H||LG))keepAwake()});
+const dur=s=>s<60?Math.max(1,Math.round(s))+' '+t('sec'):s<3600?Math.round(s/60)+' '+t('min'):(s/3600).toFixed(1)+' '+t('hr');
+const spd=b=>fmt(b)+'/s';
+async function goLive(){
+  setStatus('');show('vLive');window.scrollTo(0,0);$('#lLink').textContent='…';
+  const from=$('#from').value.trim()||store.get('jp-from')||'';
+  for(let k=0;k<3&&!H;k++){try{H=await JPLive.host(files,{from,msg:$('#msg').value.trim()},{change:drawWho,net:ok=>{if(!ok)setStatus('noNetLive','bad')}})}catch(e){}}
+  if(!H){setStatus('noNetLive','bad');return}
+  keepAwake();$('#lLink').textContent=H.url;$('#lQr').innerHTML='';new QRCode($('#lQr'),{text:H.url,width:360,height:360,correctLevel:QRCode.CorrectLevel.L});
+  drawLiveBtns();drawWho();redraw=()=>{drawLiveBtns();drawWho()};
+}
+function liveText(){const tot=files.reduce((a,f)=>a+f.size,0);return t('liveMsg',($('#from').value.trim()||store.get('jp-from')||t('someone')),t('nf',files.length)+' ('+fmt(tot)+')',H.url)}
+function lnum(){let n=($('#lnum').value||'').replace(/\D/g,'');if(!n)return'';const cc=($('#lcc').value||'+91').replace(/\D/g,'')||'91';n=n.replace(/^0+/,'');if(n.length<=10)n=cc+n;return n}
+function drawLiveBtns(){if(!H)return;const n=lnum(),m=encodeURIComponent(liveText());$('#lWa').href='https://wa.me/'+n+'?text='+m;$('#lSms').href='sms:'+(n?'+'+n:'')+'?&body='+m}
+$('#lnum').oninput=drawLiveBtns;$('#lcc').oninput=drawLiveBtns;
+$('#lCopy').onclick=async()=>{try{await navigator.clipboard.writeText(H.url)}catch(e){}$('#lCopy').textContent=t('copied');setTimeout(()=>$('#lCopy').textContent=t('copy'),1800)};
+$('#lShare').onclick=async()=>{if(navigator.share){try{await navigator.share({title:'ঝটপট',text:liveText()})}catch(e){}}else $('#lCopy').click()};
+function drawWho(){
+  if(!H)return;const ul=$('#lWho');ul.innerHTML='';const cs=H.conns;$('#lNone').hidden=!!cs.length;
+  cs.forEach(st=>{const li=document.createElement('li');li.style.gridTemplateColumns='minmax(0,1fr)';
+    const f=files[st.file];const pct=f?Math.min(100,st.got/f.size*100):0;
+    const top=document.createElement('div');top.innerHTML='<div class="nm"></div><div class="mt"></div>';
+    top.firstChild.textContent=(st.dev||t('someone'))+(st.relay?' ':'');if(st.relay){const b=document.createElement('span');b.className='badge';b.textContent=t('relayBadge');top.firstChild.append(b)}
+    top.lastChild.textContent=t('gotN',st.done.size,files.length)+(f&&st.done.size<files.length?' · '+f.name+' '+Math.round(pct)+'%'+(st.rate?' · '+spd(st.rate):''):'');
+    const pb=document.createElement('div');pb.className='pb';pb.innerHTML='<i></i>';pb.firstChild.style.width=(st.done.size>=files.length?100:pct)+'%';
+    li.append(top,pb);ul.append(li)});
+}
+setInterval(()=>{if(H)drawWho()},1000);
+$('#lStop').onclick=()=>{if(H){H.stop();H=null}try{wake&&wake.release()}catch(e){}show('vPick');redraw=()=>{};drawItems()};
+window.addEventListener('beforeunload',e=>{if(H&&H.conns.length){e.preventDefault();e.returnValue=''}});
+
+/* ---------- receiving a live link ---------- */
+let LG=null,lgFiles=[],lgBusy=false;
+function lgState(k,c=''){const s=$('#lgState');s.hidden=!k;s.className='status '+c;s.dataset.k=k;s.textContent=k?t('lg_'+k):''}
+function liveReceiver(id){
+  show('vLG');document.querySelector('.tag').hidden=true;document.querySelector('h1').dataset.t='getTitle';applyLang();lgState('connecting');keepAwake();
+  LG=JPLive.join(id,{
+    state:k=>{if(k==='connected'){lgState(lgBusy?'':'connected','good');if(!lgBusy)setTimeout(()=>{if($('#lgState').dataset.k==='connected')lgState('')},2500)}else lgState(k,k==='paused'||k==='slow'?'':'bad')},
+    list:m=>drawLG(m,lgFiles.length>0),relay:r=>{$('#lgNote').textContent=r?t('relayNote'):t('directNote')},
+    prog:(i,got,rate)=>{const x=lgFiles[i];if(!x)return;const f=LG.list.files[i];const pct=got/f.size*100;x.pb.style.width=pct+'%';
+      x.meta.textContent=Math.floor(pct)+'% · '+fmt(got)+' / '+fmt(f.size)+(rate?' · '+spd(rate)+' · '+t('left',dur((f.size-got)/rate)):'');if(lgBusy&&$('#lgState').dataset.k==='paused')lgState('')}});
+  redraw=()=>{if(LG&&LG.list)drawLG(LG.list,true)};
+}
+function drawLG(m,again){
+  $('#lgBody').hidden=false;$('#lgFrom').textContent=m.from||t('someone');
+  if(m.msg){const box=$('#lgMsg');box.hidden=false;box.textContent='';m.msg.split(/(https?:\/\/[^\s]+)/g).forEach((p,i)=>{if(i%2){const a=document.createElement('a');a.href=p;a.textContent=p;a.target='_blank';a.rel='noopener noreferrer nofollow';box.append(a)}else box.append(p)})}
+  if(again&&lgFiles.length)return;
+  const ul=$('#lgItems');ul.innerHTML='';lgFiles=[];
+  m.files.forEach((f,i)=>{const li=document.createElement('li'),d=document.createElement('div');d.innerHTML='<div class="nm"></div><div class="mt"></div>';d.firstChild.textContent=f.name;d.lastChild.textContent=fmt(f.size);
+    const b=document.createElement('button');b.className='btn';b.style.minHeight='40px';
+    const prev=JSON.parse(localStorage.getItem('jp-sink:'+('live-'+location.hash.slice(6)+'-'+i).replace(/[^\w.\-]+/g,'_').slice(-80))||'null');
+    b.textContent=prev&&prev.done&&!prev.fin?t('resume',Math.floor(prev.done/f.size*100)):t('save');
+    b.onclick=()=>saveLive([i]);
+    const pb=document.createElement('div');pb.className='pb';pb.innerHTML='<i></i>';const meta=document.createElement('div');meta.className='li-meta';
+    li.append(thumb(f),d,b,pb,meta);ul.append(li);lgFiles[i]={li,b,pb:pb.firstChild,meta,done:false}});
+  $('#lgAll').hidden=m.files.length<2;
+}
+$('#lgAll').onclick=()=>saveLive(LG.list.files.map((f,i)=>i).filter(i=>!lgFiles[i].done),true);
+async function saveLive(idx,all){
+  if(lgBusy)return;const m=LG.list;let dir=null;
+  if(await JPSink.canPick()){
+    try{if(all&&idx.length>1&&window.showDirectoryPicker)dir=await showDirectoryPicker({mode:'readwrite'})}catch(e){return}
+  }
+  lgBusy=true;$('#lgAll').disabled=true;lgFiles.forEach(x=>x.b.disabled=true);
+  for(const i of idx){
+    const f=m.files[i],x=lgFiles[i];let sink;
+    try{
+      let handle=null;
+      if(dir)handle=await dir.getFileHandle(f.name.replace(/[\\/:*?"<>|]/g,'_'),{create:true});
+      else if(await JPSink.canPick()){try{handle=await showSaveFilePicker({suggestedName:f.name})}catch(e){break}}
+      sink=await JPSink.open('live-'+location.hash.slice(6)+'-'+i,f.name,f.size,f.type,{resume:true,handle});
+    }catch(e){lgState(e.code==='space'?'space':e.code==='memory'?'memory':'failed','bad');break}
+    x.b.textContent=t('saving');
+    try{
+      const file=await LG.download(i,sink);x.done=true;x.file=file;x.pb.style.width='100%';x.meta.textContent='100% · '+fmt(f.size);
+      if(sink.kind==='picked'){x.b.textContent=t('savedPc');x.b.className='btn ghost'}
+      else{const a=document.createElement('a');a.className='btn';a.style.minHeight='40px';a.href=URL.createObjectURL(file);a.download=f.name;a.textContent=t('saveToPhone');x.b.replaceWith(a);x.b=a;
+        if(!/iPhone|iPad/.test(navigator.userAgent))try{a.click()}catch(e){}
+        if(isImg(file)&&file.size<15*1048576){const im=new Image();im.className='prev';im.alt='';im.src=a.href;x.li.append(im)}}
+    }catch(e){lgState(e&&e.code==='space'?'space':'failed','bad');x.b.textContent=t('save');break}
+  }
+  lgBusy=false;$('#lgAll').disabled=false;lgFiles.forEach(x=>{if(x.b.tagName==='BUTTON'&&!x.done)x.b.disabled=false});
+  if(lgFiles.every(x=>x.done))lgState('allDone','good');
+}
+
 /* ===================== start ===================== */
 applyLang();drawExp();
 const h=location.hash;
 const g=/^#g=([a-z0-9]{12})\.([A-Za-z0-9_-]{40,})$/.exec(h);
-if(g){history.replaceState(null,'','send.html#g='+g[1]+'.'+g[2]);receiver(g[1],g[2])}
+const lv=/^#live=([a-z0-9]{12})$/.exec(h);
+if(lv)liveReceiver(lv[1]);
+else if(g){history.replaceState(null,'','send.html#g='+g[1]+'.'+g[2]);receiver(g[1],g[2])}
 else if(/^#g=/.test(h)){show('vGet');$('#gLoadTxt').textContent=t('g_bad')}
 else{show('vPick');drawMine();if(h==='#share'){history.replaceState(null,'',location.pathname);takeShared()}else drawItems()}
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
-window.__jpSend={get files(){return files},addFiles,get last(){return last},get got(){return got}};
+window.__jpSend={get files(){return files},addFiles,get last(){return last},get got(){return got},get H(){return H},get LG(){return LG},get lgFiles(){return lgFiles},saveLive};
 }
 </script>
 <script src="credit.js"></script>
